@@ -1,0 +1,311 @@
+:root {
+    --primary: #1f7a7a;
+    --secondary: #5bc0be;
+    --light-bg: #f0fdfa;
+    --gradient: linear-gradient(135deg, #2c7da0, #52b69a);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--light-bg);
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.4;
+    color: #111;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* top nav */
+.top-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 18px 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.logo-title {
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: #fff;
+}
+
+.top-menu {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.top-menu a {
+    color: #fff;
+    font-weight: 600;
+    opacity: 0.95;
+}
+
+.top-menu a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* mobile menu button */
+.menu-toggle {
+    display: none;
+    border: 0;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-radius: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+/* banner */
+.banner-section {
+    background: var(--gradient);
+    color: #fff;
+    padding: 120px 0 160px;
+    border-bottom-left-radius: 60px;
+    border-bottom-right-radius: 60px;
+    text-align: center;
+}
+
+.content-container {
+    width: 90%;
+    max-width: 900px;
+    margin: auto;
+}
+
+.banner-section h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+}
+
+.banner-section p {
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+/* search */
+.search-form {
+    background: #fff;
+    border-radius: 999px;
+    padding: 8px 14px;
+    max-width: 620px;
+    margin: 28px auto 0;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.search-form input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: var(--secondary);
+    border-radius: 999px;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.btn-primary:hover {
+    background: #3aafa9;
+}
+
+/* dashboard */
+.dashboard-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: -90px auto 60px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
+}
+
+/* cards */
+.dashboard-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    transition: transform 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+}
+
+.dashboard-card h2 {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+/* card header row */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.year-badge {
+    background: rgba(91, 192, 190, 0.2);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.metric-value {
+    margin-top: 14px;
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+.card-subtext {
+    color: #777;
+    margin-top: 6px;
+}
+
+/* map */
+.map-container {
+    height: 175px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #d8f3dc, #b7e4c7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #1b4332;
+    margin-top: 15px;
+}
+
+/* trend canvas spacing */
+.trend-card canvas {
+    margin-top: 12px;
+    width: 100%;
+}
+
+/* risk */
+.risk-item {
+    margin-top: 14px;
+}
+
+.risk-item label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.progress-bar-container {
+    background: #eee;
+    border-radius: 999px;
+    overflow: hidden;
+    height: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 50%;
+}
+
+/* progress bar */
+.progress-fill.high {
+    width: 75%;
+    background: #2ecc71;
+}
+
+.progress-fill.medium {
+    width: 60%;
+    background: #3498db;
+}
+
+.progress-fill.low {
+    width: 50%;
+    background: #f1c40f;
+}
+
+/* card layout - span */
+.summary-card {
+    grid-column: span 4;
+}
+
+.map-card {
+    grid-column: span 8;
+}
+
+.trend-card {
+    grid-column: span 6;
+}
+
+.risk-card {
+    grid-column: span 6;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-card,
+    .map-card,
+    .trend-card,
+    .risk-card {
+        grid-column: span 1;
+    }
+
+    .menu-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-container {
+        flex-wrap: wrap;
+    }
+
+    .top-menu {
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        gap: 12px;
+        padding-top: 12px;
+    }
+
+    .top-menu.is-open {
+        display: flex;
+    }
+}
