@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // chart.js trend chart
   const canvas = document.getElementById("trendChart");
-  if (!canvas || typeof Chart === "undefined") return;
+  if (!canvas || typeof Chart === "undefined") return; // making sure canvas exist and chart.js is loaded
 
   new Chart(canvas, {
     type: "line",
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           label: "Sightings",
           data: [120, 190, 300, 500, 420, 610, 720],
-          tension: 0.4,
+          tension: 0.4, // make the line curved
           fill: true,
           borderColor: "#2c7da0",
           backgroundColor: "rgba(44,125,160,0.2)",

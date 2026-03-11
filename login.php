@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,7 +8,7 @@
   <link rel="stylesheet" href="login.css" />
 </head>
 
-<body>  
+<body>
 
   <!-- banner -->
   <section class="banner-section">
@@ -47,10 +48,7 @@
 
         <button type="submit" class="btn-primary btn-full">Sign in</button>
 
-        <p class="helper">
-          Don’t have an account?
-          <a class="link" href="#">Create one</a>
-        </p>
+        <p class="helper"> Don’t have an account? <a class="link" href="#">Create one</a></p>
       </form>
     </section>
   </main>
@@ -64,4 +62,5 @@
     }
   </script>
 </body>
+
 </html>

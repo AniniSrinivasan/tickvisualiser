@@ -24,11 +24,12 @@
             </button>
 
             <div class="top-menu">
-                <a href="#">Home</a>
-                <a href="#">Browse Data</a>
-                <a href="#">Insights</a>
-                <a href="#">Upload</a>
-                <a href="#">Contact</a>
+                <a href="dashboard.php">Home</a>
+                <a href="insights.php">Insights</a>
+                <a href="manage-data.php">Manage Data</a>
+                <a href="manage-user.php">Manage User</a>
+                <a href="contact.php">Contact</a>
+                <a href="login.php">Login</a>
             </div>
         </div>
     </header>
@@ -50,6 +51,14 @@
 
         <div class="dashboard-grid">
 
+            <!-- distribution - map view -->
+            <div class="dashboard-card map-card">
+                <h2>UK Tick Distribution</h2>
+                <div class="map-container">
+                    Interactive Map Placeholder
+                </div>
+            </div>
+
             <!-- summary -->
             <div class="dashboard-card summary-card">
                 <div class="card-header">
@@ -58,14 +67,6 @@
                 </div>
                 <p class="metric-value">12,540</p>
                 <p class="card-subtext">Cleaned & validated dataset</p>
-            </div>
-
-            <!-- distribution - map view -->
-            <div class="dashboard-card map-card">
-                <h2>UK Tick Distribution</h2>
-                <div class="map-container">
-                    Interactive Map Placeholder
-                </div>
             </div>
 
             <!-- trend - graph view -->
