@@ -37,7 +37,7 @@
     <!-- banner -->
     <section class="banner-section">
         <div class="content-container">
-            <h1>Discover. Analyse. Protect.</h1>
+            <h2>Discover. Analyse. Protect.</h2>
 
             <form class="search-form">
                 <input type="search" placeholder="Search by city or region or tick species...">
@@ -48,11 +48,10 @@
 
     <!-- main dashboard -->
     <main class="dashboard-container">
-
         <div class="dashboard-grid">
 
             <!-- distribution - map view -->
-            <div class="dashboard-card map-card">
+            <div class="dashboard-card map-card left">
                 <h2>UK Tick Distribution</h2>
                 <div class="map-container">
                     Interactive Map Placeholder
@@ -60,46 +59,47 @@
             </div>
 
             <!-- summary -->
-            <div class="dashboard-card summary-card">
-                <div class="card-header">
-                    <h2>Total Sightings</h2>
-                    <span class="year-badge">2026</span>
+            <div class="right">
+                <div class="dashboard-card summary-card">
+                    <div class="card-header">
+                        <h2>Total Sightings</h2>
+                        <span class="year-badge">2026</span>
+                    </div>
+                    <p class="metric-value">12,540</p>
+                    <p class="card-subtext">Cleaned & validated dataset</p>
                 </div>
-                <p class="metric-value">12,540</p>
-                <p class="card-subtext">Cleaned & validated dataset</p>
-            </div>
+                <br/>
+                <!-- trend - graph view -->
+                <div class="dashboard-card trend-card">
+                    <h2>Monthly Trend</h2>
+                    <canvas id="trendChart"></canvas>
+                </div>
+                <br/>
+                <!-- risks - progress bar view -->
+                <div class="dashboard-card risk-card">
+                    <h2>Regional Risk Levels</h2>
 
-            <!-- trend - graph view -->
-            <div class="dashboard-card trend-card">
-                <h2>Monthly Trend</h2>
-                <canvas id="trendChart"></canvas>
-            </div>
+                    <div class="risk-item">
+                        <label>South East</label>
+                        <div class="progress-bar-container">
+                            <div class="progress-fill high"></div>
+                        </div>
+                    </div>
 
-            <!-- risks - progress bar view -->
-            <div class="dashboard-card risk-card">
-                <h2>Regional Risk Levels</h2>
+                    <div class="risk-item">
+                        <label>Yorkshire</label>
+                        <div class="progress-bar-container">
+                            <div class="progress-fill medium"></div>
+                        </div>
+                    </div>
 
-                <div class="risk-item">
-                    <label>South East</label>
-                    <div class="progress-bar-container">
-                        <div class="progress-fill high"></div>
+                    <div class="risk-item">
+                        <label>Scotland</label>
+                        <div class="progress-bar-container">
+                            <div class="progress-fill low"></div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="risk-item">
-                    <label>Yorkshire</label>
-                    <div class="progress-bar-container">
-                        <div class="progress-fill medium"></div>
-                    </div>
-                </div>
-
-                <div class="risk-item">
-                    <label>Scotland</label>
-                    <div class="progress-bar-container">
-                        <div class="progress-fill low"></div>
-                    </div>
-                </div>
-
             </div>
 
         </div>
