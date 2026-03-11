@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Dashboard" content="Main Dashboard">
     <title>Tick Visualiser</title>
     <link rel="stylesheet" href="style.css">
     <!-- chart.js for plotting the trend graphs -->
@@ -24,9 +24,9 @@
             </button>
 
             <div class="top-menu">
-                <a href="#">Home</a>
+                <a href="dashboard.php">Home</a>
                 <a href="#">Browse Data</a>
-                <a href="#">Insights</a>
+                <a href="insights.php">Insights</a>
                 <a href="#">Upload</a>
                 <a href="#">Contact</a>
             </div>
