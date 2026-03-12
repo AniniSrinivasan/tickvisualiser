@@ -1,3 +1,12 @@
+function loadNavbar() {
+  fetch("navbar.php", { cache: "no-store" })
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("navbar-container").innerHTML = data;
+    })
+    .catch(error => console.error("Error loading navbar:", error));
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // mobile nav toggle
   const toggleBtn = document.querySelector(".nav-toggle");
