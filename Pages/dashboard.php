@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="Dashboard" content="Main Dashboard">
     <title>Tick Visualiser</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
     <!-- chart.js for plotting the trend graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="app.js"></script>
+    <script src="../app.js"></script>
 </head>
 
 <body>

@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // chart.js trend chart
+  // reference: https://www.chartjs.org/docs/latest/charts/line.html
   const canvas = document.getElementById("trendChart");
   if (!canvas || typeof Chart === "undefined") return; // making sure canvas exist and chart.js is loaded
 
