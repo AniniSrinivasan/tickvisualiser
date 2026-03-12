@@ -24,9 +24,28 @@
 
     <!-- main dashboard -->
     <main class="dashboard-container">
-
         <div class="dashboard-grid">
-
+            <div class="dashboard-card">
+                <h2>Typical Habitats</h2>
+            </div>
+            <div class="dashboard-card">
+                <h2>Seasonal Activity</h2>
+            </div>
+            <div class="dashboard-card">
+                <h2>Commonly found ticks</h2>
+            </div>
+            <div class="dashboard-card">
+                <h2>Prevention habits</h2>
+            </div>
+            <div class="dashboard-card">
+                <h2>Tick removal guide</h2>
+            </div>
+            <div class="dashboard-card">
+                <h2>Graph:</h2>
+            </div>
+            <div class="dashboard-card">
+                <h2>Graph:</h2>
+            </div>
         </div>
 
     </main>
