@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="Insights" content="Tick Insights">
+    <meta name="description" content="Tick Insights">
     <title>Tick Visualiser</title>
     <link rel="stylesheet" href="../style/style.css">
     <!-- chart.js for plotting the trend graphs -->
@@ -23,7 +23,7 @@
     </section>
 
     <!-- main dashboard -->
-    <main class="dashboard-container">
+    <main class="dashboard-container" role="main">
         <div class="dashboard-grid">
             <div class="dashboard-card">
                 <h2>Typical Habitats</h2>
@@ -42,9 +42,11 @@
             </div>
             <div class="dashboard-card">
                 <h2>Graph:</h2>
+                <canvas id="trendChart"></canvas>
             </div>
             <div class="dashboard-card">
                 <h2>Graph:</h2>
+                
             </div>
         </div>
 

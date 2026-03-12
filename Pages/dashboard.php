@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="Dashboard" content="Main Dashboard">
+    <meta name="description" content="Main Dashboard">
     <title>Tick Visualiser</title>
     <link rel="stylesheet" href="../style/style.css">
     <!-- chart.js for plotting the trend graphs -->
@@ -27,7 +27,7 @@
     </section>
 
     <!-- main dashboard -->
-    <main class="dashboard-container">
+    <main class="dashboard-container" role="main">
         <div class="dashboard-grid">
 
             <!-- distribution - map view -->

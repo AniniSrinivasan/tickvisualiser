@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Login Page" />
   <title>Login • Tick Visualiser</title>
   <link rel="stylesheet" href="../style/login.css" />
 </head>
@@ -19,7 +19,7 @@
   </section>
 
   <!-- login card -->
-  <main class="auth-wrap">
+  <main class="auth-wrap" role="Login Page">
     <section class="auth-card" aria-label="Login">
       <div class="auth-header">
         <h2>Log in</h2>
