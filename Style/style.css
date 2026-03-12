@@ -126,7 +126,7 @@ a {
 }
 
 .btn-primary {
-    background: var(--secondary);
+    background: var(--primary);
     border-radius: 999px;
     color: #fff;
     border: none;
@@ -192,7 +192,7 @@ a {
 }
 
 .year-badge {
-    background: rgba(91, 192, 190, 0.2);
+    background: rgba(117, 237, 235, 0.2);
     color: var(--primary);
     padding: 4px 10px;
     border-radius: 999px;
@@ -207,7 +207,7 @@ a {
 }
 
 .card-subtext {
-    color: #777;
+    color: #000000;
     margin-top: 6px;
 }
 
@@ -271,6 +271,12 @@ a {
 
 .risk-card {
     grid-column: span 6;
+}
+
+/* width of cards on the right */
+.right {
+    height: 100%;
+    width: 325px;
 }
 
 /* responsive */

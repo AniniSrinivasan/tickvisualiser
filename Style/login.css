@@ -23,7 +23,7 @@
   .banner-section{
     height:60vh;
     background:linear-gradient(135deg,#2c7da0,#52b69a);
-    color:white;
+    color:#ffffff;
   
     display:flex;
     justify-content:center;
@@ -90,8 +90,8 @@
   }
   
   .badge{
-    background:#e3f2f1;
-    color:#2c7a7b;
+    background: rgba(117, 237, 235, 0.2);
+    color: var(--primary);
     padding:4px 10px;
     border-radius:20px;
     font-size:0.8rem;
@@ -155,8 +155,8 @@
     border:none;
     border-radius:999px;
   
-    background:#5bc0be;
-    color:white;
+    background: var(--primary);
+    color:#ffffff;
     font-weight:700;
     font-size:1rem;
   
