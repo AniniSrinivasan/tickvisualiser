@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Main Dashboard">
-    <title>Tick Visualiser</title>
+    <title>Dashboard • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/style.css">
     <!-- chart.js for plotting the trend graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
