@@ -1,0 +1,70 @@
+/* text decoration for inside boxes */
+p{
+    color: white;
+    font-weight: bold;
+}
+
+a{
+    color: white;
+    text-decoration: underline;
+}
+
+.larger-font{
+    font-size: larger;
+}
+
+/* Contact boxes */
+.contact-container{
+    display: flex;
+    justify-content: space-around;
+}
+
+.contact-box-left, 
+.contact-box-right  {
+  width: 40%;
+  height: auto;
+  margin: 10px ;
+  padding: 20px;
+  background: #409A9D;
+  border-radius: 20px;
+  /* border-width: thin;
+  border-style: solid;
+  border-color: #ffffff; */
+  opacity: 0.8;
+}
+
+/* button for right box */
+.contact-btn, .contact-btn-link{
+    display: block;
+    padding: 10px ;
+    background-color: rgb(22, 108, 151);
+    text-align: center;
+    border-radius: 10px;
+    margin: 2px ;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* link box for right box */
+.contact-link{
+    display: block;
+    padding: 10px ;
+    background-color: rgb(22, 108, 151);
+    text-align: center;
+    border-radius: 10px;
+    margin:  auto;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* boxes for left box */
+.contact-email-box{
+    display: block;
+    padding: 10px ;
+    background-color: rgb(22, 108, 151);
+    text-align: center;
+    border-radius: 10px;
+    margin: 2px auto;
+    text-decoration: none;
+}
+
