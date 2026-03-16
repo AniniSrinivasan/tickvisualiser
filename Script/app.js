@@ -78,3 +78,44 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
+// delete popup confirmation
+document.addEventListener("DOMContentLoaded", function () {
+
+  const popup = document.getElementById("rejectPopup");
+  if (!popup) return;
+
+  const confirmBtn = popup.querySelector(".confirm-reject");
+  const cancelBtn = popup.querySelector(".cancel-reject");
+
+  let currentForm = null;
+
+  document.querySelectorAll("input[name='reject']").forEach(btn => {
+    btn.addEventListener("click", function () {
+        currentForm = this.closest("form");
+        popup.style.display = "flex";
+    });
+  });
+
+  // confirm delete
+  confirmBtn.addEventListener("click", function () {
+
+      if (!currentForm) return;
+      const hiddenReject = document.createElement("input");
+      hiddenReject.type = "hidden";
+      hiddenReject.name = "reject";
+      hiddenReject.value = "1";
+
+      currentForm.appendChild(hiddenReject);
+
+      popup.style.display = "none";
+      currentForm.submit();
+  });
+
+  // cancel delete
+  cancelBtn.addEventListener("click", function () {
+      popup.style.display = "none";
+      currentForm = null;
+  });
+
+});
