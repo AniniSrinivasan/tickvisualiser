@@ -119,3 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+
+// upload file function - fopen...
+// reference: https://www.tutorialspoint.com/php/php_read_file.htm

@@ -34,10 +34,11 @@
     <section class="banner-section">
         <div class="content-container">
             <h1>Contact our team</h1>
-            <h2>For general enquiries or dataset questions, get in touch with the platform team using the contact details</h2>
+            <h2>For general enquiries or dataset questions, get in touch with the platform team using the contact
+                details</h2>
         </div>
     </section>
-    
+
 
     <div class="contact-container">
         <div class="contact-box-left">
@@ -57,4 +58,3 @@
     </div>
 
 </body>
-
