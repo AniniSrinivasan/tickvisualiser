@@ -23,7 +23,6 @@
     <!-- main manage/browse data -->
     <main class="dashboard-container" role="main">
         <div class="dashboard-grid manage-data-grid">
-
             <!-- upload -->
             <div class="dashboard-card manage-upload-card">
                 <h2>Upload CSV Files</h2>
@@ -34,8 +33,7 @@
                     </div>
                 </form>
             </div>
-
-             <!-- previously uploaded -->
+            <!-- previously uploaded -->
             <div class="dashboard-card manage-upload-card">
                 <h2>Previously Uploaded Files</h2>
                 <form class="manage-select-form">
@@ -47,22 +45,6 @@
                     </select>
                 </form>
             </div>
-
-            <!-- summary -->
-            <!-- <div class="dashboard-card manage-summary-card">
-                <div class="card-header">
-                    <h2>Location Counts</h2>
-                    <span class="year-badge">Summary</span>
-                </div>
-
-                <div class="location-count-list">
-                    <div class="location-count-item">
-                        <span>London</span>
-                        <strong>1</strong>
-                    </div>
-                </div>
-            </div> -->
-
         </div>
         <br />
 
@@ -76,12 +58,10 @@
             <form class="manage-toolbar">
                 <input type="search" id="browse-data-search" name="browse-data-search" class="manage-toolbar-input"
                     placeholder="Search by ID, location or species">
-
                 <label class="manage-checkbox" for="show-inaccurate-only">
                     <input type="checkbox" id="show-inaccurate-only" name="show-inaccurate-only">
                     Show only inaccurate data
                 </label>
-
                 <input type="button" class="btn-primary" value="Submit">
             </form>
 
