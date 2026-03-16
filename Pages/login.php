@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Login Page" />
   <title>Login • Tick Visualiser</title>
-  <link rel="stylesheet" href="login.css" />
+  <link rel="stylesheet" href="../style/login.css" />
 </head>
 
-<body>  
+<body>
 
   <!-- banner -->
   <section class="banner-section">
@@ -18,7 +19,7 @@
   </section>
 
   <!-- login card -->
-  <main class="auth-wrap">
+  <main class="auth-wrap" role="Login Page">
     <section class="auth-card" aria-label="Login">
       <div class="auth-header">
         <h2>Log in</h2>
@@ -47,10 +48,7 @@
 
         <button type="submit" class="btn-primary btn-full">Sign in</button>
 
-        <p class="helper">
-          Don’t have an account?
-          <a class="link" href="#">Create one</a>
-        </p>
+        <p class="helper"> Don’t have an account? <a class="link" href="#">Create one</a></p>
       </form>
     </section>
   </main>
@@ -64,4 +62,5 @@
     }
   </script>
 </body>
+
 </html>
