@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php require_once '../functions/upload-functions.php'; ?>
+
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Manage uploaded tick data">
     <title>Browse Data • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/style.css">
-    <script src="../script/app.js"></script>
+    <script src="../script/app.js" defer></script>
 </head>
 
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div>
 
-    <!-- banner -->
     <section class="banner-section">
         <div class="content-container">
             <h1>Upload Data</h1>
@@ -20,20 +21,33 @@
         </div>
     </section>
 
-    <!-- main manage/browse data -->
     <main class="dashboard-container" role="main">
         <div class="dashboard-grid manage-data-grid">
-            <!-- upload -->
             <div class="dashboard-card manage-upload-card">
                 <h2>Upload CSV Files</h2>
-                <form class="manage-upload-form">
-                    <div class="upload-box" id="uploadBox">
-                        <p><label for="csv-file-upload">Drag files here or choose a CSV file to upload</label></p>
-                        <input type="file" id="csv-file-upload" name="csv-file-upload" accept=".csv" multiple>
+
+                <?php if ($uploadErrorMessage !== ''): ?>
+                    <div id="uploadError"><?php echo escape($uploadErrorMessage); ?></div>
+                <?php else: ?>
+                    <div id="uploadError" style="display:none;"></div>
+                <?php endif; ?>
+
+                <?php if ($uploadSuccessMessage !== ''): ?>
+                    <div class="upload-success"><?php echo escape($uploadSuccessMessage); ?></div>
+                <?php endif; ?>
+
+                <form id="csvUploadForm" class="manage-upload-form" method="post" enctype="multipart/form-data">
+                    <div class="upload-box" id="uploadDropCard">
+                        <p>
+                            <label for="fileUpload">
+                                Drag files here or choose a CSV file to upload
+                            </label>
+                        </p>
+                        <input type="file" id="fileUpload" name="csv_files" accept=".csv">
                     </div>
                 </form>
             </div>
-            <!-- previously uploaded -->
+
             <div class="dashboard-card manage-upload-card">
                 <h2>Previously Uploaded Files</h2>
                 <form class="manage-select-form">
@@ -46,9 +60,9 @@
                 </form>
             </div>
         </div>
+
         <br />
 
-        <!-- browse data -->
         <div class="dashboard-card manage-table-card">
             <div class="card-header">
                 <h2>Browse Data</h2>
@@ -78,26 +92,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>02WNholuSg6ndCk4c1dA</td>
-                            <td>2026-03-14</td>
-                            <td>London</td>
-                            <td>Tick</td>
-                            <td>Ixodes ricinus</td>
-                            <td>
-                                <form>
-                                    <input type="submit" class="approve-button-in-list" name="approve" value="Edit">
-                                    <input type="button" class="reject-button-in-list reject-btn" name="reject"
-                                        value="Delete">
-                                </form>
-                            </td>
-                        </tr>
+                        <?php if (!empty($csvRows)): ?>
+                            <?php foreach ($csvRows as $row): ?>
+                                <tr>
+                                    <td><?php echo escape($row['id']); ?></td>
+                                    <td><?php echo escape($row['date']); ?></td>
+                                    <td><?php echo escape($row['location']); ?></td>
+                                    <td><?php echo escape($row['species']); ?></td>
+                                    <td><?php echo escape($row['latinName']); ?></td>
+                                    <td>
+                                        <form>
+                                            <input type="submit" class="approve-button-in-list" name="approve" value="Edit">
+                                            <input type="button" class="reject-button-in-list reject-btn" name="reject"
+                                                value="Delete">
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6">Upload a CSV file to view it.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- reject confirmation popup -->
         <div id="rejectPopup" class="popup-overlay" style="display: none;">
             <div class="popup-box">
                 <h3>Delete</h3>
