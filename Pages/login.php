@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="../style/login.css" />
 </head>
 
+<?php
+
+?>
+
 <body>
 
   <!-- banner -->
@@ -48,7 +52,7 @@
 
         <button type="submit" class="btn-primary btn-full">Sign in</button>
 
-        <p class="helper"> Don’t have an account? <a class="link" href="#">Create one</a></p>
+        <p class="helper"> Don’t have an account? <a class="link" href="register.php">Create one</a></p>
       </form>
     </section>
   </main>

@@ -62,6 +62,16 @@
   
     margin-top:-175px;   
   }
+
+  .auth-wrap-two{
+    height:40vh;
+  
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+  
+    margin-top:-175px;   
+  }
   
   /* card */
   
