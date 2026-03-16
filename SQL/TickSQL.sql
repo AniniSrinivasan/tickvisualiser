@@ -20,8 +20,8 @@ from importeddata;
 -- ALTER TABLE importeddata CHANGE COLUMN `date` `date_time` TEXT;
 
 -- Inserting into sighting where id is correct length and date/time is valid - using id's instead of names
-INSERT INTO sighting(sightingID,speciesID,locationID,date_time)
-SELECT i.id,s.speciesID,l.locationID,i.date_time
+INSERT INTO sighting(sightingID,speciesID,locationID,date_time) -- ,uploadID )
+SELECT i.id,s.speciesID,l.locationID,i.date_time -- ,1
 FROM importeddata i 
 JOIN species s on i.species = s.speciesName
 join location l on i.location = l.locationName
