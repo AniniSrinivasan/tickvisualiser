@@ -1,33 +1,41 @@
-select * from importeddata;
-select * from location;
-select * from sighting;
-select * from species;
-select * from login;
+SELECT * FROM IMPORTEDDATA;
+SELECT * FROM LOCATION;
+SELECT * FROM SIGHTING;
+SELECT * FROM SPECIES;
+SELECT * FROM LOGIN;
 
--- Inserting unique data into species and location
-INSERT IGNORE INTO species (speciesName, speciesLatinName)
-select species, latinName
-from importeddata;
-INSERT IGNORE INTO location (locationName)
-select location
-from importeddata;
+ALTER TABLE IMPORTEDDATA MODIFY COLUMN ID VARCHAR(255);
+ALTER TABLE IMPORTEDDATA CHANGE COLUMN `DATE` `DATE_TIME` VARCHAR(40);
+ALTER TABLE IMPORTEDDATA MODIFY COLUMN LOCATION VARCHAR(40);
+ALTER TABLE IMPORTEDDATA MODIFY COLUMN SPECIES VARCHAR(40);
+ALTER TABLE IMPORTEDDATA MODIFY COLUMN LATINNAME VARCHAR(40);
 
-ALTER TABLE importeddata MODIFY COLUMN id VARCHAR(255);
-ALTER TABLE importeddata CHANGE COLUMN `date` `date_time` TEXT;
+-- INSERTING UNIQUE DATA INTO SPECIES AND LOCATION
+INSERT IGNORE INTO SPECIES (SPECIESNAME, SPECIESLATINNAME)
+SELECT SPECIES, LATINNAME
+FROM IMPORTEDDATA;
 
--- Inserting into sighting where id is correct length and date/time is valid - using id's instead of names
-INSERT INTO sighting(sightingID,speciesID,locationID,date_time,uploadID )
-SELECT i.id,s.speciesID,l.locationID,i.date_time ,1
-FROM importeddata i 
-JOIN species s on i.species = s.speciesName
-join location l on i.location = l.locationName
-WHERE (LENGTH(i.id) = 20) AND STR_TO_DATE(i.date_time, '%Y-%m-%dT%H:%i:%s') IS NOT NULL;
+INSERT IGNORE INTO LOCATION (LOCATIONNAME)
+SELECT LOCATION
+FROM IMPORTEDDATA;
 
--- Data that wasnt entered into sighting due to errors in data
-SELECT * FROM importeddata i
-WHERE NOT EXISTS(SELECT 1 FROM sighting s WHERE s.sightingID = i.id);
+-- INSERTING INTO SIGHTING WHERE ID IS CORRECT LENGTH AND DATE/TIME IS VALID - USING ID'S INSTEAD OF NAMES
+INSERT INTO SIGHTING (SIGHTINGID, SPECIESID, LOCATIONID, DATE_TIME, UPLOADID)
+SELECT I.ID, S.SPECIESID, L.LOCATIONID, I.DATE_TIME, 1
+FROM IMPORTEDDATA I 
+JOIN SPECIES S ON I.SPECIES = S.SPECIESNAME
+JOIN LOCATION L ON I.LOCATION = L.LOCATIONNAME
+WHERE (LENGTH(I.ID) = 20) 
+AND STR_TO_DATE(I.DATE_TIME, '%Y-%m-%dT%H:%i:%s') IS NOT NULL;
 
--- Select all Where date_time is not valid
-SELECT * FROM importeddata
-WHERE STR_TO_DATE(date_time, '%Y-%m-%dT%H:%i:%s') IS NULL;
+-- DATA THAT WASN'T ENTERED INTO SIGHTING DUE TO ERRORS IN DATA
+SELECT * FROM IMPORTEDDATA I
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM SIGHTING S 
+    WHERE S.SIGHTINGID = I.ID
+);
 
+-- SELECT ALL WHERE DATE_TIME IS NOT VALID
+SELECT * FROM IMPORTEDDATA
+WHERE STR_TO_DATE(DATE_TIME, '%Y-%m-%dT%H:%i:%s') IS NULL;
