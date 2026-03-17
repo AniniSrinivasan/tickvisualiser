@@ -332,6 +332,10 @@ a {
     grid-column: span 7;
 }
 
+.manage-table td:last-child {
+    min-width: 150px;
+}
+
 .manage-summary-card {
     grid-column: span 3;
 }
@@ -514,6 +518,12 @@ a {
     border-radius: 8px;
     padding: 10px;
     cursor: pointer;
+}
+
+.approve-button-in-list,
+.reject-button-in-list {
+    padding: 10px 14px;
+    white-space: nowrap;
 }
 
 /*  reject confirmation popup  */

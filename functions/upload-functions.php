@@ -162,12 +162,10 @@ function getOriginalFileName(string $storedName): string
 
     $parts = explode('_', $nameWithoutExt);
 
-    // If there are fewer than 3 parts, just return as-is (safety fallback)
     if (count($parts) < 3) {
         return $storedName;
     }
 
-    // Remove last 2 parts (uniqueId + timestamp)
     $originalParts = array_slice($parts, 0, -3);
 
     return implode('_', $originalParts) . '.' . $extension;
