@@ -106,14 +106,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// delete popup confirmation
+// delete/reject popup confirmation
 document.addEventListener("DOMContentLoaded", function () {
 
-  const popup = document.getElementById("rejectPopup");
+  const popup = document.getElementById("popup-confirmation");
   if (!popup) return;
 
-  const confirmBtn = popup.querySelector(".confirm-reject");
-  const cancelBtn = popup.querySelector(".cancel-reject");
+  const confirmBtn = popup.querySelector(".confirm");
+  const cancelBtn = popup.querySelector(".cancel");
 
   let currentForm = null;
 
@@ -230,3 +230,22 @@ document.addEventListener('DOMContentLoaded', function () {
     validateAndSubmit(files);
   });
 });
+
+// search filter for the search in browse data
+function searchBrowswData(input) {
+  const query = input.value.toLowerCase();
+  const tableRows = document.querySelectorAll(".manage-table tbody tr");
+
+  tableRows.forEach(row => {
+    const dataID = row.cells[0].textContent.toLowerCase();
+    const location = row.cells[2].textContent.toLowerCase();
+    const speciesName = row.cells[3].textContent.toLowerCase();
+    const latinName = row.cells[4].textContent.toLowerCase();
+
+    if (dataID.includes(query) || location.includes(query) ||  speciesName.includes(query) ||  latinName.includes(query)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+}

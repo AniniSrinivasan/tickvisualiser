@@ -6,7 +6,7 @@
     <meta name="description" content="Manage uploaded tick data">
     <title>Approve Data • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/style.css">
-    <script src="../script/app.js"></script>
+    <script src="../script/script.js"></script>
 </head>
 
 <body class="dashboard-body" onload="loadNavbar()">
@@ -69,13 +69,13 @@
             </div>
 
         <!-- reject confirmation popup -->
-        <div id="rejectPopup" class="popup-overlay" style="display: none;">
+        <div id="popup-confirmation" class="popup-overlay" style="display: none;">
             <div class="popup-box">
                 <h3>Reject</h3>
                 <p>Are you sure you want to reject this request?</p>
                 <div class="popup-actions">
-                    <button id="confirmReject" class="confirm-reject">Yes, Reject</button>
-                    <button id="cancelReject" class="cancel-reject">Cancel</button>
+                    <button id="confirm" class="confirm">Yes, Reject</button>
+                    <button id="cancel" class="cancel">Cancel</button>
                 </div>
             </div>
         </div>

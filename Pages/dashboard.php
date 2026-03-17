@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php require_once '../functions/db_connect.php'; ?>
-<?php require_once '../functions/error.php'; ?>
-
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Main Dashboard">
@@ -11,7 +8,7 @@
     <link rel="stylesheet" href="../style/style.css">
     <!-- chart.js for plotting the trend graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../script/app.js"></script>
+    <script src="../script/script.js"></script>
 </head>
 
 <body class="dashboard-body" onload="loadNavbar()">
