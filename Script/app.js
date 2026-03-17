@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // chart.js trend chart
   // reference: https://www.chartjs.org/docs/latest/charts/line.html
   const canvas = document.getElementById("trendChart");
+  const Bar = document.getElementById("BarChart");
   if (!canvas || typeof Chart === "undefined") return; // making sure canvas exist and chart.js is loaded
 
   new Chart(canvas, {
@@ -50,6 +51,32 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     },
   });
+
+  new Chart(Bar,{
+    type:"bar",
+    data: {
+      labels: ["Woodland", "Grassland", "Heath/Moor", "Parks"],
+      datasets: [
+        {
+          label: "Sightings",
+          data: [120, 190, 300, 500, 420, 610, 720],
+          tension: 0.4, // makes the line curved
+          fill: true,
+          borderColor: "#2c7da0",
+          backgroundColor: "rgba(44,125,160,0.2)",
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+      },
+      scales: {
+        y: { beginAtZero: true },
+      },
+    },
+  })
 });
 
 // drag and drop upload

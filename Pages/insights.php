@@ -25,33 +25,40 @@
     <!-- main dashboard -->
     <main class="dashboard-container" role="main">
         <div class="dashboard-grid">
-            <div class="dashboard-card">
-                <h2>Typical Habitats</h2>
+            <div class="top-row">
+                <!-- Add css -->
+                <div class="dashboard-card">
+                    <h2>Typical Habitats</h2>
+                </div>
+                <div class="dashboard-card">
+                    <h2>Seasonal Activity</h2>
+                </div>
+                <div class="dashboard-card">
+                    <h2>Commonly found ticks</h2>
+                </div>
+                <div class="dashboard-card">
+                    <h2>Prevention habits</h2>
+                </div>
+                <div class="dashboard-card">
+                    <h2>Tick removal guide</h2>
+                </div>
             </div>
-            <div class="dashboard-card">
-                <h2>Seasonal Activity</h2>
-            </div>
-            <div class="dashboard-card">
-                <h2>Commonly found ticks</h2>
-            </div>
-            <div class="dashboard-card">
-                <h2>Prevention habits</h2>
-            </div>
-            <div class="dashboard-card">
-                <h2>Tick removal guide</h2>
-            </div>
-            <div class="dashboard-card">
-                <h2>Graph:</h2>
-                <canvas id="trendChart"></canvas>
-            </div>
-            <div class="dashboard-card">
-                <h2>Graph:</h2>
-                
+            <div class="bottom-row">
+                <div class="dashboard-card">
+                    <!-- Bar graph -->
+                    <h2>Graph:</h2>
+                    <canvas id="BarChart"></canvas>
+                    
+                </div>
+                <div class="dashboard-card">
+                    <!-- Line graph -->
+                    <h2>Graph:</h2>
+                    <canvas id="trendChart"></canvas>
+                    
+                </div>
             </div>
         </div>
-
     </main>
-
 </body>
 
 </html>
