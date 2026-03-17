@@ -20,7 +20,7 @@
         </div>
     </section>
 
-    <!-- main manage/browse data -->
+    <!-- approve data -->
     <main class="dashboard-container" role="main">
 
             <!-- approve data -->

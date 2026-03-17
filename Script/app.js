@@ -92,30 +92,114 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.querySelectorAll("input[name='reject']").forEach(btn => {
     btn.addEventListener("click", function () {
-        currentForm = this.closest("form");
-        popup.style.display = "flex";
+      currentForm = this.closest("form");
+      popup.style.display = "flex";
     });
   });
 
   // confirm delete
   confirmBtn.addEventListener("click", function () {
 
-      if (!currentForm) return;
-      const hiddenReject = document.createElement("input");
-      hiddenReject.type = "hidden";
-      hiddenReject.name = "reject";
-      hiddenReject.value = "1";
+    if (!currentForm) return;
+    const hiddenReject = document.createElement("input");
+    hiddenReject.type = "hidden";
+    hiddenReject.name = "reject";
+    hiddenReject.value = "1";
 
-      currentForm.appendChild(hiddenReject);
+    currentForm.appendChild(hiddenReject);
 
-      popup.style.display = "none";
-      currentForm.submit();
+    popup.style.display = "none";
+    currentForm.submit();
   });
 
   // cancel delete
   cancelBtn.addEventListener("click", function () {
-      popup.style.display = "none";
-      currentForm = null;
+    popup.style.display = "none";
+    currentForm = null;
   });
 
+});
+
+// upload file function 
+document.addEventListener('DOMContentLoaded', function () {
+  const fileUpload = document.getElementById('fileUpload');
+  const uploadDropCard = document.getElementById('uploadDropCard');
+  const uploadError = document.getElementById('uploadError');
+  const csvUploadForm = document.getElementById('csvUploadForm');
+
+  if (!fileUpload || !uploadDropCard || !uploadError || !csvUploadForm) {
+    return;
+  }
+
+  function isCsvFile(file) {
+    if (!file) return false;
+    return file.name.toLowerCase().endsWith('.csv'); // checks if csv
+  }
+
+  function showError(message) {
+    uploadError.textContent = message;
+    uploadError.style.display = 'block';
+  }
+
+  function hideError() {
+    uploadError.textContent = '';
+    uploadError.style.display = 'none';
+  }
+
+  // validates the uploaded file before submitting it
+  function validateAndSubmit(fileCollection) {
+    const files = Array.from(fileCollection || []);
+
+    if (!files.length) {
+      return;
+    }
+
+    if (files.length > 1) { // to make surre only 1 file is uploaded
+      showError('Please upload one CSV file at a time.');
+      fileUpload.value = '';
+      return;
+    }
+
+    const hasInvalidFile = files.some((file) => !isCsvFile(file));
+    if (hasInvalidFile) {
+      showError('Only CSV files can be attached.');
+      fileUpload.value = '';
+      return;
+    }
+
+    hideError();
+    csvUploadForm.submit();
+  }
+
+  fileUpload.addEventListener('change', function (event) {
+    validateAndSubmit(event.target.files);
+  });
+
+  // for the drag and drop option
+  uploadDropCard.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    uploadDropCard.classList.add('drag-active');
+  });
+
+  uploadDropCard.addEventListener('dragleave', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    uploadDropCard.classList.remove('drag-active');
+  });
+
+  // retrieves dropped file, assigns it to file input, sends for validation and upload
+  uploadDropCard.addEventListener('drop', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    uploadDropCard.classList.remove('drag-active');
+
+    const files = event.dataTransfer ? event.dataTransfer.files : null;
+    if (!files || !files.length) {
+      return;
+    }
+
+    fileUpload.files = files;
+    validateAndSubmit(files);
+  });
 });
