@@ -8,7 +8,7 @@
     <meta name="description" content="Manage uploaded tick data">
     <title>Browse Data • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/style.css">
-    <script src="../script/app.js" defer></script>
+    <script src="../script/script.js" defer></script>
 </head>
 
 <body class="dashboard-body" onload="loadNavbar()">
@@ -71,7 +71,7 @@
 
             <form class="manage-toolbar">
                 <input type="search" id="browse-data-search" name="browse-data-search" class="manage-toolbar-input"
-                    placeholder="Search by ID, location or species">
+                    placeholder="Search by ID, location, species or latin name" onkeyup="searchBrowswData(this)">
                 <label class="manage-checkbox" for="show-inaccurate-only">
                     <input type="checkbox" id="show-inaccurate-only" name="show-inaccurate-only">
                     Show only inaccurate data
@@ -118,14 +118,15 @@
                 </table>
             </div>
         </div>
-
-        <div id="rejectPopup" class="popup-overlay" style="display: none;">
+        
+        <!-- delete confirmation popup -->
+        <div id="popup-confirmation" class="popup-overlay" style="display: none;">
             <div class="popup-box">
                 <h3>Delete</h3>
                 <p>Are you sure you want to delete this?</p>
                 <div class="popup-actions">
-                    <button id="confirmReject" class="confirm-reject">Yes, Delete</button>
-                    <button id="cancelReject" class="cancel-reject">Cancel</button>
+                    <button id="confirm" class="confirm">Yes, Delete</button>
+                    <button id="cancel" class="cancel">Cancel</button>
                 </div>
             </div>
         </div>
