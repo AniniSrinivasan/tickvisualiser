@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php require_once '../functions/db_connect.php'; ?>
+<?php require_once '../functions/error.php'; ?>
+
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Main Dashboard">
