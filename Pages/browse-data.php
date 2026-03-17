@@ -50,12 +50,17 @@
 
             <div class="dashboard-card manage-upload-card">
                 <h2>Previously Uploaded Files</h2>
-                <form class="manage-select-form">
+                <form class="manage-select-form" method="get">
                     <label for="uploaded-file-select">Select a previously uploaded file</label>
-                    <select id="uploaded-file-select" name="uploaded-file-select" class="manage-select-input">
+                    <select id="uploaded-file-select" name="uploaded-file-select" class="manage-select-input"
+                        onchange="this.form.submit()">
                         <option value="">Select a file to view</option>
-                        <option value="file1">file 1</option>
-                        <option value="file2">file 2</option>
+                        <?php foreach ($storedFiles as $file): ?>
+                            <option value="<?php echo escape($file['stored_name']); ?>"
+                                <?php echo (isset($_GET['uploaded-file-select']) && $_GET['uploaded-file-select'] === $file['stored_name']) ? 'selected' : ''; ?>>
+                                <?php echo escape(getOriginalFileName($file['display_name']) . ' — uploaded ' . $file['uploaded_at']); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </form>
             </div>
@@ -118,7 +123,7 @@
                 </table>
             </div>
         </div>
-        
+
         <!-- delete confirmation popup -->
         <div id="popup-confirmation" class="popup-overlay" style="display: none;">
             <div class="popup-box">
