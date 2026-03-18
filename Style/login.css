@@ -64,8 +64,8 @@
   }
 
   .auth-wrap-two{
-    height:40vh;
-  
+    /* height:50vh;
+   */
     display:flex;
     align-items:flex-start;
     justify-content:center;

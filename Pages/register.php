@@ -11,27 +11,6 @@
 <!-- this register page is only for users -->
 
 <body>
-  
-    <!-- top navigation -->
-    <!-- <header class="top-nav">
-        <div class="nav-container">
-            <div class="logo-title">Tick Visualiser</div> -->
-
-            <!-- default hidden on large screens, only appears on mobile screens -->
-            <!-- <button class="menu-toggle" aria-label="Toggle Menu">
-                ☰
-            </button>
-
-            <div class="top-menu">
-                <a href="dashboard.php">Home</a>
-                <a href="#">Browse Data</a>
-                <a href="#">Insights</a>
-                <a href="#">Upload</a>
-                <a href="contact.php">Contact</a>
-            </div>
-        </div>
-    </header> -->
-
     <section class="banner-section">
         <div class="content-container">
             <h1>Welcome!</h1>
