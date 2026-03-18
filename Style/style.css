@@ -58,6 +58,7 @@ a {
     color: #fff;
     font-weight: 600;
     opacity: 0.95;
+    text-decoration: none;
 }
 
 .top-menu a:hover {

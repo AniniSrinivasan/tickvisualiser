@@ -7,14 +7,11 @@
     <title>Contact Us • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/style.css">
     <link rel="stylesheet" href="../style/contact.css">
-    <script src="../script/script.js"></script>
+    <script src="../script/script.js"></script> 
 </head>
 
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div> <!-- Navbar will be loaded here -->
-            <div class="logo-title">Tick Visualiser</div>
-        </div>
-    </header>
 
     <section class="banner-section">
         <div class="content-container">
@@ -23,7 +20,6 @@
                 details</h2>
         </div>
     </section>
-
 
     <div class="contact-container">
         <div class="contact-box-left">
