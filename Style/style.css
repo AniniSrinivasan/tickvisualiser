@@ -590,69 +590,89 @@ a {
 }
 
 /* contact page */
-.contact-box p {
-    color: white;
-    font-weight: bold;
+.content-container p{
+    font-size: larger;
+    font-weight: 600;
 }
 
-.contact-box a {
+.contact-card p {
     color: white;
-    text-decoration: underline;
+}
+
+.contact-card a {
+    color: white;
 }
 
 .larger-font {
     font-size: larger;
 }
 
-/* Contact boxes */
-.contact-container {
-    display: flex;
-    justify-content: space-around;
-}
-
-.contact-box,
-.contact-box {
-    width: 50%;
-    height: auto;
-    margin: 10px;
-    padding: 20px;
-    background: #409A9D;
-    border-radius: 20px;
-    opacity: 0.8;
+.contact-card span{
+    font-weight:700;
 }
 
 /* button for right box */
-.contact-btn,
-.contact-btn-link {
+.contact-btn {
     display: block;
     padding: 10px;
-    background-color: rgb(22, 108, 151);
+    background-color: var(--primary);
     text-align: center;
     border-radius: 10px;
-    margin: 2px;
+    margin: 4px auto;
     text-decoration: none;
     cursor: pointer;
 }
 
-/* link box for right box */
+/* link button for right box */
 .contact-link {
     display: block;
     padding: 10px;
-    background-color: rgb(22, 108, 151);
+    background-color: var(--primary);
     text-align: center;
     border-radius: 10px;
-    margin: auto;
+    margin: 4px auto;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.contact-btn:hover, 
+.contact-link:hover {
+    transform: translateY(-2px);
 }
 
 /* boxes for left box */
 .contact-email-box {
     display: block;
     padding: 10px;
-    background-color: rgb(22, 108, 151);
+    background-color: var(--primary);
     text-align: center;
     border-radius: 10px;
-    margin: 2px auto;
+    margin: 4px auto;
+    text-decoration: none;
+}
+
+.contact-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: -90px auto 60px;
+    display: flex;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+/* cards */
+.contact-card {
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    transition: transform 0.2s ease;
     text-decoration: none;
 }
