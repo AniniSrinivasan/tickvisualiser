@@ -332,6 +332,10 @@ a {
     grid-column: span 7;
 }
 
+.manage-table td:last-child {
+    min-width: 150px;
+}
+
 .manage-summary-card {
     grid-column: span 3;
 }
@@ -516,6 +520,12 @@ a {
     cursor: pointer;
 }
 
+.approve-button-in-list,
+.reject-button-in-list {
+    padding: 10px 14px;
+    white-space: nowrap;
+}
+
 /*  reject confirmation popup  */
 .popup-overlay {
     position: fixed;
@@ -568,12 +578,12 @@ a {
   }
   
   /* Confirm reject button */
-  .popup-actions .confirm-reject {
+  .popup-actions .confirm {
     background-color: #e07c7c;
     color: #fff;
   }
   
-  .popup-actions .confirm-reject:hover {
+  .popup-actions .confirm:hover {
     background-color: #cc5c5c;
     transform: scale(1.05);
   }

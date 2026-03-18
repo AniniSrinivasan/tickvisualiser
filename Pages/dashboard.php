@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../style/style.css">
     <!-- chart.js for plotting the trend graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../script/app.js"></script>
+    <script src="../script/script.js"></script>
 </head>
 
 <body class="dashboard-body" onload="loadNavbar()">
