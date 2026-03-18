@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../style/style.css">
     <!-- chart.js for plotting the trend graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../script/script.js"></script>
+    <script src="../script/script.js" defer></script>
 </head>
 
 <body class="dashboard-body" onload="loadNavbar()">
@@ -27,7 +27,7 @@
         <div class="dashboard-grid">
             <div class="top-row">
                 <!-- Add css -->
-                <div class="dashboard-card">
+                <!-- <div class="dashboard-card">
                     <h2>Typical Habitats</h2>
                 </div>
                 <div class="dashboard-card">
@@ -41,21 +41,19 @@
                 </div>
                 <div class="dashboard-card">
                     <h2>Tick removal guide</h2>
-                </div>
+                </div> -->
             </div>
             <div class="bottom-row">
                 <div class="dashboard-card">
                     <!-- Bar graph -->
                     <h2>Graph:</h2>
                     <canvas id="BarChart"></canvas>
-                    
                 </div>
-                <div class="dashboard-card">
-                    <!-- Line graph -->
+                <!-- <div class="dashboard-card">
                     <h2>Graph:</h2>
                     <canvas id="trendChart"></canvas>
                     
-                </div>
+                </div> -->
             </div>
         </div>
     </main>
