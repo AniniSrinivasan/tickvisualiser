@@ -18,23 +18,29 @@
             <h2>For general enquiries or dataset questions, get in touch with the platform team using the contact
                 details</h2>
         </div>
+
+        <div class="dashboard-grid manage-data-grid">
+            <div class="dashboard-card manage-upload-card">
+                <!-- <div class="contact-container"> -->
+                    <div class="contact-box">
+                        <p class="larger-font">For general enquiries contact:</p>
+                        <p class="contact-email-box">example1@email.com</p>
+                        <p class="contact-email-box">example2@email.com</p>
+                        <p class="contact-email-box">example3@email.com</p>
+                    </div>
+                <!-- </div> -->
+            </div>
+                <div class="dashboard-card manage-upload-card">
+                    <!-- <div class="contact-box"> -->
+                        <p class="larger-font">For more info about us: </p>
+                        <p>To learn more about us visit: </p>
+                        <a href="https://my.elanco.com/en_gb/about/about-elanco"
+                            class="contact-link">https://www.elanco.com/us</a>
+                        <a href="dashboard.php" class="contact-btn">Return to our dashboard</a>
+                        <a href="login.php" class="contact-btn">Login to your account</a>
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
     </section>
-
-    <div class="contact-container">
-        <div class="contact-box">
-            <p class="larger-font">For general enquiries contact:</p>
-            <p class="contact-email-box">example1@email.com</p>
-            <p class="contact-email-box">example2@email.com</p>
-            <p class="contact-email-box">example3@email.com</p>
-        </div>
-
-        <div class="contact-box">
-            <p class="larger-font">For more info about us: </p>
-            <p>To learn more about us visit: </p>
-            <a href="https://my.elanco.com/en_gb/about/about-elanco" class="contact-link">https://www.elanco.com/us</a>
-            <a href="dashboard.php" class="contact-btn">Return to our dashboard</a>
-            <a href="login.php" class="contact-btn">Login to your account</a>
-        </div>
-    </div>
-
 </body>
