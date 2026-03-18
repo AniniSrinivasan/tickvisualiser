@@ -7,27 +7,12 @@
     <title>Contact Us • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/style.css">
     <link rel="stylesheet" href="../style/contact.css">
+    <script src="../script/script.js"></script>
 </head>
 
-<body>
-
-    <!-- top navigation -->
-    <header class="top-nav">
-        <div class="nav-container">
+<body class="dashboard-body" onload="loadNavbar()">
+    <div id="navbar-container"></div> <!-- Navbar will be loaded here -->
             <div class="logo-title">Tick Visualiser</div>
-
-            <!-- default hidden on large screens, only appears on mobile screens -->
-            <button class="menu-toggle" aria-label="Toggle Menu">
-                ☰
-            </button>
-
-            <div class="top-menu">
-                <a href="dashboard.php">Home</a>
-                <a href="#">Browse Data</a>
-                <a href="#">Insights</a>
-                <a href="#">Upload</a>
-                <a href="contact.php">Contact</a>
-            </div>
         </div>
     </header>
 
