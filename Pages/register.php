@@ -56,7 +56,7 @@
                 <p class="helper"> Want to Login instead? <a class="link" href="register.php">Login</a></p>
             </form>
         </section>
-    </main>
+    </main><br />
 
     <script>
         // mobile toggle
