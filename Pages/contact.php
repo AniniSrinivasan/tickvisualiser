@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Contact Us • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/style.css">
-    <link rel="stylesheet" href="../style/contact.css">
-    <script src="../script/script.js"></script> 
+    <script src="../script/script.js"></script>
 </head>
 
 <body class="dashboard-body" onload="loadNavbar()">
@@ -22,14 +21,14 @@
     </section>
 
     <div class="contact-container">
-        <div class="contact-box-left">
+        <div class="contact-box">
             <p class="larger-font">For general enquiries contact:</p>
             <p class="contact-email-box">example1@email.com</p>
             <p class="contact-email-box">example2@email.com</p>
             <p class="contact-email-box">example3@email.com</p>
         </div>
 
-        <div class="contact-box-right">
+        <div class="contact-box">
             <p class="larger-font">For more info about us: </p>
             <p>To learn more about us visit: </p>
             <a href="https://my.elanco.com/en_gb/about/about-elanco" class="contact-link">https://www.elanco.com/us</a>
