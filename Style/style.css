@@ -58,6 +58,7 @@ a {
     color: #fff;
     font-weight: 600;
     opacity: 0.95;
+    text-decoration: none;
 }
 
 .top-menu a:hover {
@@ -538,9 +539,9 @@ a {
     align-items: center;
     justify-content: center;
     z-index: 2000;
-  }
-  
-  .popup-box {
+}
+
+.popup-box {
     background: #fff;
     border-radius: 12px;
     padding: 25px 30px;
@@ -548,42 +549,130 @@ a {
     max-width: 350px;
     text-align: center;
     border: 1px solid #ddd;
-  }
-  
-  .popup-box h3 {
+}
+
+.popup-box h3 {
     color: #2a5298;
     font-size: 1.2rem;
     margin-bottom: 10px;
-  }
-  
-  .popup-box p {
+}
+
+.popup-box p {
     color: #333;
     margin-bottom: 20px;
     font-size: 0.95rem;
-  }
-  
-  .popup-actions {
+}
+
+.popup-actions {
     display: flex;
     justify-content: center;
     gap: 15px;
-  }
-  
-  .popup-actions button {
+}
+
+.popup-actions button {
     padding: 8px 16px;
     border: none;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  /* Confirm reject button */
-  .popup-actions .confirm {
+}
+
+/* Confirm reject button */
+.popup-actions .confirm {
     background-color: #e07c7c;
     color: #fff;
-  }
-  
-  .popup-actions .confirm:hover {
+}
+
+.popup-actions .confirm:hover {
     background-color: #cc5c5c;
     transform: scale(1.05);
-  }
+}
+
+/* contact page */
+.content-container p{
+    font-size: larger;
+    font-weight: 600;
+}
+
+.contact-card p {
+    color: white;
+}
+
+.contact-card a {
+    color: white;
+}
+
+.larger-font {
+    font-size: larger;
+}
+
+.contact-card span{
+    font-weight:700;
+}
+
+/* button for right box */
+.contact-btn {
+    display: block;
+    padding: 10px;
+    background-color: var(--primary);
+    text-align: center;
+    border-radius: 10px;
+    margin: 4px auto;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* link button for right box */
+.contact-link {
+    display: block;
+    padding: 10px;
+    background-color: var(--primary);
+    text-align: center;
+    border-radius: 10px;
+    margin: 4px auto;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.contact-btn:hover, 
+.contact-link:hover {
+    transform: translateY(-2px);
+}
+
+/* boxes for left box */
+.contact-email-box {
+    display: block;
+    padding: 10px;
+    background-color: var(--primary);
+    text-align: center;
+    border-radius: 10px;
+    margin: 4px auto;
+    text-decoration: none;
+}
+
+.contact-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: -90px auto 60px;
+    display: flex;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+/* cards */
+.contact-card {
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    transition: transform 0.2s ease;
+    text-decoration: none;
+}

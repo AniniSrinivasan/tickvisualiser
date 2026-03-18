@@ -13,7 +13,7 @@
   
   html,body{
     height:100vh;
-    overflow:hidden;
+    overflow:auto;
     font-family: system-ui,-apple-system,sans-serif;
     background:var(--light-bg);
   }
@@ -64,8 +64,8 @@
   }
 
   .auth-wrap-two{
-    height:40vh;
-  
+    /* height:50vh;
+   */
     display:flex;
     align-items:flex-start;
     justify-content:center;
