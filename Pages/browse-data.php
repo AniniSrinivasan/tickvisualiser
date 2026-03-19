@@ -100,11 +100,11 @@
                         <?php if (!empty($csvRows)): ?>
                             <?php foreach ($csvRows as $row): ?>
                                 <tr>
-                                    <td><?php echo escape($row['id']); ?></td>
-                                    <td><?php echo escape($row['date']); ?></td>
-                                    <td><?php echo escape($row['location']); ?></td>
-                                    <td><?php echo escape($row['species']); ?></td>
-                                    <td><?php echo escape($row['latinName']); ?></td>
+                                <td><?php echo escape($row['ID'] ?? ''); ?></td>
+                                <td><?php echo escape($row['DATE_TIME'] ?? ''); ?></td>
+                                <td><?php echo escape($row['LOCATION'] ?? ''); ?></td>
+                                <td><?php echo escape($row['SPECIES'] ?? ''); ?></td>
+                                <td><?php echo escape($row['LATINNAME'] ?? ''); ?></td>
                                     <td>
                                         <form>
                                             <input type="submit" class="approve-button-in-list" name="approve" value="Edit">

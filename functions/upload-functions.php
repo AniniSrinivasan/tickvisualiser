@@ -1,5 +1,6 @@
 <?php
 
+require_once('../functions/db_connect.php');
 // reference: https://www.tutorialspoint.com/php/php_read_file.htm
 date_default_timezone_set('Europe/London');
 
@@ -17,8 +18,7 @@ function escape($value): string
 }
 
 // checks directory exists and is writable
-function ensureUploadDirectory(string $directory): bool
-{
+function ensureUploadDirectory(string $directory): bool {
     // echo $directory;
     if (is_dir($directory)) {
         return is_writable($directory);
@@ -28,8 +28,7 @@ function ensureUploadDirectory(string $directory): bool
 }
 
 //reads csv, extracts the header and converts the other rows to assoc array
-function parseCsvFile(string $filePath): array
-{
+function parseCsvFile(string $filePath, $conn): array {
     $rows = [];
 
     if (!is_readable($filePath)) {
@@ -51,31 +50,110 @@ function parseCsvFile(string $filePath): array
 
     $header = array_map(static fn($item) => trim((string) $item), $header);
 
-    while (($data = fgetcsv($handle)) !== false) {
-        if (count(array_filter($data, fn($value) => trim((string) $value) !== '')) === 0) {
-            continue;
-        }
+    
+    $batchSize = 20;
 
-        $rowAssoc = [];
-        foreach ($header as $index => $columnName) {
-            $rowAssoc[$columnName] = $data[$index] ?? '';
-        }
-
+    // while (($data = fgetcsv($handle)) !== false) {
+    //     if (count(array_filter($data, fn($value) => trim((string)$value) !== '')) === 0) {
+    //         continue;
+    //     }
+    
+    //     $rowAssoc = [];
+    //     foreach ($header as $index => $columnName) {
+    //         $rowAssoc[$columnName] = $data[$index] ?? '';
+    //     }
+    
+    //     $rows[] = [
+    //         'ID' => $rowAssoc['ID'] ?? '',
+    //         'DATE_TIME' => $rowAssoc['DATE_TIME'] ?? '',
+    //         'LOCATION' => $rowAssoc['LOCATION'] ?? '',
+    //         'SPECIES' => $rowAssoc['SPECIES'] ?? '',
+    //         'LATINNAME' => $rowAssoc['LATINNAME'] ?? '',
+    //     ];
+    
+    //     if (count($rows) === $batchSize) {
+    //         batchInsertToMySQL($conn, $rows);
+    //         $rows = [];
+    //     }
+    // }
+    
+    // // Insert remaining records
+    // if (!empty($rows)) {
+    //     batchInsertToMySQL($conn, $rows);
+    // }
+    
+    fclose($handle);
+    
+    // Fetch all records back from database
+    $result = $conn->query("SELECT ID, DATE_TIME, LOCATION, SPECIES, LATINNAME FROM Tick_Sightings");
+    
+    if (!$result) {
+        die("Fetch failed: " . $conn->error);
+    }
+    
+    $rows = [];
+    
+    while ($row = $result->fetch_assoc()) {
         $rows[] = [
-            'id' => $rowAssoc['id'] ?? '',
-            'date' => $rowAssoc['date'] ?? '',
-            'location' => $rowAssoc['location'] ?? '',
-            'species' => $rowAssoc['species'] ?? '',
-            'latinName' => $rowAssoc['latinName'] ?? '',
+            'ID' => $row['ID'] ?? '',
+            'DATE_TIME' => $row['DATE_TIME'] ?? '',
+            'LOCATION' => $row['LOCATION'] ?? '',
+            'SPECIES' => $row['SPECIES'] ?? '',
+            'LATINNAME' => $row['LATINNAME'] ?? '',
         ];
     }
-
-    fclose($handle);
-
+    
     return [
         'rows' => $rows
     ];
+    
+
+
+
 }
+
+
+   function batchInsertToMySQL($conn, $rows)
+{
+    if (empty($rows)) {
+        return;
+    }
+
+    $placeholders = [];
+    $values = [];
+    $types = "";
+
+    foreach ($rows as $row) {
+        $placeholders[] = "(?, ?, ?, ?, ?)";
+        $values[] = $row['ID'];
+        $values[] = $row['DATE_TIME'];
+        $values[] = $row['LOCATION'];
+        $values[] = $row['SPECIES'];
+        $values[] = $row['LATINNAME'];
+        $types .= "sssss";
+    }
+
+    $sql = "INSERT INTO Tick_Sightings (ID, DATE_TIME, LOCATION, SPECIES, LATINNAME)
+            VALUES " . implode(", ", $placeholders);
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
+
+    $stmt->bind_param($types, ...$values);
+
+    if (!$stmt->execute()) {
+        die("Execute failed: " . $stmt->error);
+    }
+
+    $stmt->close();
+}
+
+
+   
+
 
 function getStoredFiles(string $directory): array
 {
@@ -104,7 +182,7 @@ if (isset($_GET['uploaded-file-select']) && $_GET['uploaded-file-select'] !== ''
     $selectedPath = $uploadDirectory . DIRECTORY_SEPARATOR . $selectedFile;
 
     if (is_file($selectedPath) && preg_match('/\.csv$/i', $selectedFile)) {
-        $parsedData = parseCsvFile($selectedPath);
+        $parsedData = parseCsvFile($selectedPath, $conn);
         $csvRows = $parsedData['rows'];
     }
 }
@@ -146,7 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_files'])) {
                     // 'uploaded_at' => date('Y-m-d H:i:s'),
                 ];
 
-                $parsedData = parseCsvFile($destinationPath);
+                $parsedData = parseCsvFile($destinationPath, $conn);
                 $csvRows = $parsedData['rows'];
 
                 $uploadSuccessMessage = '1 file uploaded successfully.';
