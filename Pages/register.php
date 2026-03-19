@@ -9,6 +9,36 @@
     <link rel="stylesheet" href="../style/login.css">
 </head>
 
+<?php
+
+include_once('../functions/db_connect.php');
+
+function addUser($user_email, $user_password, $f_name, $l_name, $role_id)
+{
+    $created=false;
+
+    $stmt=$conn->prepare("INSERT INTO users(user_email, user_password, f_name, l_name, role_id)
+    VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param('ssssi', $user_email, $user_password, $f_name, $l_name, $role_id);
+
+    $user_email = $_POST['user_email'];
+    $user_password = $_POST['user_password'];
+    $f_name = $_POST['f_name'];
+    $l_name = $_POST['l_name'];
+    $role_id = $_POST['role_id'];
+    $stmt->execute();
+
+    if ($stmt){
+        $created=true;
+    }
+    $stmt->close();
+    $conn->close();
+}
+
+if (isset($_POST[]))
+
+?>
+
 <body>
     <section class="banner-section">
         <div class="content-container">

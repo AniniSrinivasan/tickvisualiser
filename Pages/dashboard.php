@@ -41,12 +41,14 @@
             <!-- summary -->
             <div class="right">
                 <div class="dashboard-card summary-card">
+                    <a href="total-sightings.php">
                     <div class="card-header">
                         <h2>Total Sightings</h2>
                         <span class="year-badge">2026</span>
                     </div>
                     <p class="metric-value">12,540</p>
                     <p class="card-subtext">Cleaned & validated dataset</p>
+                    </a>
                 </div>
                 <br />
                 <!-- trend - graph view -->
