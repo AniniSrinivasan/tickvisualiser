@@ -18,7 +18,7 @@
             <h1>Manage User</h1>
             <p> Manage all registered accounts</p>
             <form class="search-form">
-                <input type="search" placeholder="Search by ID, Name or Email...">
+                <input type="search" placeholder="Search by ID, Name or Email..." onkeyup="searchBrowswData(this)">
                 <button type="submit" class="btn-primary">Search</button>
             </form>
         </div>
