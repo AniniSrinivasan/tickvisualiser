@@ -39,6 +39,9 @@
                 </div>
                 <div class="dashboard-card">
                     <h2>Commonly found ticks</h2><br>
+                    <p>-</p>
+                    <p>-</p>
+                    <p>-</p>
                 </div>
                 <div class="dashboard-card">
                     <h2>Prevention habits</h2><br>
