@@ -3,7 +3,6 @@ require_once('../functions/db_connect.php');
 
 //SQL
 $query = "SELECT * FROM species";
-// $query = "SELECT s.species_id,s.species_name,";
 $result = $conn->query($query);
 $data = [];
 if ($result) {
