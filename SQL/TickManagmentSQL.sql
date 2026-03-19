@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS roles (
 
 CREATE TABLE IF NOT EXISTS users ( 
     user_email VARCHAR(100) PRIMARY KEY,
-    password VARCHAR(20) NOT NULL,
+    user_password VARCHAR(20) NOT NULL,
     f_name VARCHAR(40) NOT NULL,
     l_name VARCHAR(40) NOT NULL,
     role_id INTEGER NOT NULL,
@@ -49,6 +49,6 @@ CREATE TABLE IF NOT EXISTS imported_data (
     id VARCHAR(255) PRIMARY KEY,
     species VARCHAR(40),
     latin_name VARCHAR(40),
-    location VARCHAR(40),
+    city VARCHAR(40),
     date_time VARCHAR(40)
 );
