@@ -171,6 +171,39 @@ a {
     font-weight: 800;
 }
 
+/* Insights page */
+.insight-grid {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+}
+.insight-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 15px;
+    transition: transform 0.2s ease;
+}
+
+.top-row {
+  display: flex;
+  gap: 15px;
+}
+.top-row .dashboard-card {
+  flex: 1 1 0;
+  max-width: 18%; /* roughly 1/5th width*/
+}
+
+.bottom-row {
+  display: flex;
+  gap: 20px;
+}
+.bottom-row .dashboard-card {
+  flex: 1 1 0;
+  max-width: 47%; 
+  min-height: 350px; /* make them taller */
+}
+
 /* map */
 .map-container {
     height: 90%;

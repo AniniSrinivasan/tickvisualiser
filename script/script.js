@@ -50,39 +50,43 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     },
   })
-  const Bar = document.getElementById("BarChart");
-  fetch('../functions/chart-functions.php')
-  .then((data) => {
-  createchart(data)
-  })
 })
-function createchart(chartdata){
-    new Chart(Bar,{
-      type:"bar",
-      data: {
-        labels: chartdata.map($row => row.speciesName),
-        datasets: [
-          {
-            label: "Sightings",
-            data: chartdata.map($row => row.speciesID),
-            tension: 0.4, // makes the line curved
-            fill: true,
-            borderColor: "#2c7da0",
-            backgroundColor: "rgba(44,125,160,0.2)",
-          },
-        ]
+//Bar chart 
+document.addEventListener("DOMContentLoaded", () => {
+  const barCanvas = document.getElementById("BarChart");
+  if (!barCanvas) return;
+
+  fetch('../functions/chart-functions.php')
+    .then(response => response.json())
+    .then(data => createChart(barCanvas, data))
+    .catch(err => console.error('Error fetching chart data:', err));
+});
+
+function createChart(canvas, chartData) {
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: chartData.map(row => row.species_name),
+      datasets: [{
+        label: 'Sightings',
+        data: chartData.map(row => row.species_id),
+        backgroundColor: 'rgba(44,125,160,0.6)',
+        borderColor: '#2c7da0',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: 'Tick Sightings by Species' }
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-        },
-        scales: {
-          y: { beginAtZero: true },
-        },
-      },
-    })
-  }
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
 
 
 // drag and drop upload

@@ -24,24 +24,36 @@
 
     <!-- main dashboard -->
     <main class="dashboard-container" role="main">
-        <div class="dashboard-grid">
+        <div class="insight-grid">
             <div class="top-row">
                 <!-- Add css -->
-                <!-- <div class="dashboard-card">
-                    <h2>Typical Habitats</h2>
+                <div class="dashboard-card">
+                    <h2>Typical Habitats</h2><br>
+                    <p>Ticks in the UK are most commonly found in damp, shady areas with tall or dense vegetation.</p>
+                    <p>They are common in urban parks, gardens, and along shaded walking paths.</p>
                 </div>
                 <div class="dashboard-card">
-                    <h2>Seasonal Activity</h2>
+                    <h2>Seasonal Activity</h2><br>
+                    <p>Most active from April to October, peaking between April and July, as they thrive in warm, humid conditions.</p>
+                    <p>Activity reduces in winter but they can appear if temperatures are above freezing.</p>
                 </div>
                 <div class="dashboard-card">
-                    <h2>Commonly found ticks</h2>
+                    <h2>Commonly found ticks</h2><br>
                 </div>
                 <div class="dashboard-card">
-                    <h2>Prevention habits</h2>
+                    <h2>Prevention habits</h2><br>
+                    <p>-Keep to footpaths and avoid walking through dense vegetation.</p>
+                    <p>-Cover your skin and tuck your trousers into your socks.</p>
+                    <p>-Wearing light coloured clothing will make ticks easier to spot and brush off.</P>
+                    <p>-Using insect repellent containing DEET can reduce the chances of getting bitten.</p>
+                    </p>
                 </div>
                 <div class="dashboard-card">
-                    <h2>Tick removal guide</h2>
-                </div> -->
+                    <h2>Tick removal guide</h2><br>
+                    <p>-Use fine-tipped tweezers or special tick removers; both are available in most pharmacies.</p>
+                    <p>-Grasp the tick as close to the skin as possible and slowly pull upwards. Avoid crushing or squeezing the tick.</p>
+                    <p>-Clean the bite with antiseptic or soap and water.</p>
+                </div>
             </div>
             <div class="bottom-row">
                 <div class="dashboard-card">
@@ -49,11 +61,12 @@
                     <h2>Graph:</h2>
                     <canvas id="BarChart"></canvas>
                 </div>
-                <!-- <div class="dashboard-card">
+                <div class="dashboard-card">
+                    <!-- Line graph -->
                     <h2>Graph:</h2>
                     <canvas id="trendChart"></canvas>
                     
-                </div> -->
+                </div>
             </div>
         </div>
     </main>
