@@ -17,12 +17,16 @@
         <div class="content-container">
             <h1>Manage User</h1>
             <p> Manage all registered accounts</p>
+            <form class="search-form">
+                <input type="search" placeholder="Search by ID, Name or Email...">
+                <button type="submit" class="btn-primary">Search</button>
+            </form>
         </div>
     </section>
 
     <div class="dashboard-card">
         <div class="card-header">
-            <h2>Manage User</h2>
+            <h2>Browse Users</h2> <input type="button" class="btn-primary" name="Create" value="Create User">
         </div>
         <div class="manage-table-wrapper">
             <table class="manage-table">
@@ -40,9 +44,23 @@
                     <tr>
                         <td>1</td>
                         <td>Anini Srinivasan</td>
-                        <td>anini.srinivasan@example.com</td>
+                        <td>anini@example.com</td>
                         <td>Sheffield</td>
                         <td>Admin</td>
+                        <td>
+                            <form>
+                                <input type="submit" class="approve-button-in-list" name="Edit" value="Edit">
+                                <input type="button" class="reject-button-in-list reject-btn" name="delete"
+                                    value="Delete">
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Rachel Kirtland</td>
+                        <td>rachel@example.com</td>
+                        <td>Sheffield</td>
+                        <td>User</td>
                         <td>
                             <form>
                                 <input type="submit" class="approve-button-in-list" name="Edit" value="Edit">
@@ -56,4 +74,5 @@
         </div>
     </div>
 </body>
+
 </html>
