@@ -23,50 +23,49 @@
     <!-- approve data -->
     <main class="dashboard-container" role="main">
 
-            <!-- approve data -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h2>Approve Data</h2>
-                </div>
-                <div class="manage-table-wrapper">
-                    <table class="manage-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>File Name</th>
-                                <th>Uploaded By</th>
-                                <th>Uploaded On</th>
-                                <th>Review</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>tick_info_jan2026</td>
-                                <td>James Thomson</td>
-                                <td>10/02/2026</td>
-                                <td>
-                                    <form>
-                                        <input type="submit" class="pending-button-in-list" name="pending"
-                                            value="Pending Review">
-                                        <input type="submit" class="complete-button-in-list" name="pending"
-                                            value="Review Complete">
-                                    </form>
-                                </td>
-                                <td>
-                                    <form>
-                                        <input type="submit" class="approve-button-in-list" name="approve"
-                                            value="Approve">
-                                        <input type="button" class="reject-button-in-list reject-btn" name="reject"
-                                            value="Reject">
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <!-- approve data -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2>Approve Data</h2>
             </div>
+            <div class="manage-table-wrapper">
+                <table class="manage-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>File Name</th>
+                            <th>Uploaded By</th>
+                            <th>Uploaded On</th>
+                            <th>Review</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>tick_info_jan2026</td>
+                            <td>James Thomson</td>
+                            <td>10/02/2026</td>
+                            <td>
+                                <form>
+                                    <input type="submit" class="pending-button-in-list" name="pending"
+                                        value="Pending Review">
+                                    <input type="submit" class="complete-button-in-list" name="pending"
+                                        value="Review Complete">
+                                </form>
+                            </td>
+                            <td>
+                                <form>
+                                    <input type="submit" class="approve-button-in-list" name="approve" value="Approve">
+                                    <input type="button" class="reject-button-in-list reject-btn" name="reject"
+                                        value="Reject">
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
         <!-- reject confirmation popup -->
         <div id="popup-confirmation" class="popup-overlay" style="display: none;">

@@ -56,10 +56,12 @@
                         onchange="this.form.submit()">
                         <option value="">Select a file to view</option>
                         <?php foreach ($storedFiles as $file): ?>
-                            <option value="<?php echo escape($file['stored_name']); ?>"
-                                <?php echo (isset($_GET['uploaded-file-select']) && $_GET['uploaded-file-select'] === $file['stored_name']) ? 'selected' : ''; ?>>
-                                <?php echo escape(getOriginalFileName($file['display_name']) . ' — uploaded ' . $file['uploaded_at']); ?>
-                            </option>
+                            <option value="<?php echo escape($file['upload_id']); ?>"
+                                <?php echo (isset($_GET['uploaded-file-select']) && (int) $_GET['uploaded-file-select'] === (int) $file['upload_id']) ? 'selected' : ''; ?>>
+                                <?php echo escape($file['upload_id']); ?> . 
+                                <?php echo escape(getOriginalFileName($file['display_name'])); ?> - uploaded 
+                                <?php echo escape($file['uploaded_at']); ?>
+                         </option>
                         <?php endforeach; ?>
                     </select>
                 </form>
@@ -97,29 +99,60 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (!empty($csvRows)): ?>
-                            <?php foreach ($csvRows as $row): ?>
-                                <tr>
-                                <td><?php echo escape($row['ID'] ?? ''); ?></td>
-                                <td><?php echo escape($row['DATE_TIME'] ?? ''); ?></td>
-                                <td><?php echo escape($row['LOCATION'] ?? ''); ?></td>
-                                <td><?php echo escape($row['SPECIES'] ?? ''); ?></td>
-                                <td><?php echo escape($row['LATINNAME'] ?? ''); ?></td>
-                                    <td>
-                                        <form>
-                                            <input type="submit" class="approve-button-in-list" name="approve" value="Edit">
-                                            <input type="button" class="reject-button-in-list reject-btn" name="reject"
-                                                value="Delete">
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="6">Upload a CSV file to view it.</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
+    <?php if (!empty($csvRows)): ?>
+        <?php foreach ($csvRows as $row): ?>
+            <?php $isEditing = ($editingRowId !== null && (string) $editingRowId === (string) ($row['ID'] ?? '')); ?>
+
+            <?php if ($isEditing): ?>
+                <tr>
+                    <td>
+                        <form method="post">
+                            <?php echo escape($row['ID'] ?? ''); ?>
+                            <input type="hidden" name="row-id" value="<?php echo escape($row['ID'] ?? ''); ?>">
+                            <input type="hidden" name="uploaded-file-select" value="<?php echo escape($selectedUploadId); ?>">
+                    </td>
+                    <td>
+                            <input type="text" name="date_time" value="<?php echo escape($row['DATE_TIME'] ?? ''); ?>" class="manage-toolbar-input">
+                    </td>
+                    <td>
+                            <input type="text" name="location" value="<?php echo escape($row['LOCATION'] ?? ''); ?>" class="manage-toolbar-input">
+                    </td>
+                    <td>
+                            <input type="text" name="species" value="<?php echo escape($row['SPECIES'] ?? ''); ?>" class="manage-toolbar-input">
+                    </td>
+                    <td>
+                            <input type="text" name="latin_name" value="<?php echo escape($row['LATINNAME'] ?? ''); ?>" class="manage-toolbar-input">
+                    </td>
+                    <td>
+                            <input type="submit" class="approve-button-in-list" name="save-row" value="Save">
+                            <input type="submit" class="reject-button-in-list" name="cancel-row" value="Cancel">
+                        </form>
+                    </td>
+                </tr>
+            <?php else: ?>
+                <tr>
+                    <td><?php echo escape($row['ID'] ?? ''); ?></td>
+                    <td><?php echo escape($row['DATE_TIME'] ?? ''); ?></td>
+                    <td><?php echo escape($row['LOCATION'] ?? ''); ?></td>
+                    <td><?php echo escape($row['SPECIES'] ?? ''); ?></td>
+                    <td><?php echo escape($row['LATINNAME'] ?? ''); ?></td>
+                    <td>
+                    <form method="post">
+                        <input type="hidden" name="row-id" value="<?php echo escape($row['ID'] ?? ''); ?>">
+                        <input type="hidden" name="uploaded-file-select" value="<?php echo escape($selectedUploadId); ?>">
+                        <input type="submit" class="approve-button-in-list" name="edit-row" value="Edit">
+                        <input type="button" class="reject-button-in-list" name="reject" value="Delete">
+                    </form>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <tr>
+            <td colspan="6">Upload a CSV file to view it.</td>
+        </tr>
+    <?php endif; ?>
+</tbody>
                 </table>
             </div>
         </div>
