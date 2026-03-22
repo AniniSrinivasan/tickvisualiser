@@ -84,12 +84,14 @@ function createChart(canvas, chartData) {
       },
       scales: {
         x: {
+          title: { display: true, text: 'Species' },
           ticks: {
             maxRotation: 45,
             minRotation: 30
           }
           },
         y: {
+          title: { display: true, text: 'Number of Sightings' },
           beginAtZero: true,
           ticks: {
             precision: 0 // ensures whole numbers
