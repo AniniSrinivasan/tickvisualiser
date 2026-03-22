@@ -73,7 +73,6 @@
         <div class="dashboard-card manage-table-card">
             <div class="card-header">
                 <h2>Browse Data</h2>
-                <span class="year-badge">Live View</span>
             </div>
 
             <form class="manage-toolbar">
@@ -83,7 +82,6 @@
                     <input type="checkbox" id="show-inaccurate-only" name="show-inaccurate-only">
                     Show only inaccurate data
                 </label>
-                <input type="button" class="btn-primary" value="Submit">
             </form>
 
             <div class="manage-table-wrapper">
