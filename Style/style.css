@@ -202,6 +202,7 @@ a {
   flex: 1 1 0;
   max-width: 47%; 
   min-height: 350px; /* make them taller */
+  max-height: fit-content;
 }
 
 /* map */

@@ -39,9 +39,20 @@
                 </div>
                 <div class="dashboard-card">
                     <h2>Commonly found ticks</h2><br>
-                    <p>-</p>
-                    <p>-</p>
-                    <p>-</p>
+                    <?php
+                    require_once('../functions/db_connect.php');
+                    $result = mysqli_query($conn, "
+                        SELECT s.species_name, COUNT(si.sighting_id) AS sighting_count
+                        FROM species s
+                        LEFT JOIN sighting si ON s.species_id = si.species_id
+                        GROUP BY s.species_id
+                        ORDER BY sighting_count DESC
+                        LIMIT 5
+                    ");// Get top 5 most sighted species
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<p>- " . $row['species_name'] . "</p>";
+                    }
+                    ?>
                 </div>
                 <div class="dashboard-card">
                     <h2>Prevention habits</h2><br>

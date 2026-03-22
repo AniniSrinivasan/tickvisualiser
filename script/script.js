@@ -66,10 +66,11 @@ function createChart(canvas, chartData) {
   new Chart(canvas, {
     type: 'bar',
     data: {
+      // labels: chartData.map(row => `${row.species_name} (${row.species_latin_name})`),
       labels: chartData.map(row => row.species_name),
       datasets: [{
         label: 'Sightings',
-        data: chartData.map(row => row.species_id),
+        data: chartData.map(row => row.sighting_count),
         backgroundColor: 'rgba(44,125,160,0.6)',
         borderColor: '#2c7da0',
         borderWidth: 1
@@ -82,7 +83,18 @@ function createChart(canvas, chartData) {
         title: { display: true, text: 'Tick Sightings by Species' }
       },
       scales: {
-        y: { beginAtZero: true }
+        x: {
+          ticks: {
+            maxRotation: 45,
+            minRotation: 30
+          }
+          },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0 // ensures whole numbers
+          }
+        }
       }
     }
   });
