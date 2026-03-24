@@ -44,3 +44,52 @@ WHERE NOT EXISTS (
 -- SELECT ALL WHERE date_time IS NOT VALID
 SELECT * FROM imported_data
 WHERE STR_TO_DATE(date_time, '%Y-%m-%dT%H:%i:%s') IS NULL;
+
+-- to check the specific field which is edited 
+SELECT *
+FROM tick_sightings
+WHERE upload_id = 17
+AND ID="02WNholuSg6ndCk4c1dA"
+ORDER BY row_num;
+
+-- to check view the specific uplaoded data
+SELECT *
+FROM tick_sightings
+WHERE upload_id = 3
+ORDER BY row_num;
+
+ALTER TABLE role change roleID role_id INTEGER;
+ALTER TABLE role change roleName role_name VARCHAR(40);
+
+TRUNCATE TABLE tick_sightings;
+
+-- to make the upload_id start from 1
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE upload;
+SET FOREIGN_KEY_CHECKS = 1;
+
+select * from role;
+select * from tick_sightings;
+select * from sighting;
+select * from species;
+select * from login;
+
+-- for dropping the tables
+SET FOREIGN_KEY_CHECKS = 0;
+drop table if exists user;
+drop table if exists login;
+drop table if exists location;
+drop table if exists sighting;
+drop table if exists species;
+drop table if exists upload;
+drop table if exists Tick_Sightings;
+SET FOREIGN_KEY_CHECKS = 1;
+
+select upload_name from upload;
+
+-- shows the names of the existing tables
+SHOW TABLES;
+
+-- gives the create statement of the table
+SHOW CREATE TABLE tick_sightings;
+SHOW CREATE TABLE upload;
