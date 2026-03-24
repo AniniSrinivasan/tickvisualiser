@@ -41,6 +41,7 @@
                     <h2>Commonly found ticks</h2><br>
                     <?php
                     require_once('../functions/db_connect.php');
+                    require_once('../functions/error.php');
                     $result = mysqli_query($conn, "
                         SELECT s.species_name, COUNT(si.sighting_id) AS sighting_count
                         FROM species s
