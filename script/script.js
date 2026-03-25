@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   })
 })
+
 //Bar chart 
 document.addEventListener("DOMContentLoaded", () => {
   const barCanvas = document.getElementById("BarChart");
@@ -58,19 +59,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fetch('../functions/chart-functions.php')
     .then(response => response.json())
-    .then(data => createChart(barCanvas, data))
+    .then(data => {
+      const Xdata = data.map(row => row.species_name);
+      const Ydata = data.map(row => row.sighting_count);
+      const type = 'bar';
+      const Xlabel = 'Species';
+      const Ylabel = 'Sightings';
+      const title = 'Tick Sightings by Species';
+      createChart(barCanvas, data, Xdata, Ydata, Xlabel, Ylabel, title, type);
+    })
     .catch(err => console.error('Error fetching chart data:', err));
 });
 
-function createChart(canvas, chartData) {
+//Monthly Trend chart 
+document.addEventListener("DOMContentLoaded", () => {
+  const monthlyTrendCanvas = document.getElementById("MonthlyTrendChart");
+  if (!monthlyTrendCanvas) return;
+
+  fetch('../functions/monthly-trend-function.php')
+    .then(response => response.json())
+    .then(data => {
+      const Xdata = data.map(row => row.month);
+      const Ydata = data.map(row => row.sighting_count);
+      const type = 'line';
+      const Xlabel = 'Months';
+      const Ylabel = 'Monthly Sightings';
+      const title = 'Monthly Tick Sightings';
+      createChart(monthlyTrendCanvas, data, Xdata, Ydata, Xlabel, Ylabel, title, type);
+    })
+    .catch(err => console.error('Error fetching chart data:', err));
+});
+
+function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, type) {
   new Chart(canvas, {
-    type: 'bar',
+    type: type || 'line', // default to line if type not provided
     data: {
-      // labels: chartData.map(row => `${row.species_name} (${row.species_latin_name})`),
-      labels: chartData.map(row => row.species_name),
+      labels: Xdata,
       datasets: [{
-        label: 'Sightings',
-        data: chartData.map(row => row.sighting_count),
+        data: Ydata,
         backgroundColor: 'rgba(44,125,160,0.6)',
         borderColor: '#2c7da0',
         borderWidth: 1
@@ -80,18 +106,18 @@ function createChart(canvas, chartData) {
       responsive: true,
       plugins: {
         legend: { display: false },
-        title: { display: true, text: 'Tick Sightings by Species' }
+        title: { display: true, text: title }
       },
       scales: {
         x: {
-          title: { display: true, text: 'Species' },
+          title: { display: true, text: Xlabel },
           ticks: {
             maxRotation: 45,
             minRotation: 30
           }
           },
         y: {
-          title: { display: true, text: 'Number of Sightings' },
+          title: { display: true, text: Ylabel },
           beginAtZero: true,
           ticks: {
             precision: 0 // ensures whole numbers

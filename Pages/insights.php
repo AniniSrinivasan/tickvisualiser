@@ -79,8 +79,7 @@
                 <div class="dashboard-card">
                     <!-- Line graph -->
                     <h2>Graph:</h2>
-                    <canvas id="trendChart"></canvas>
-                    
+                    <canvas id="MonthlyTrendChart"></canvas>
                 </div>
             </div>
         </div>

@@ -2,10 +2,10 @@
 require_once('../functions/db_connect.php');
 
 //SQL
-$query = "SELECT s.species_name,s.species_latin_name, COUNT(si.sighting_id) AS sighting_count
-FROM species s
-LEFT JOIN sighting si ON s.species_id = si.species_id
-GROUP BY s.species_id,s.species_latin_name";
+//STR_TO_DATE(si.date_time, '%Y-%m-%dT%H:%i:%s')
+$query = 'SELECT MONTH(si.date_time) AS month, COUNT(si.sighting_id) AS sighting_count
+FROM sighting si
+GROUP BY month';
 $result = $conn->query($query);
 $data = [];
 if ($result) {
