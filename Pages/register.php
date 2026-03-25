@@ -10,6 +10,7 @@
 </head>
 
 <?php
+require_once '../functions/error.php'; 
 
 function addUser($user_email, $user_password, $f_name, $l_name, $role_id)
 {
@@ -18,7 +19,8 @@ function addUser($user_email, $user_password, $f_name, $l_name, $role_id)
     $stmt=$conn->prepare("INSERT INTO users(user_email, user_password, f_name, l_name, role_id)
     VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param('ssssi', $user_email, $user_password, $f_name, $l_name, $role_id);
-
+    // echo $user_password;
+    echo $_POST["user_password"];
     $success=$stmt->execute();
 
     $stmt->close();
