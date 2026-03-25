@@ -93,3 +93,10 @@ SHOW TABLES;
 -- gives the create statement of the table
 SHOW CREATE TABLE tick_sightings;
 SHOW CREATE TABLE upload;
+
+-- inserting into roles table
+INSERT INTO 
+roles(role_name) 
+VALUES 
+("user"),
+("admin");
