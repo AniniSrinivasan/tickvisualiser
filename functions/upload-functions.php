@@ -32,9 +32,10 @@ function getStoredFiles(mysqli $conn): array
 {
     $items = [];
 
-    $sql = "SELECT UPLOADID, UPLOADNAME, UPLOADDATE
-            FROM UPLOAD
-            ORDER BY UPLOADDATE DESC, UPLOADID DESC";
+    $sql = "SELECT upload_id, upload_name, upload_date
+            FROM upload
+            ORDER BY upload_date DESC, upload_id DESC
+            LIMIT 10";
 
     $result = $conn->query($sql);
 
@@ -44,10 +45,10 @@ function getStoredFiles(mysqli $conn): array
 
     while ($row = $result->fetch_assoc()) {
         $items[] = [
-            'upload_id' => (int) $row['UPLOADID'],
-            'stored_name' => $row['UPLOADNAME'],
-            'display_name' => $row['UPLOADNAME'],
-            'uploaded_at' => $row['UPLOADDATE'],
+            'upload_id' => (int) $row['upload_id'],
+            'stored_name' => $row['upload_name'],
+            'display_name' => $row['upload_name'],
+            'uploaded_at' => $row['upload_date'],
         ];
     }
 
@@ -58,10 +59,10 @@ function getRowsByUploadId(mysqli $conn, int $uploadId): array
 {
     $rows = [];
 
-    $sql = "SELECT ID, DATE_TIME, LOCATION, SPECIES, LATINNAME
-            FROM Tick_Sightings
-            WHERE UPLOADID = ?
-            ORDER BY TICKID";
+    $sql = "SELECT id, date_time, city, species, latin_name
+            FROM tick_sightings
+            WHERE upload_id = ?
+            ORDER BY row_num";
 
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
@@ -74,11 +75,11 @@ function getRowsByUploadId(mysqli $conn, int $uploadId): array
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
         $rows[] = [
-            'ID' => $row['ID'] ?? '',
-            'DATE_TIME' => $row['DATE_TIME'] ?? '',
-            'LOCATION' => $row['LOCATION'] ?? '',
-            'SPECIES' => $row['SPECIES'] ?? '',
-            'LATINNAME' => $row['LATINNAME'] ?? '',
+            'id' => $row['id'] ?? '',
+            'date_time' => $row['date_time'] ?? '',
+            'city' => $row['city'] ?? '',
+            'species' => $row['species'] ?? '',
+            'latin_name' => $row['latin_name'] ?? '',
         ];
     }
 
@@ -96,9 +97,9 @@ function updateTickSighting(
     string $species,
     string $latinName
 ): bool {
-    $sql = "UPDATE Tick_Sightings
-            SET DATE_TIME = ?, LOCATION = ?, SPECIES = ?, LATINNAME = ?
-            WHERE UPLOADID = ? AND ID = ?
+    $sql = "UPDATE tick_sightings
+            SET date_time = ?, city = ?, species = ?, latin_name = ?
+            WHERE upload_id = ? AND id = ?
             LIMIT 1";
 
     $stmt = $conn->prepare($sql);
@@ -115,8 +116,8 @@ function updateTickSighting(
 
 function deleteTickSighting(mysqli $conn, int $uploadId, string $rowId): bool
 {
-    $sql = "DELETE FROM Tick_Sightings
-            WHERE UPLOADID = ? AND ID = ?
+    $sql = "DELETE FROM tick_sightings
+            WHERE upload_id = ? AND id = ?
             LIMIT 1";
 
     $stmt = $conn->prepare($sql);
@@ -124,7 +125,6 @@ function deleteTickSighting(mysqli $conn, int $uploadId, string $rowId): bool
         return false;
     }
 
-    // i for int and s for str
     $stmt->bind_param("is", $uploadId, $rowId);
     $stmt->execute();
 
@@ -156,7 +156,7 @@ function parseCsvFile(string $filePath, mysqli $conn): array
     $uploadName = basename($filePath);
     $uploadDate = date('Y-m-d H:i:s');
 
-    $sql = "INSERT INTO UPLOAD (UPLOADNAME, UPLOADDATE) VALUES (?, ?)";
+    $sql = "INSERT INTO upload (upload_name, upload_date) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         fclose($handle);
@@ -185,10 +185,10 @@ function parseCsvFile(string $filePath, mysqli $conn): array
 
         $batchRows[] = [
             'ID' => trim((string) ($rowAssoc['id'] ?? '')),
-            'DATE_TIME' => trim((string) ($rowAssoc['date'] ?? '')),
-            'LOCATION' => trim((string) ($rowAssoc['location'] ?? '')),
+            'DATE_TIME' => trim((string) ($rowAssoc['date_time'] ?? $rowAssoc['date'] ?? '')),
+            'LOCATION' => trim((string) ($rowAssoc['city'] ?? $rowAssoc['location'] ?? '')),
             'SPECIES' => trim((string) ($rowAssoc['species'] ?? '')),
-            'LATINNAME' => trim((string) ($rowAssoc['latinName'] ?? '')),
+            'LATINNAME' => trim((string) ($rowAssoc['latin_name'] ?? $rowAssoc['latinName'] ?? '')),
         ];
 
         if (count($batchRows) >= $batchSize) {
@@ -222,15 +222,15 @@ function batchInsertToMySQL(mysqli $conn, array $rows, int $uploadId): void
     foreach ($rows as $row) {
         $placeholders[] = "(?, ?, ?, ?, ?, ?)";
         $values[] = $row['ID'];
-        $values[] = $row['DATE_TIME'];
-        $values[] = $row['LOCATION'];
         $values[] = $row['SPECIES'];
         $values[] = $row['LATINNAME'];
+        $values[] = $row['LOCATION'];
+        $values[] = $row['DATE_TIME'];
         $values[] = $uploadId;
         $types .= "sssssi";
     }
 
-    $sql = "INSERT INTO Tick_Sightings (ID, DATE_TIME, LOCATION, SPECIES, LATINNAME, UPLOADID)
+    $sql = "INSERT INTO tick_sightings (id, species, latin_name, city, date_time, upload_id)
             VALUES " . implode(", ", $placeholders);
 
     $stmt = $conn->prepare($sql);
@@ -263,11 +263,9 @@ function getOriginalFileName(string $storedName): string
     return implode('_', $originalParts) . ($extension !== '' ? '.' . $extension : '');
 }
 
-
 if (isset($_GET['uploaded-file-select']) && $_GET['uploaded-file-select'] !== '') {
     $selectedUploadId = (int) $_GET['uploaded-file-select'];
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['uploaded-file-select']) && $_POST['uploaded-file-select'] !== '') {
@@ -285,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['save-row'])) {
         $rowId = trim((string) ($_POST['row-id'] ?? ''));
         $dateTime = trim((string) ($_POST['date_time'] ?? ''));
-        $location = trim((string) ($_POST['location'] ?? ''));
+        $location = trim((string) ($_POST['city'] ?? ''));
         $species = trim((string) ($_POST['species'] ?? ''));
         $latinName = trim((string) ($_POST['latin_name'] ?? ''));
 
@@ -302,7 +300,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['reject'])) {
         $rowId = trim((string) ($_POST['row-id'] ?? ''));
-    
+
         if ($selectedUploadId > 0 && $rowId !== '') {
             if (deleteTickSighting($conn, $selectedUploadId, $rowId)) {
                 $uploadSuccessMessage = 'Row deleted successfully.';
@@ -312,7 +310,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_files'])) {
     $file = $_FILES['csv_files'];
@@ -361,7 +358,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_files'])) {
         }
     }
 }
-
 
 if ($selectedUploadId > 0 && empty($csvRows)) {
     $csvRows = getRowsByUploadId($conn, $selectedUploadId);

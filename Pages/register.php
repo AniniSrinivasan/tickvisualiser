@@ -11,31 +11,51 @@
 
 <?php
 
-include_once('../functions/db_connect.php');
-
 function addUser($user_email, $user_password, $f_name, $l_name, $role_id)
 {
-    $created=false;
+    include_once('../functions/db_connect.php');
 
     $stmt=$conn->prepare("INSERT INTO users(user_email, user_password, f_name, l_name, role_id)
     VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param('ssssi', $user_email, $user_password, $f_name, $l_name, $role_id);
 
-    $user_email = $_POST['user_email'];
-    $user_password = $_POST['user_password'];
-    $f_name = $_POST['f_name'];
-    $l_name = $_POST['l_name'];
-    $role_id = $_POST['role_id'];
-    $stmt->execute();
+    $success=$stmt->execute();
 
-    if ($stmt){
-        $created=true;
-    }
     $stmt->close();
     $conn->close();
+
+    return $success;
 }
 
-if (isset($_POST[]))
+if (isset($_POST['createUser'])){
+
+    //if time do special chars, capital and number needed for password
+
+    if (strlen($_POST["user_password"])<8 || strlen($_POST["user_password"])>20){
+        echo "Password must be between 8 and 20 characters!";
+        exit;
+    }
+
+    if ($_POST["user_password"]!==$_POST["confirmPassword"]){
+        echo "Passwords must be identical, \n They must match!";
+        exit;
+    }
+
+    $password=$_POST['user_password'];
+    $hash=password_hash($password, PASSWORD_DEFAULT);
+
+    //users role id 
+    $role_id= 1;
+
+    addUser($_POST['user_email'],
+        $hash,
+        $_POST['f_name'],
+        $_POST['l_name'], 
+        $role_id 
+    );
+
+    header('Location: login.php');
+}
 
 ?>
 
@@ -57,22 +77,22 @@ if (isset($_POST[]))
             <form class="auth-form" method="post" action="#">
                 <label class="field">
                     <span>First Name</span>
-                    <input type="text" name="FName" placeholder="Forename" required  autocomplete="off"/>
+                    <input type="text" name="f_name" placeholder="Forename" required  autocomplete="off"/>
                 </label>
 
                 <label class="field">
                     <span>Last Name</span>
-                    <input type="text" name="LName" placeholder="Surname" required />
+                    <input type="text" name="l_name" placeholder="Surname" required />
                 </label>
 
                 <label class="field">
                     <span>Email</span>
-                    <input type="email" name="email" placeholder="you@example.com" required />
+                    <input type="email" name="user_email" placeholder="you@example.com" required />
                 </label>
 
                 <label class="field">
                     <span>Password</span>
-                    <input type="password" name="password" placeholder="••••••••" required />
+                    <input type="password" name="user_password" placeholder="••••••••" required />
                 </label>
 
                 <label class="field">
@@ -80,7 +100,7 @@ if (isset($_POST[]))
                     <input type="password" name="confirmPassword" placeholder="••••••••" required />
                 </label>
 
-                <button type="submit" class="btn-primary btn-full">Create Account</button>
+                <button type="submit" name="createUser" class="btn-primary btn-full">Create Account</button>
         
                 <p class="helper"> Want to Login instead? <a class="link" href="login.php">Login</a></p>
             </form>

@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS location (
 
 CREATE TABLE IF NOT EXISTS upload (
     upload_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    upload_name VARCHAR(40) NOT NULL,
-    upload_date DATE NOT NULL
+    upload_name VARCHAR(255) NOT NULL,
+    upload_date DATETIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS sighting (
@@ -45,10 +45,14 @@ CREATE TABLE IF NOT EXISTS sighting (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS imported_data (
-    id VARCHAR(255) PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS tick_sightings (
+	row_num INT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(255),
     species VARCHAR(40),
     latin_name VARCHAR(40),
     city VARCHAR(40),
-    date_time VARCHAR(40)
+    date_time VARCHAR(40),
+    upload_id INTEGER NOT NULL,
+    FOREIGN KEY (upload_id) REFERENCES upload(upload_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
