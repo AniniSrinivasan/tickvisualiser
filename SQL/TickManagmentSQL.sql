@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS roles (
 
 CREATE TABLE IF NOT EXISTS users ( 
     user_email VARCHAR(100) PRIMARY KEY,
-    user_password VARCHAR(20) NOT NULL,
+    user_hash_password VARCHAR(20) NOT NULL,
     f_name VARCHAR(40) NOT NULL,
     l_name VARCHAR(40) NOT NULL,
     role_id INTEGER NOT NULL,

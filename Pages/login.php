@@ -9,6 +9,11 @@
 </head>
 
 <?php
+session_start();
+include_once('../functions/db_connect.php');
+
+$email=$_POST['user_email'];
+
 
 ?>
 
