@@ -97,9 +97,10 @@ function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, typ
       labels: Xdata,
       datasets: [{
         data: Ydata,
-        backgroundColor: 'rgba(44,125,160,0.6)',
-        borderColor: '#2c7da0',
-        borderWidth: 1
+        fill: type === 'line' ? true : false, // only fill for line charts
+        borderColor: "#2c7da0",
+        backgroundColor: "rgba(44,125,160,0.2)",
+        borderWidth: 1,
       }]
     },
     options: {
