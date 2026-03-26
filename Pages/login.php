@@ -55,7 +55,7 @@ if (isset($_POST['signIn'])){
   </section>
 
   <!-- login card -->
-  <main class="auth-wrap" role="Login Page">
+  <main class="auth-wrap" role="main">
     <section class="auth-card" aria-label="Login">
       <div class="auth-header">
         <h2>Log in</h2>
@@ -74,12 +74,12 @@ if (isset($_POST['signIn'])){
         </label>
 
         <div class="form-row">
-          <label class="checkbox">
+          <!-- <label class="checkbox">
             <input type="checkbox" name="remember" />
             <span>Remember me</span>
-          </label>
+          </label> -->
 
-          <a class="link" href="#">Forgot password?</a>
+          <a class="link forgot-password" href="#">Forgot password?</a>
         </div>
 
         <button type="submit" name="signIn" class="btn-primary btn-full">Sign in</button>
