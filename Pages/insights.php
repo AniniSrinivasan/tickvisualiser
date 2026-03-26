@@ -54,6 +54,9 @@
                         echo "<p>- " . $row['species_name'] . "</p>";
                     }
                     ?>
+                    <div class="more-info">
+                        <a href="insights.php#more-info">Want more info?</a>
+                    </div>  
                 </div>
                 <div class="dashboard-card">
                     <h2>Prevention habits</h2><br>
@@ -80,6 +83,64 @@
                     <!-- Line graph -->
                     <h2>Graph:</h2>
                     <canvas id="MonthlyTrendChart"></canvas>
+                </div>
+            </div>
+            <div class="extra-info" id="more-info">
+                <div class="dashboard-card">
+                    <div class="card-text">
+                        <b>Passerine tick</b>
+                        <p>Dermacentor frontalis<br>
+                        Generally found in birds nest in woodland, parks and gardens.<br>
+                        Feeds on songbirds (passerines) like thrushes, warblers, and blackbirds.</p>
+                    </div>
+                    <div class="card-image">
+                        <img src="../TickImages/PasserineTick.jpg" alt="Passerine tick">
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-text">
+                        <b>Fox/Badger tick</b>
+                        <p>Ixodes canisuga<br>
+                        Commonly found in areas with high populations of foxes and badgers.<br>
+                        Feeds on foxes, cats, dogs, horses, badgers and sheep.</p>
+                    </div>
+                    <div class="card-image">
+                        <img src="../TickImages/FoxBadgerTick.jpg" alt="Fox/Badger tick">
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-text">
+                        <b>Southern rodent tick</b>
+                        <p>Ixodes acuminatus<br>
+                        Typically found in grassy and wooded areas, Primarily in southern England<br>
+                        It specializes in parasitizing small rodents within their burrows and nests.</p>
+                    </div>
+                    <div class="card-image">
+                        <img src="../TickImages/SouthernRodentTick.jpg" alt="Southern rodent tick">
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-text">
+                        <b>Tree-hole tick</b>
+                        <p>Ixodes arboricola<br>
+                        Commonly found in tree holes and other sheltered areas<br>
+                        Infests cavity-nesting birds.</p>
+                    </div>
+                    <div class="card-image">
+                        <img src="../TickImages/TreeHoleTick.jpg" alt="Tree-hole tick">
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-text">
+                        <b>Marsh tick</b>
+                        <p>Ixodes apronophorus<br> 
+                           Typically found in marshy and humid areas<br>
+                           Feeds on large animals such as dogs, cattle, sheep, foxes.
+                        </p>
+                    </div>
+                    <div class="card-image">
+                        <img src="../TickImages/MarshTick.jpg" alt="Marsh tick">
+                    </div>
                 </div>
             </div>
         </div>
