@@ -55,6 +55,7 @@
                     }
                     ?>
                     <div class="more-info">
+                        <!-- Goes to extra info section -->
                         <a href="insights.php#more-info">Want more info?</a>
                     </div>  
                 </div>
@@ -84,6 +85,7 @@
                     <h2>Graph:</h2>
                     <canvas id="MonthlyTrendChart"></canvas>
                 </div>
+                <!-- // Add more graph cards here in future -->
             </div>
             <div class="extra-info" id="more-info">
                 <div class="dashboard-card">
