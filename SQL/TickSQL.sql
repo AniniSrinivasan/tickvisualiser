@@ -12,7 +12,7 @@ ALTER TABLE imported_data MODIFY COLUMN latinName VARCHAR(40);
 
 -- INSERTING UNIQUE DATA INTO species AND location
 INSERT IGNORE INTO species (species_name, species_latin_name)
-SELECT species, latin_name
+SELECT species, latinName
 FROM imported_data;
 
 INSERT IGNORE INTO location (location_name)
