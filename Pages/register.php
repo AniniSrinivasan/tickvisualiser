@@ -12,15 +12,15 @@
 <?php
 require_once '../functions/error.php'; 
 
-function addUser($user_email, $user_password, $f_name, $l_name, $role_id)
+function addUser($user_email, $user_hash_password, $f_name, $l_name, $role_id)
 {
     include_once('../functions/db_connect.php');
 
-    $stmt=$conn->prepare("INSERT INTO users(user_email, user_password, f_name, l_name, role_id)
+    $stmt=$conn->prepare("INSERT INTO users(user_email, user_hash_password, f_name, l_name, role_id)
     VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param('ssssi', $user_email, $user_password, $f_name, $l_name, $role_id);
-    // echo $user_password;
-    echo $_POST["user_password"];
+    $stmt->bind_param('ssssi', $user_email, $user_hash_password, $f_name, $l_name, $role_id);
+    // echo $user__hash_password;
+    echo $_POST["user_hash_password"];
     $success=$stmt->execute();
 
     $stmt->close();
@@ -33,17 +33,17 @@ if (isset($_POST['createUser'])){
 
     //if time do special chars, capital and number needed for password
 
-    if (strlen($_POST["user_password"])<8 || strlen($_POST["user_password"])>20){
+    if (strlen($_POST["user_hash_password"])<8 || strlen($_POST["user_hash_password"])>20){
         echo "Password must be between 8 and 20 characters!";
         exit;
     }
 
-    if ($_POST["user_password"]!==$_POST["confirmPassword"]){
+    if ($_POST["user_hash_password"]!==$_POST["confirmPassword"]){
         echo "Passwords must be identical, \n They must match!";
         exit;
     }
 
-    $password=$_POST['user_password'];
+    $password=$_POST['user_hash_password'];
     $hash=password_hash($password, PASSWORD_DEFAULT);
 
     //users role id 
@@ -94,7 +94,7 @@ if (isset($_POST['createUser'])){
 
                 <label class="field">
                     <span>Password</span>
-                    <input type="password" name="user_password" placeholder="••••••••" required />
+                    <input type="password" name="user_hash_password" placeholder="••••••••" required />
                 </label>
 
                 <label class="field">
