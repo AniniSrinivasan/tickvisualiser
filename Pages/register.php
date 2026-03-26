@@ -79,7 +79,7 @@ if (isset($_POST['createUser'])){
             <form class="auth-form" method="post" action="#">
                 <label class="field">
                     <span>First Name</span>
-                    <input type="text" name="f_name" placeholder="Forename" required  autocomplete="off"/>
+                    <input type="text" name="f_name" placeholder="Forename" required  />
                 </label>
 
                 <label class="field">
