@@ -97,6 +97,7 @@ function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, typ
       labels: Xdata,
       datasets: [{
         data: Ydata,
+        tension: 0.4, // makes the line curved
         fill: type === 'line' ? true : false, // only fill for line charts
         borderColor: "#2c7da0",
         backgroundColor: "rgba(44,125,160,0.2)",
