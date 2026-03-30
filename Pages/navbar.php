@@ -1,4 +1,11 @@
-<!-- top navigation -->
+<?php
+session_start();
+// $_SESSION['UserType'] = ""; // for testing purposes, set user type to empty string (non-admin).']
+$_SESSION['UserType'] = "admin"; // for testing purposes, set user type to admin.
+
+if (($_SESSION['UserType']== "admin")) {
+// <!-- top navigation -->
+echo'
 <header class="top-nav">
     <div class="nav-container">
         <div class="logo-title">Tick Visualiser</div>
@@ -19,3 +26,24 @@
         </div>
     </div>
 </header>
+';
+}
+else {
+    echo'
+    <header class="top-nav">
+        <div class="nav-container">
+            <div class="logo-title">Tick Visualiser</div>
+            <button class="menu-toggle" aria-label="Toggle Menu">
+                ☰
+            </button>
+            <div class="top-menu">
+                <a href="dashboard.php">Home</a>
+                <a href="insights.php">Insights</a>
+                <a href="contact.php">Contact</a>
+                <a href="login.php">Login</a>
+            </div>
+        </div>
+    </header>
+    ';
+    }
+?>
