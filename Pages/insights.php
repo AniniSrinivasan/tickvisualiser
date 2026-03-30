@@ -43,7 +43,7 @@
                     require_once('../functions/db_connect.php');
                     require_once('../functions/error.php');
                     $result = mysqli_query($conn, "
-                        SELECT s.species_name, COUNT(si.sighting_id) AS sighting_count
+                        SELECT s.species_name, COUNT(si.row_num) AS sighting_count
                         FROM species s
                         LEFT JOIN sighting si ON s.species_id = si.species_id
                         GROUP BY s.species_id

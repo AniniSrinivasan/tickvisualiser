@@ -3,6 +3,9 @@
 require_once('../functions/db_connect.php');
 date_default_timezone_set('Europe/London');
 
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$conn->set_charset('utf8mb4');
+
 $csvRows = [];
 $uploadErrorMessage = '';
 $uploadSuccessMessage = '';
@@ -39,10 +42,6 @@ function getStoredFiles(mysqli $conn): array
 
     $result = $conn->query($sql);
 
-    if (!$result) {
-        return [];
-    }
-
     while ($row = $result->fetch_assoc()) {
         $items[] = [
             'upload_id' => (int) $row['upload_id'],
@@ -59,27 +58,34 @@ function getRowsByUploadId(mysqli $conn, int $uploadId): array
 {
     $rows = [];
 
-    $sql = "SELECT id, date_time, city, species, latin_name
-            FROM tick_sightings
-            WHERE upload_id = ?
-            ORDER BY row_num";
+    $sql = "SELECT 
+                s.row_num,
+                s.id,
+                s.date_time,
+                l.location_name,
+                l.county,
+                sp.species_name,
+                sp.species_latin_name
+            FROM sighting s
+            INNER JOIN species sp ON s.species_id = sp.species_id
+            INNER JOIN location l ON s.location_id = l.location_id
+            WHERE s.upload_id = ?
+            ORDER BY s.row_num";
 
     $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        return [];
-    }
-
     $stmt->bind_param("i", $uploadId);
     $stmt->execute();
 
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
         $rows[] = [
+            'row_num' => $row['row_num'] ?? '',
             'id' => $row['id'] ?? '',
             'date_time' => $row['date_time'] ?? '',
-            'city' => $row['city'] ?? '',
-            'species' => $row['species'] ?? '',
-            'latin_name' => $row['latin_name'] ?? '',
+            'location_name' => $row['location_name'] ?? '',
+            'county' => $row['county'] ?? '',
+            'species_name' => $row['species_name'] ?? '',
+            'species_latin_name' => $row['species_latin_name'] ?? '',
         ];
     }
 
@@ -88,50 +94,108 @@ function getRowsByUploadId(mysqli $conn, int $uploadId): array
     return $rows;
 }
 
-function updateTickSighting(
-    mysqli $conn,
-    int $uploadId,
-    string $rowId,
-    string $dateTime,
-    string $location,
-    string $species,
-    string $latinName
-): bool {
-    $sql = "UPDATE tick_sightings
-            SET date_time = ?, city = ?, species = ?, latin_name = ?
-            WHERE upload_id = ? AND id = ?
-            LIMIT 1";
-
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        return false;
-    }
-
-    $stmt->bind_param("ssssis", $dateTime, $location, $species, $latinName, $uploadId, $rowId);
-    $success = $stmt->execute();
-    $stmt->close();
-
-    return $success;
-}
-
-function deleteTickSighting(mysqli $conn, int $uploadId, string $rowId): bool
+function getOrCreateSpecies(mysqli $conn, string $speciesName, string $latinName): int
 {
-    $sql = "DELETE FROM tick_sightings
-            WHERE upload_id = ? AND id = ?
-            LIMIT 1";
+    $speciesName = trim($speciesName);
+    $latinName = trim($latinName);
 
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        return false;
+    if ($speciesName === '' || $latinName === '') {
+        throw new RuntimeException('Species name and latin name are required.');
     }
 
-    $stmt->bind_param("is", $uploadId, $rowId);
+    $sql = "INSERT INTO species (species_name, species_latin_name)
+            VALUES (?, ?)
+            ON DUPLICATE KEY UPDATE species_id = LAST_INSERT_ID(species_id)";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $speciesName, $latinName);
     $stmt->execute();
 
-    $deleted = $stmt->affected_rows > 0;
+    $speciesId = (int) $conn->insert_id;
     $stmt->close();
 
-    return $deleted;
+    if ($speciesId <= 0) {
+        throw new RuntimeException('Unable to get species ID.');
+    }
+
+    return $speciesId;
+}
+
+function getOrCreateLocation(mysqli $conn, string $locationName, string $county = ''): int
+{
+    $locationName = trim($locationName);
+    $county = trim($county);
+
+    if ($locationName === '') {
+        throw new RuntimeException('Location name is required.');
+    }
+
+    $sql = "INSERT INTO location (location_name, county)
+            VALUES (?, ?)
+            ON DUPLICATE KEY UPDATE location_id = LAST_INSERT_ID(location_id)";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $locationName, $county);
+    $stmt->execute();
+
+    $locationId = (int) $conn->insert_id;
+    $stmt->close();
+
+    if ($locationId <= 0) {
+        throw new RuntimeException('Unable to get location ID.');
+    }
+
+    return $locationId;
+}
+
+function updateSighting(
+    mysqli $conn,
+    int $rowNum,
+    string $recordId,
+    string $dateTime,
+    string $locationName,
+    string $county,
+    string $speciesName,
+    string $latinName
+): bool {
+    try {
+        $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
+        $locationId = getOrCreateLocation($conn, $locationName, $county);
+
+        $sql = "UPDATE sighting
+                SET id = ?, date_time = ?, species_id = ?, location_id = ?
+                WHERE row_num = ?
+                LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssiii", $recordId, $dateTime, $speciesId, $locationId, $rowNum);
+        $stmt->execute();
+        $affected = $stmt->affected_rows;
+        $stmt->close();
+
+        return $affected >= 0;
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
+function deleteSighting(mysqli $conn, int $rowNum): bool
+{
+    try {
+        $sql = "DELETE FROM sighting
+                WHERE row_num = ?
+                LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $rowNum);
+        $stmt->execute();
+        $deleted = $stmt->affected_rows > 0;
+        $stmt->close();
+
+        return $deleted;
+    } catch (Throwable $e) {
+        return false;
+    }
 }
 
 function parseCsvFile(string $filePath, mysqli $conn): array
@@ -139,112 +203,112 @@ function parseCsvFile(string $filePath, mysqli $conn): array
     $rows = [];
 
     if (!is_readable($filePath)) {
-        return ['rows' => $rows, 'upload_id' => 0];
+        throw new RuntimeException('Uploaded file is not readable.');
     }
 
     $handle = fopen($filePath, 'r');
     if ($handle === false) {
-        return ['rows' => $rows, 'upload_id' => 0];
+        throw new RuntimeException('Unable to open uploaded file.');
     }
 
     $header = fgetcsv($handle);
     if ($header === false) {
         fclose($handle);
-        return ['rows' => $rows, 'upload_id' => 0];
+        throw new RuntimeException('CSV file is empty or invalid.');
     }
+
+    $header = array_map(static fn($item) => trim((string) $item), $header);
 
     $uploadName = basename($filePath);
     $uploadDate = date('Y-m-d H:i:s');
 
-    $sql = "INSERT INTO upload (upload_name, upload_date) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
+    $conn->begin_transaction();
+
+    try {
+        $sql = "INSERT INTO upload (upload_name, upload_date) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $uploadName, $uploadDate);
+        $stmt->execute();
+        $uploadId = (int) $conn->insert_id;
+        $stmt->close();
+
+        $insertSightingSql = "INSERT INTO sighting (id, species_id, location_id, date_time, upload_id)
+                              VALUES (?, ?, ?, ?, ?)";
+        $insertSightingStmt = $conn->prepare($insertSightingSql);
+
+        while (($data = fgetcsv($handle)) !== false) {
+            if (count(array_filter($data, fn($value) => trim((string) $value) !== '')) === 0) {
+                continue;
+            }
+
+            $rowAssoc = [];
+            foreach ($header as $index => $columnName) {
+                $rowAssoc[$columnName] = $data[$index] ?? '';
+            }
+
+            $recordId = trim((string) ($rowAssoc['id'] ?? ''));
+            $rawDateTime = trim((string) ($rowAssoc['date_time'] ?? $rowAssoc['date'] ?? ''));
+            $locationName = trim((string) ($rowAssoc['location_name'] ?? $rowAssoc['city'] ?? $rowAssoc['location'] ?? ''));
+            $county = trim((string) ($rowAssoc['county'] ?? ''));
+            $speciesName = trim((string) ($rowAssoc['species_name'] ?? $rowAssoc['species'] ?? ''));
+            $latinName = trim((string) ($rowAssoc['species_latin_name'] ?? $rowAssoc['latin_name'] ?? $rowAssoc['latinName'] ?? ''));
+
+            $dateTime = normaliseDateTime($rawDateTime);
+
+            $hasAccurateData = (
+                $recordId !== '' &&
+                $speciesName !== '' &&
+                $latinName !== '' &&
+                $locationName !== '' &&
+                $dateTime !== null
+            );
+
+            if (!$hasAccurateData) {
+                insertInaccurateSighting(
+                    $conn,
+                    $recordId,
+                    $speciesName,
+                    $latinName,
+                    $locationName,
+                    $rawDateTime,
+                    $uploadId
+                );
+                continue;
+            }
+
+            try {
+                $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
+                $locationId = getOrCreateLocation($conn, $locationName, $county);
+
+                $insertSightingStmt->bind_param("siisi", $recordId, $speciesId, $locationId, $dateTime, $uploadId);
+                $insertSightingStmt->execute();
+            } catch (Throwable $e) {
+                insertInaccurateSighting(
+                    $conn,
+                    $recordId,
+                    $speciesName,
+                    $latinName,
+                    $locationName,
+                    $rawDateTime,
+                    $uploadId
+                );
+            }
+        }
+
+        $insertSightingStmt->close();
         fclose($handle);
-        return ['rows' => $rows, 'upload_id' => 0];
-    }
 
-    $stmt->bind_param("ss", $uploadName, $uploadDate);
-    $stmt->execute();
-    $uploadId = (int) $stmt->insert_id;
-    $stmt->close();
+        $conn->commit();
 
-    $header = array_map(static fn($item) => trim((string) $item), $header);
-
-    $batchRows = [];
-    $batchSize = 20;
-
-    while (($data = fgetcsv($handle)) !== false) {
-        if (count(array_filter($data, fn($value) => trim((string) $value) !== '')) === 0) {
-            continue;
-        }
-
-        $rowAssoc = [];
-        foreach ($header as $index => $columnName) {
-            $rowAssoc[$columnName] = $data[$index] ?? '';
-        }
-
-        $batchRows[] = [
-            'ID' => trim((string) ($rowAssoc['id'] ?? '')),
-            'DATE_TIME' => trim((string) ($rowAssoc['date_time'] ?? $rowAssoc['date'] ?? '')),
-            'LOCATION' => trim((string) ($rowAssoc['city'] ?? $rowAssoc['location'] ?? '')),
-            'SPECIES' => trim((string) ($rowAssoc['species'] ?? '')),
-            'LATINNAME' => trim((string) ($rowAssoc['latin_name'] ?? $rowAssoc['latinName'] ?? '')),
+        return [
+            'rows' => getRowsByUploadId($conn, $uploadId),
+            'upload_id' => $uploadId,
         ];
-
-        if (count($batchRows) >= $batchSize) {
-            batchInsertToMySQL($conn, $batchRows, $uploadId);
-            $batchRows = [];
-        }
+    } catch (Throwable $e) {
+        $conn->rollback();
+        fclose($handle);
+        throw $e;
     }
-
-    if (!empty($batchRows)) {
-        batchInsertToMySQL($conn, $batchRows, $uploadId);
-    }
-
-    fclose($handle);
-
-    return [
-        'rows' => getRowsByUploadId($conn, $uploadId),
-        'upload_id' => $uploadId,
-    ];
-}
-
-function batchInsertToMySQL(mysqli $conn, array $rows, int $uploadId): void
-{
-    if (empty($rows)) {
-        return;
-    }
-
-    $placeholders = [];
-    $values = [];
-    $types = '';
-
-    foreach ($rows as $row) {
-        $placeholders[] = "(?, ?, ?, ?, ?, ?)";
-        $values[] = $row['ID'];
-        $values[] = $row['SPECIES'];
-        $values[] = $row['LATINNAME'];
-        $values[] = $row['LOCATION'];
-        $values[] = $row['DATE_TIME'];
-        $values[] = $uploadId;
-        $types .= "sssssi";
-    }
-
-    $sql = "INSERT INTO tick_sightings (id, species, latin_name, city, date_time, upload_id)
-            VALUES " . implode(", ", $placeholders);
-
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        die("Prepare failed: " . $conn->error);
-    }
-
-    $stmt->bind_param($types, ...$values);
-
-    if (!$stmt->execute()) {
-        die("Execute failed: " . $stmt->error);
-    }
-
-    $stmt->close();
 }
 
 function getOriginalFileName(string $storedName): string
@@ -273,7 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['edit-row'])) {
-        $editingRowId = trim((string) ($_POST['row-id'] ?? ''));
+        $editingRowId = trim((string) ($_POST['row-num'] ?? ''));
     }
 
     if (isset($_POST['cancel-row'])) {
@@ -281,28 +345,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['save-row'])) {
-        $rowId = trim((string) ($_POST['row-id'] ?? ''));
+        $rowNum = (int) ($_POST['row-num'] ?? 0);
+        $recordId = trim((string) ($_POST['row-id'] ?? ''));
         $dateTime = trim((string) ($_POST['date_time'] ?? ''));
-        $location = trim((string) ($_POST['city'] ?? ''));
-        $species = trim((string) ($_POST['species'] ?? ''));
-        $latinName = trim((string) ($_POST['latin_name'] ?? ''));
+        $locationName = trim((string) ($_POST['location_name'] ?? ''));
+        $county = trim((string) ($_POST['county'] ?? ''));
+        $speciesName = trim((string) ($_POST['species_name'] ?? ''));
+        $latinName = trim((string) ($_POST['species_latin_name'] ?? ''));
 
-        if ($selectedUploadId > 0 && $rowId !== '') {
-            if (updateTickSighting($conn, $selectedUploadId, $rowId, $dateTime, $location, $species, $latinName)) {
+        if ($rowNum > 0) {
+            if (updateSighting($conn, $rowNum, $recordId, $dateTime, $locationName, $county, $speciesName, $latinName)) {
                 $uploadSuccessMessage = 'Row updated successfully.';
                 $editingRowId = null;
             } else {
                 $uploadErrorMessage = 'Unable to update row.';
-                $editingRowId = $rowId;
+                $editingRowId = (string) $rowNum;
             }
         }
     }
 
     if (isset($_POST['reject'])) {
-        $rowId = trim((string) ($_POST['row-id'] ?? ''));
+        $rowNum = (int) ($_POST['row-num'] ?? 0);
 
-        if ($selectedUploadId > 0 && $rowId !== '') {
-            if (deleteTickSighting($conn, $selectedUploadId, $rowId)) {
+        if ($rowNum > 0) {
+            if (deleteSighting($conn, $rowNum)) {
                 $uploadSuccessMessage = 'Row deleted successfully.';
             } else {
                 $uploadErrorMessage = 'Unable to delete row.';
@@ -314,52 +380,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_files'])) {
     $file = $_FILES['csv_files'];
 
-    if (!ensureUploadDirectory($uploadDirectory)) {
-        $uploadErrorMessage = 'Upload folder could not be created or is not writable.';
-    } else {
+    try {
+        if (!ensureUploadDirectory($uploadDirectory)) {
+            throw new RuntimeException('Upload folder could not be created or is not writable.');
+        }
+
         $fileName = trim((string) ($file['name'] ?? ''));
         $tmpName = $file['tmp_name'] ?? '';
         $error = $file['error'] ?? UPLOAD_ERR_NO_FILE;
 
         if ($error !== UPLOAD_ERR_OK) {
-            $uploadErrorMessage = 'There was a problem uploading the file.';
-        } elseif (!preg_match('/\.csv$/i', $fileName)) {
-            $uploadErrorMessage = 'Only CSV files can be attached.';
-        } elseif ($tmpName === '') {
-            $uploadErrorMessage = 'No file was uploaded.';
-        } else {
-            $originalBaseName = pathinfo($fileName, PATHINFO_FILENAME);
-            $sanitisedBaseName = preg_replace('/[^A-Za-z0-9_-]/', '-', $originalBaseName);
-            $timestamp = date('Ymd_His');
-            $uniqueId = substr(bin2hex(random_bytes(6)), 0, 12);
-
-            if ($sanitisedBaseName === '' || $sanitisedBaseName === null) {
-                $sanitisedBaseName = 'upload';
-            }
-
-            $storedFileName = $sanitisedBaseName . '_' . $uniqueId . '_' . $timestamp . '.csv';
-            $destinationPath = $uploadDirectory . DIRECTORY_SEPARATOR . $storedFileName;
-
-            if (!move_uploaded_file($tmpName, $destinationPath)) {
-                $uploadErrorMessage = 'Unable to save uploaded file into upload-files folder.';
-            } else {
-                $uploadedFilesThisRequest[] = [
-                    'original_name' => $fileName,
-                    'stored_name' => $storedFileName,
-                ];
-
-                $parsedData = parseCsvFile($destinationPath, $conn);
-                $csvRows = $parsedData['rows'];
-                $selectedUploadId = (int) ($parsedData['upload_id'] ?? 0);
-
-                $storedFiles = getStoredFiles($conn);
-                $uploadSuccessMessage = '1 file uploaded successfully.';
-            }
+            throw new RuntimeException('There was a problem uploading the file.');
         }
+
+        if (!preg_match('/\.csv$/i', $fileName)) {
+            throw new RuntimeException('Only CSV files can be attached.');
+        }
+
+        if ($tmpName === '') {
+            throw new RuntimeException('No file was uploaded.');
+        }
+
+        $originalBaseName = pathinfo($fileName, PATHINFO_FILENAME);
+        $sanitisedBaseName = preg_replace('/[^A-Za-z0-9_-]/', '-', $originalBaseName);
+        $timestamp = date('Ymd_His');
+        $uniqueId = substr(bin2hex(random_bytes(6)), 0, 12);
+
+        if ($sanitisedBaseName === '' || $sanitisedBaseName === null) {
+            $sanitisedBaseName = 'upload';
+        }
+
+        $storedFileName = $sanitisedBaseName . '_' . $uniqueId . '_' . $timestamp . '.csv';
+        $destinationPath = $uploadDirectory . DIRECTORY_SEPARATOR . $storedFileName;
+
+        if (!move_uploaded_file($tmpName, $destinationPath)) {
+            throw new RuntimeException('Unable to save uploaded file into upload-files folder.');
+        }
+
+        $uploadedFilesThisRequest[] = [
+            'original_name' => $fileName,
+            'stored_name' => $storedFileName,
+        ];
+
+        $parsedData = parseCsvFile($destinationPath, $conn);
+        $csvRows = $parsedData['rows'];
+        $selectedUploadId = (int) ($parsedData['upload_id'] ?? 0);
+
+        $storedFiles = getStoredFiles($conn);
+        $uploadSuccessMessage = '1 file uploaded successfully.';
+    } catch (Throwable $e) {
+        $uploadErrorMessage = $e->getMessage();
     }
 }
 
 if ($selectedUploadId > 0 && empty($csvRows)) {
     $csvRows = getRowsByUploadId($conn, $selectedUploadId);
 }
+
+function normaliseDateTime(?string $value): ?string
+{
+    $value = trim((string) $value);
+
+    if ($value === '') {
+        return null;
+    }
+
+    $value = str_replace('T', ' ', $value);
+
+    $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
+    if ($dateTime instanceof DateTime && $dateTime->format('Y-m-d H:i:s') === $value) {
+        return $dateTime->format('Y-m-d H:i:s');
+    }
+
+    $timestamp = strtotime($value);
+    if ($timestamp === false) {
+        return null;
+    }
+
+    return date('Y-m-d H:i:s', $timestamp);
+}
+
+function insertInaccurateSighting(
+    mysqli $conn,
+    string $recordId,
+    string $species,
+    string $latinName,
+    string $city,
+    string $dateTime,
+    int $uploadId
+): void {
+    $sql = "INSERT INTO inaccurate_sighting (id, species, latin_name, city, date_time, upload_id)
+            VALUES (?, ?, ?, ?, ?, ?)";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssssi", $recordId, $species, $latinName, $city, $dateTime, $uploadId);
+    $stmt->execute();
+    $stmt->close();
+}
+
 ?>

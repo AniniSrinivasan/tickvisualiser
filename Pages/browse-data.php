@@ -20,15 +20,16 @@
             <h1>Upload Data</h1>
             <p>Upload CSV files, view previous uploads, and browse tick records.</p>
         </div>
-        <?php if ($uploadErrorMessage !== ''): ?>
-                    <div id="uploadError"><?php echo escape($uploadErrorMessage); ?></div>
-                <?php else: ?>
-                    <div id="uploadError" style="display:none;"></div>
-                <?php endif; ?>
 
-                <?php if ($uploadSuccessMessage !== ''): ?>
-                    <div class="upload-success"><?php echo escape($uploadSuccessMessage); ?></div>
-                <?php endif; ?>
+        <?php if ($uploadErrorMessage !== ''): ?>
+            <div id="uploadError"><?php echo escape($uploadErrorMessage); ?></div>
+        <?php else: ?>
+            <div id="uploadError" style="display:none;"></div>
+        <?php endif; ?>
+
+        <?php if ($uploadSuccessMessage !== ''): ?>
+            <div class="upload-success"><?php echo escape($uploadSuccessMessage); ?></div>
+        <?php endif; ?>
     </section>
 
     <main class="dashboard-container" role="main">
@@ -52,11 +53,15 @@
                 <h2>Previously Uploaded Files</h2>
                 <form class="manage-select-form" method="get">
                     <label for="uploaded-file-select">Select a previously uploaded file</label>
-                    <select id="uploaded-file-select" name="uploaded-file-select" class="manage-select-input"
+                    <select
+                        id="uploaded-file-select"
+                        name="uploaded-file-select"
+                        class="manage-select-input"
                         onchange="this.form.submit()">
                         <option value="">Select a file to view</option>
                         <?php foreach ($storedFiles as $file): ?>
-                            <option value="<?php echo escape($file['upload_id']); ?>"
+                            <option
+                                value="<?php echo escape($file['upload_id']); ?>"
                                 <?php echo ((int) $selectedUploadId === (int) $file['upload_id']) ? 'selected' : ''; ?>>
                                 <?php echo escape($file['upload_id']); ?> .
                                 <?php echo escape(getOriginalFileName($file['display_name'])); ?> - uploaded
@@ -74,12 +79,17 @@
             <div class="card-header">
                 <h2>Browse Data</h2>
                 <?php $totalRecords = count($csvRows); ?>
-                <span class="year-badge"> Total records: <?php echo $totalRecords; ?></span>
+                <span class="year-badge">Total records: <?php echo $totalRecords; ?></span>
             </div>
 
-            <form class="manage-toolbar">
-                <input type="search" id="browse-data-search" name="browse-data-search" class="manage-toolbar-input"
-                    placeholder="Search by ID, location, species or latin name" onkeyup="searchBrowswData(this)">
+            <form class="manage-toolbar" onsubmit="return false;">
+                <input
+                    type="search"
+                    id="browse-data-search"
+                    name="browse-data-search"
+                    class="manage-toolbar-input"
+                    placeholder="Search by ID, location, county, species or latin name"
+                    onkeyup="searchBrowswData(this)">
                 <label class="manage-checkbox" for="show-inaccurate-only">
                     <input type="checkbox" id="show-inaccurate-only" name="show-inaccurate-only">
                     Show only inaccurate data
@@ -93,71 +103,100 @@
                             <th>ID</th>
                             <th>Date</th>
                             <th>Location</th>
+                            <th>County</th>
                             <th>Species</th>
                             <th>Latin Name</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-    <?php if (!empty($csvRows)): ?>
-        <?php foreach ($csvRows as $row): ?>
-            <?php $isEditing = ($editingRowId !== null && (string) $editingRowId === (string) ($row['id'] ?? '')); ?>
+                        <?php if (!empty($csvRows)): ?>
+                            <?php foreach ($csvRows as $row): ?>
+                                <?php
+                                $currentRowNum = (string) ($row['row_num'] ?? '');
+                                $isEditing = ($editingRowId !== null && (string) $editingRowId === $currentRowNum);
+                                ?>
 
-            <?php if ($isEditing): ?>
-                <tr>
-                    <td>
-                        <form method="post">
-                            <?php echo escape($row['id'] ?? ''); ?>
-                            <input type="hidden" name="row-id" value="<?php echo escape($row['id'] ?? ''); ?>">
-                            <input type="hidden" name="uploaded-file-select" value="<?php echo escape($selectedUploadId); ?>">
-                    </td>
-                    <td>
-                            <input type="text" name="date_time" value="<?php echo escape($row['date_time'] ?? ''); ?>" class="manage-toolbar-input">
-                    </td>
-                    <td>
-                            <input type="text" name="city" value="<?php echo escape($row['city'] ?? ''); ?>" class="manage-toolbar-input">
-                    </td>
-                    <td>
-                            <input type="text" name="species" value="<?php echo escape($row['species'] ?? ''); ?>" class="manage-toolbar-input">
-                    </td>
-                    <td>
-                            <input type="text" name="latin_name" value="<?php echo escape($row['latin_name'] ?? ''); ?>" class="manage-toolbar-input">
-                    </td>
-                    <td>
-                            <input type="submit" class="approve-button-in-list" name="save-row" value="Save">
-                            <input type="submit" class="reject-button-in-list" name="cancel-row" value="Cancel">
-                        </form>
-                    </td>
-                </tr>
-            <?php else: ?>
-                <tr>
-                    <td><?php echo escape($row['id'] ?? ''); ?></td>
-                    <td><?php echo escape($row['date_time'] ?? ''); ?></td>
-                    <td><?php echo escape($row['city'] ?? ''); ?></td>
-                    <td><?php echo escape($row['species'] ?? ''); ?></td>
-                    <td><?php echo escape($row['latin_name'] ?? ''); ?></td>
-                    <td>
-                    <form method="post">
-                        <input type="hidden" name="row-id" value="<?php echo escape($row['id'] ?? ''); ?>">
-                        <input type="hidden" name="uploaded-file-select" value="<?php echo escape($selectedUploadId); ?>">
-                        <input type="submit" class="approve-button-in-list" name="edit-row" value="Edit">
-                        <input type="button" class="reject-button-in-list" name="reject" value="Delete">
-                    </form>
-                    </td>
-                </tr>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <tr>
-            <td colspan="6">Upload a CSV file to view it.</td>
-        </tr>
-    <?php endif; ?>
-</tbody>
+                                <?php if ($isEditing): ?>
+                                    <tr>
+                                        <td>
+                                            <form method="post">
+                                                <?php echo escape($row['id'] ?? ''); ?>
+                                                <input type="hidden" name="row-num" value="<?php echo escape($row['row_num'] ?? ''); ?>">
+                                                <input type="hidden" name="row-id" value="<?php echo escape($row['id'] ?? ''); ?>">
+                                                <input type="hidden" name="uploaded-file-select" value="<?php echo escape($selectedUploadId); ?>">
+                                        </td>
+                                        <td>
+                                                <input
+                                                    type="text"
+                                                    name="date_time"
+                                                    value="<?php echo escape($row['date_time'] ?? ''); ?>"
+                                                    class="manage-toolbar-input">
+                                        </td>
+                                        <td>
+                                                <input
+                                                    type="text"
+                                                    name="location_name"
+                                                    value="<?php echo escape($row['location_name'] ?? ''); ?>"
+                                                    class="manage-toolbar-input">
+                                        </td>
+                                        <td>
+                                                <input
+                                                    type="text"
+                                                    name="county"
+                                                    value="<?php echo escape($row['county'] ?? ''); ?>"
+                                                    class="manage-toolbar-input">
+                                        </td>
+                                        <td>
+                                                <input
+                                                    type="text"
+                                                    name="species_name"
+                                                    value="<?php echo escape($row['species_name'] ?? ''); ?>"
+                                                    class="manage-toolbar-input">
+                                        </td>
+                                        <td>
+                                                <input
+                                                    type="text"
+                                                    name="species_latin_name"
+                                                    value="<?php echo escape($row['species_latin_name'] ?? ''); ?>"
+                                                    class="manage-toolbar-input">
+                                        </td>
+                                        <td>
+                                                <input type="submit" class="approve-button-in-list" name="save-row" value="Save">
+                                                <input type="submit" class="reject-button-in-list" name="cancel-row" value="Cancel">
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php else: ?>
+                                    <tr>
+                                        <td><?php echo escape($row['id'] ?? ''); ?></td>
+                                        <td><?php echo escape($row['date_time'] ?? ''); ?></td>
+                                        <td><?php echo escape($row['location_name'] ?? ''); ?></td>
+                                        <td><?php echo escape($row['county'] ?? ''); ?></td>
+                                        <td><?php echo escape($row['species_name'] ?? ''); ?></td>
+                                        <td><?php echo escape($row['species_latin_name'] ?? ''); ?></td>
+                                        <td>
+                                            <form method="post">
+                                                <input type="hidden" name="row-num" value="<?php echo escape($row['row_num'] ?? ''); ?>">
+                                                <input type="hidden" name="row-id" value="<?php echo escape($row['id'] ?? ''); ?>">
+                                                <input type="hidden" name="uploaded-file-select" value="<?php echo escape($selectedUploadId); ?>">
+                                                <input type="submit" class="approve-button-in-list" name="edit-row" value="Edit">
+                                                <input type="submit" class="reject-button-in-list" name="reject" value="Delete">
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7">Upload a CSV file to view it.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- delete confirmation popup -->
         <div id="popup-confirmation" class="popup-overlay" style="display: none;">
             <div class="popup-box">
                 <h3>Delete</h3>
