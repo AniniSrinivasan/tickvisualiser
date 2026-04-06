@@ -76,7 +76,7 @@ session_start();
             </div>
         </div>
 
-        <br />
+        <br>
 
         <div class="dashboard-card manage-table-card">
             <div class="card-header">
@@ -91,7 +91,7 @@ session_start();
                     id="browse-data-search"
                     name="browse-data-search"
                     class="manage-toolbar-input"
-                    placeholder="Search by ID, location, county, species or latin name"
+                    placeholder="Search by ID, location, species or latin name"
                     onkeyup="searchBrowswData(this)">
                 <label class="manage-checkbox" for="show-inaccurate-only">
                     <input type="checkbox" id="show-inaccurate-only" name="show-inaccurate-only">
@@ -100,13 +100,12 @@ session_start();
             </form>
 
             <div class="manage-table-wrapper">
-                <table class="manage-table">
+                <table class="manage-table" data-upload-id="<?php echo escape($selectedUploadId); ?>">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Date</th>
                             <th>Location</th>
-                            <th>County</th>
                             <th>Species</th>
                             <th>Latin Name</th>
                             <th>Action</th>
@@ -115,80 +114,16 @@ session_start();
                     <tbody>
                         <?php if (!empty($csvRows)): ?>
                             <?php foreach ($csvRows as $row): ?>
-                                <?php
-                                $currentRowNum = (string) ($row['row_num'] ?? '');
-                                $isEditing = ($editingRowId !== null && (string) $editingRowId === $currentRowNum);
-                                ?>
-
-                                <?php if ($isEditing): ?>
-                                    <tr>
-                                        <td>
-                                            <form method="post">
-                                                <?php echo escape($row['id'] ?? ''); ?>
-                                                <input type="hidden" name="row-num" value="<?php echo escape($row['row_num'] ?? ''); ?>">
-                                                <input type="hidden" name="row-id" value="<?php echo escape($row['id'] ?? ''); ?>">
-                                                <input type="hidden" name="uploaded-file-select" value="<?php echo escape($selectedUploadId); ?>">
-                                        </td>
-                                        <td>
-                                                <input
-                                                    type="text"
-                                                    name="date_time"
-                                                    value="<?php echo escape($row['date_time'] ?? ''); ?>"
-                                                    class="manage-toolbar-input">
-                                        </td>
-                                        <td>
-                                                <input
-                                                    type="text"
-                                                    name="location_name"
-                                                    value="<?php echo escape($row['location_name'] ?? ''); ?>"
-                                                    class="manage-toolbar-input">
-                                        </td>
-                                        <td>
-                                                <input
-                                                    type="text"
-                                                    name="county"
-                                                    value="<?php echo escape($row['county'] ?? ''); ?>"
-                                                    class="manage-toolbar-input">
-                                        </td>
-                                        <td>
-                                                <input
-                                                    type="text"
-                                                    name="species_name"
-                                                    value="<?php echo escape($row['species_name'] ?? ''); ?>"
-                                                    class="manage-toolbar-input">
-                                        </td>
-                                        <td>
-                                                <input
-                                                    type="text"
-                                                    name="species_latin_name"
-                                                    value="<?php echo escape($row['species_latin_name'] ?? ''); ?>"
-                                                    class="manage-toolbar-input">
-                                        </td>
-                                        <td>
-                                                <input type="submit" class="approve-button-in-list" name="save-row" value="Save">
-                                                <input type="submit" class="reject-button-in-list" name="cancel-row" value="Cancel">
-                                            </form>
-                                        </td>
-                                    </tr>
-                                <?php else: ?>
-                                    <tr>
-                                        <td><?php echo escape($row['id'] ?? ''); ?></td>
-                                        <td><?php echo escape($row['date_time'] ?? ''); ?></td>
-                                        <td><?php echo escape($row['location_name'] ?? ''); ?></td>
-                                        <td><?php echo escape($row['county'] ?? ''); ?></td>
-                                        <td><?php echo escape($row['species_name'] ?? ''); ?></td>
-                                        <td><?php echo escape($row['species_latin_name'] ?? ''); ?></td>
-                                        <td>
-                                            <form method="post">
-                                                <input type="hidden" name="row-num" value="<?php echo escape($row['row_num'] ?? ''); ?>">
-                                                <input type="hidden" name="row-id" value="<?php echo escape($row['id'] ?? ''); ?>">
-                                                <input type="hidden" name="uploaded-file-select" value="<?php echo escape($selectedUploadId); ?>">
-                                                <input type="submit" class="approve-button-in-list" name="edit-row" value="Edit">
-                                                <input type="submit" class="reject-button-in-list" name="reject" value="Delete">
-                                            </form>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
+                                <tr data-tickid="<?php echo escape($row['row_num'] ?? ''); ?>" data-editing="0">
+                                    <td class="col-id"><?php echo escape($row['id'] ?? ''); ?></td>
+                                    <td class="col-date"><?php echo escape($row['date_time'] ?? ''); ?></td>
+                                    <td class="col-location"><?php echo escape($row['location_name'] ?? ''); ?></td>                                    <td class="col-species"><?php echo escape($row['species_name'] ?? ''); ?></td>
+                                    <td class="col-latin"><?php echo escape($row['species_latin_name'] ?? ''); ?></td>
+                                    <td class="col-action">
+                                        <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
+                                        <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
+                                    </td>
+                                </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
@@ -213,5 +148,4 @@ session_start();
     </main>
 
 </body>
-
 </html>

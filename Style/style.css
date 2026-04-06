@@ -737,3 +737,120 @@ a {
     transition: transform 0.2s ease;
     text-decoration: none;
 }
+
+/* ajax inline edit styles */
+.manage-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.manage-table tbody tr:hover {
+    background: #f9ffff;
+}
+
+.manage-table tbody tr[data-editing="1"] {
+    background: #f3fbfb;
+}
+
+.manage-table td.col-action {
+    white-space: nowrap;
+}
+
+.col-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.col-action button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+}
+
+/* inline inputs inside table */
+.manage-table td input[type="text"] {
+    width: 100%;
+    min-width: 120px;
+    border: 1px solid #d9eeee;
+    outline: none;
+    background: #f8fdfd;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    color: #111;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.manage-table td input[type="text"]:focus {
+    border-color: var(--secondary);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(91, 192, 190, 0.16);
+}
+
+.approve-button-in-list,
+.reject-button-in-list,
+.pending-button-in-list,
+.complete-button-in-list {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    line-height: 1;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    white-space: nowrap;
+}
+
+.approve-button-in-list:hover,
+.reject-button-in-list:hover,
+.pending-button-in-list:hover,
+.complete-button-in-list:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
+}
+
+/* ajax success / error markers */
+.row-status-message {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    margin-left: 4px;
+    font-size: 16px;
+    font-weight: 800;
+    border-radius: 999px;
+}
+
+.row-status-success {
+    color: #156534;
+    background: #e1f1e5;
+}
+
+.row-status-error {
+    color: #910b0b;
+    background: #f0b7b7;
+}
+
+/* popup buttons */
+.popup-actions .cancel {
+    background: #eef4f4;
+    color: #1f7a7a;
+}
+
+.popup-actions .cancel:hover {
+    background: #ddeeee;
+    transform: scale(1.03);
+}
+
+/* mobile */
+@media (max-width: 900px) {
+    .col-action {
+        min-width: 170px;
+    }
+
+    .manage-table td input[type="text"] {
+        min-width: 100px;
+    }
+}
