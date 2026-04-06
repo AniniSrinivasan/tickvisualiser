@@ -16,7 +16,7 @@ session_start();
 
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div> <!-- Navbar will be loaded here -->
-    
+
     <!-- banner -->
     <section class="banner-section">
         <div class="content-container">
@@ -36,21 +36,21 @@ session_start();
             <!-- distribution - map view -->
             <div class="dashboard-card map-card left">
                 <h2>UK Tick Distribution</h2>
-                <div class="map-container">
-                    Interactive Map Placeholder
-                </div>
+                <!-- <div class="map-container"> -->
+                <?php include 'map.php'; ?>
+                <!-- </div> -->
             </div>
 
             <!-- summary -->
             <div class="right">
                 <div class="dashboard-card summary-card">
                     <a href="total-sightings.php">
-                    <div class="card-header">
-                        <h2>Total Sightings</h2>
-                        <span class="year-badge">2026</span>
-                    </div>
-                    <p class="metric-value">12,540</p>
-                    <p class="card-subtext">Cleaned & validated dataset</p>
+                        <div class="card-header">
+                            <h2>Total Sightings</h2>
+                            <span class="year-badge">2026</span>
+                        </div>
+                        <p class="metric-value">12,540</p>
+                        <p class="card-subtext">Cleaned & validated dataset</p>
                     </a>
                 </div>
                 <br />

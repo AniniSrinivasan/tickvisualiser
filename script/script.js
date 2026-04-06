@@ -117,7 +117,7 @@ function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, typ
             maxRotation: 45,
             minRotation: 30
           }
-          },
+        },
         y: {
           title: { display: true, text: Ylabel },
           beginAtZero: true,
@@ -293,7 +293,7 @@ function searchBrowswData(input) {
     const speciesName = row.cells[3].textContent.toLowerCase();
     const latinName = row.cells[4].textContent.toLowerCase();
 
-    if (dataID.includes(query) || location.includes(query) ||  speciesName.includes(query) ||  latinName.includes(query)) {
+    if (dataID.includes(query) || location.includes(query) || speciesName.includes(query) || latinName.includes(query)) {
       row.style.display = "";
     } else {
       row.style.display = "none";
@@ -596,4 +596,248 @@ document.addEventListener("DOMContentLoaded", function () {
     popup.style.display = "none";
     currentDeleteRow = null;
   });
+});
+
+// for map functionality
+document.addEventListener("DOMContentLoaded", function () {
+  const mapElement = document.getElementById("map");
+
+  // stop if this page does not contain the map
+  if (!mapElement) {
+    return;
+  }
+
+  if (typeof L === "undefined") {
+    console.error("Leaflet did not load.");
+    return;
+  }
+
+  const densityByName = window.densityByName || {};
+
+  const ukBounds = [
+    [49.5, -8.8],
+    [60.95, 2.2]
+  ];
+
+  const palette = [
+    "#f6d5cc",
+    "#ee9b7f",
+    "#e1644a",
+    "#cc3a2b",
+    "#8f1d14"
+  ];
+
+  const codeKey = "LAD23CD";
+  const nameKey = "LAD23NM";
+  const LAD_GEOJSON_URL = "../cache/map-boundary.json";
+
+  function calculateGrades() {
+    const values = Object.values(densityByName)
+      .filter(v => v != null && !Number.isNaN(v))
+      .sort((a, b) => a - b);
+
+    if (!values.length) {
+      return [0, 1, 2, 3, 4, 5];
+    }
+
+    const min = values[0];
+    const max = values[values.length - 1];
+    const bucketCount = palette.length;
+    const span = max - min + 1;
+    const step = Math.ceil(span / bucketCount);
+
+    const grades = [min];
+
+    for (let i = 1; i < bucketCount; i++) {
+      grades.push(min + (step * i));
+    }
+
+    grades.push(max);
+    return grades;
+  }
+
+  const grades = calculateGrades();
+
+  function getColor(d) {
+    if (d == null || Number.isNaN(d)) {
+      return "#f5f5f5";
+    }
+
+    for (let i = grades.length - 2; i >= 0; i--) {
+      if (d >= grades[i]) {
+        return palette[i];
+      }
+    }
+
+    return palette[0];
+  }
+
+  function getDensity(props) {
+    const name = props[nameKey];
+    return densityByName[name] !== undefined ? densityByName[name] : null;
+  }
+
+  function style(feature) {
+    const props = feature.properties || {};
+    const density = getDensity(props);
+
+    return {
+      weight: 0.8,
+      opacity: 1,
+      color: "#4b5563",
+      fillOpacity: 0.78,
+      fillColor: getColor(density)
+    };
+  }
+
+  const map = L.map("map", {
+    zoomControl: true,
+    preferCanvas: true,
+    maxBounds: ukBounds,
+    maxBoundsViscosity: 1.0,
+    minZoom: 5,
+    worldCopyJump: false,
+    zoomSnap: 0.5
+  });
+
+  function fitMapProperly() {
+    map.invalidateSize();
+
+    map.fitBounds(ukBounds, {
+      paddingTopLeft: [20, 20],
+      paddingBottomRight: [20, 20]
+    });
+  }
+  map.attributionControl.setPrefix("");
+
+  L.control.attribution({ position: "bottomright" })
+    .addTo(map)
+    .addAttribution("UK boundary data: Office for National Statistics.");
+
+  let geoLayer = null;
+
+  const info = L.control({ position: "topright" });
+
+  info.onAdd = function () {
+    this._div = L.DomUtil.create("div", "map-info-card");
+    this.update();
+    return this._div;
+  };
+
+  info.update = function (props) {
+    if (!props) {
+      this._div.style.display = "none";
+      return;
+    }
+
+    this._div.style.display = "block";
+
+    const name = props[nameKey] || "Unknown area";
+    const code = props[codeKey] || "";
+    const density = getDensity(props);
+
+    this._div.innerHTML =
+      `<div class="map-title">${name}</div>` +
+      `<div class="map-code">Code: ${code}</div>` +
+      `<div><strong>Tick sightings:</strong> ${density == null ? "No data" : density.toLocaleString()}</div>`;
+  };
+
+  info.addTo(map);
+
+  const legend = L.control({ position: "bottomright" });
+
+  legend.onAdd = function () {
+    const div = L.DomUtil.create("div", "map-legend-card");
+    div.innerHTML = `<div class="legend-heading">Tick sightings</div>`;
+
+    for (let i = 0; i < palette.length; i++) {
+      const from = grades[i];
+      const to = grades[i + 1];
+
+      div.innerHTML += `
+              <div class="map-legend-row">
+                  <span class="map-legend-swatch" style="background:${palette[i]}"></span>
+                  <span>${from.toLocaleString()}&ndash;${to.toLocaleString()}</span>
+              </div>
+          `;
+    }
+
+    div.innerHTML += `
+          <div class="map-legend-row">
+              <span class="map-legend-swatch" style="background:#f5f5f5"></span>
+              <span>No data</span>
+          </div>
+      `;
+
+    return div;
+  };
+
+  legend.addTo(map);
+
+  function highlightFeature(e) {
+    const layer = e.target;
+    layer.setStyle({
+      weight: 1.6,
+      color: "#7f1d1d",
+      fillOpacity: 0.95
+    });
+    info.update(layer.feature.properties);
+  }
+
+  function resetHighlight(e) {
+    if (geoLayer) {
+      geoLayer.resetStyle(e.target);
+    }
+    info.update();
+  }
+
+  function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds(), { padding: [20, 20] });
+  }
+
+  function onEachFeature(feature, layer) {
+    layer.on({
+      mouseover: highlightFeature,
+      mouseout: resetHighlight,
+      click: zoomToFeature
+    });
+  }
+
+  async function initMap() {
+    try {
+      const res = await fetch(LAD_GEOJSON_URL);
+
+      if (!res.ok) {
+        throw new Error("Failed to load GeoJSON: " + res.status);
+      }
+
+      const data = await res.json();
+
+      geoLayer = L.geoJSON(data, {
+        style,
+        onEachFeature,
+        smoothFactor: 1.5
+      }).addTo(map);
+
+      setTimeout(() => {
+        fitMapProperly();
+      }, 100);
+
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          fitMapProperly();
+        }, 150);
+      });
+
+      window.addEventListener("resize", () => {
+        fitMapProperly();
+      });
+
+    } catch (err) {
+      console.error("Map failed:", err);
+      mapElement.innerHTML = "<p style='padding:16px;'>Map failed to load.</p>";
+    }
+  }
+  fitMapProperly();
+  initMap();
 });
