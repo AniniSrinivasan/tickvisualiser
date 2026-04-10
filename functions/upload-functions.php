@@ -54,11 +54,25 @@ function getStoredFiles(mysqli $conn): array
     return $items;
 }
 
-function getRowsByUploadId(mysqli $conn, int $uploadId): array
+function getRowsByUploadId(mysqli $conn, int $uploadId, bool $showInaccurateOnly): array
 {
     $rows = [];
-
-    $sql = "SELECT 
+    //select from inaccurate_sighting if $showInaccurateOnly is true
+    if ($showInaccurateOnly) {
+        $sql = "SELECT 
+            row_num,
+            id,
+            date_time,
+            city as location_name,
+             county,
+            species as species_name,
+            latin_name as species_latin_name
+            from inaccurate_sighting
+            where upload_id = ?";
+            
+        } else {
+            // select from sighting if $showInaccurateOnly is false (default)
+            $sql = "SELECT 
                 s.row_num,
                 s.id,
                 s.date_time,
@@ -71,6 +85,8 @@ function getRowsByUploadId(mysqli $conn, int $uploadId): array
             INNER JOIN location l ON s.location_id = l.location_id
             WHERE s.upload_id = ?
             ORDER BY s.row_num";
+        }
+
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $uploadId);
@@ -120,7 +136,7 @@ function getOrCreateSpecies(mysqli $conn, string $speciesName, string $latinName
 
     return $speciesId;
 }
-
+//Not currently used, but could be used in future if we want to allow new locations to be added through uploads
 function getOrCreateLocation(mysqli $conn, string $locationName, string $county = ''): int
 {
     $locationName = trim($locationName);
@@ -147,7 +163,34 @@ function getOrCreateLocation(mysqli $conn, string $locationName, string $county 
 
     return $locationId;
 }
+function getLocationId(mysqli $conn, string $locationName, string $county = ''): int
+{
+    $locationName = trim($locationName);
+    $county = trim($county);
 
+    if ($locationName === '') {
+        throw new RuntimeException('Location name is required.');
+    }
+
+    $sqlSelect = "SELECT location_id FROM location 
+                  WHERE location_name = ? 
+                  AND (county = ? OR county IS NULL OR county = '') 
+                  LIMIT 1";
+
+    $stmtSelect = $conn->prepare($sqlSelect);
+    $stmtSelect->bind_param("ss", $locationName, $county);
+    $stmtSelect->execute();
+    $result = $stmtSelect->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        $locationId = (int) $row['location_id'];
+        $stmtSelect->close();
+        return $locationId;
+    }
+
+    $stmtSelect->close();
+    throw new RuntimeException('Location not found.');
+}
 function updateSighting(
     mysqli $conn,
     int $rowNum,
@@ -160,7 +203,7 @@ function updateSighting(
 ): bool {
     try {
         $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
-        $locationId = getOrCreateLocation($conn, $locationName, $county);
+        $locationId = getLocationId($conn, $locationName, $county);
 
         $sql = "UPDATE sighting
                 SET id = ?, date_time = ?, species_id = ?, location_id = ?
@@ -260,7 +303,9 @@ function parseCsvFile(string $filePath, mysqli $conn): array
                 $speciesName !== '' &&
                 $latinName !== '' &&
                 $locationName !== '' &&
-                $dateTime !== null
+                $dateTime !== null &&
+                //string length check for record ID
+                strlen($recordId) === 20 
             );
 
             if (!$hasAccurateData) {
@@ -278,7 +323,7 @@ function parseCsvFile(string $filePath, mysqli $conn): array
 
             try {
                 $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
-                $locationId = getOrCreateLocation($conn, $locationName, $county);
+                $locationId = getLocationId($conn, $locationName, $county);
 
                 $insertSightingStmt->bind_param("siisi", $recordId, $speciesId, $locationId, $dateTime, $uploadId);
                 $insertSightingStmt->execute();
@@ -432,9 +477,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_files'])) {
         $uploadErrorMessage = $e->getMessage();
     }
 }
-
+// Determine whether to show only inaccurate data based on the checkbox value when selecting an upload
+$showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1';
 if ($selectedUploadId > 0 && empty($csvRows)) {
-    $csvRows = getRowsByUploadId($conn, $selectedUploadId);
+    $csvRows = getRowsByUploadId($conn, $selectedUploadId, $showInaccurateOnly);
 }
 
 function normaliseDateTime(?string $value): ?string
