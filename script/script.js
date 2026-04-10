@@ -117,7 +117,7 @@ function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, typ
             maxRotation: 45,
             minRotation: 30
           }
-          },
+        },
         y: {
           title: { display: true, text: Ylabel },
           beginAtZero: true,
@@ -293,10 +293,551 @@ function searchBrowswData(input) {
     const speciesName = row.cells[3].textContent.toLowerCase();
     const latinName = row.cells[4].textContent.toLowerCase();
 
-    if (dataID.includes(query) || location.includes(query) ||  speciesName.includes(query) ||  latinName.includes(query)) {
+    if (dataID.includes(query) || location.includes(query) || speciesName.includes(query) || latinName.includes(query)) {
       row.style.display = "";
     } else {
       row.style.display = "none";
     }
   });
 }
+
+function escapeHtml(value) {
+  const div = document.createElement("div");
+  div.textContent = value ?? "";
+  return div.innerHTML;
+}
+
+function clearRowStatus(row) {
+  if (!row) return;
+
+  const existingStatus = row.querySelector(".row-status-message");
+  if (existingStatus) {
+    existingStatus.remove();
+  }
+}
+
+function showRowStatus(row, message, type = "error") {
+  if (!row) return;
+
+  clearRowStatus(row);
+
+  const actionCell = row.querySelector(".col-action");
+  if (!actionCell) return;
+
+  const status = document.createElement("span");
+  status.className = `row-status-message row-status-${type}`;
+  status.style.marginLeft = "8px";
+  status.style.fontSize = "18px";
+  status.style.verticalAlign = "middle";
+  status.style.fontWeight = "bold";
+  status.title = message;
+  status.textContent = type === "error" ? "⚠" : "✓";
+
+  actionCell.appendChild(status);
+
+  setTimeout(() => clearRowStatus(row), 2000);
+}
+
+function enableInlineEditFromRow(row) {
+  if (!row || row.dataset.editing === "1") return;
+
+  const editButton = row.querySelector(".approve-button-in-list");
+  if (!editButton) return;
+
+  enableInlineEdit(editButton);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const tableRows = document.querySelectorAll(".manage-table tbody tr");
+
+  tableRows.forEach(row => {
+    row.addEventListener("dblclick", function (event) {
+      const clickedElement = event.target;
+
+      if (
+        clickedElement.closest("button") ||
+        clickedElement.closest("input") ||
+        clickedElement.closest("select") ||
+        clickedElement.closest("textarea")
+      ) {
+        return;
+      }
+
+      enableInlineEditFromRow(row);
+    });
+  });
+});
+
+function enableInlineEdit(button) {
+  const row = button.closest("tr");
+  if (!row || row.dataset.editing === "1") return;
+
+  row.dataset.editing = "1";
+  clearRowStatus(row);
+
+  const id = row.querySelector(".col-id").textContent.trim();
+  const date = row.querySelector(".col-date").textContent.trim();
+  const location = row.querySelector(".col-location").textContent.trim();
+  // const county = row.querySelector(".col-county").textContent.trim();
+  const species = row.querySelector(".col-species").textContent.trim();
+  const latin = row.querySelector(".col-latin").textContent.trim();
+
+  row.dataset.originalId = id;
+  row.dataset.originalDate = date;
+  row.dataset.originalLocation = location;
+  // row.dataset.originalCounty = county;
+  row.dataset.originalSpecies = species;
+  row.dataset.originalLatin = latin;
+
+  row.querySelector(".col-id").innerHTML =
+    `<input type="text" value="${escapeHtml(id)}">`;
+
+  row.querySelector(".col-date").innerHTML =
+    `<input type="text" value="${escapeHtml(date)}">`;
+
+  row.querySelector(".col-location").innerHTML =
+    `<input type="text" value="${escapeHtml(location)}">`;
+
+  // row.querySelector(".col-county").innerHTML =
+  //   `<input type="text" value="${escapeHtml(county)}">`;
+
+  row.querySelector(".col-species").innerHTML =
+    `<input type="text" value="${escapeHtml(species)}">`;
+
+  row.querySelector(".col-latin").innerHTML =
+    `<input type="text" value="${escapeHtml(latin)}">`;
+
+  row.querySelector(".col-action").innerHTML = `
+    <button type="button" class="approve-button-in-list" onclick="saveInlineEdit(this)">Save</button>
+    <button type="button" class="reject-button-in-list" onclick="cancelInlineEdit(this)">Cancel</button>
+  `;
+
+  const editInputs = row.querySelectorAll("input");
+
+  editInputs.forEach(input => {
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        const saveButton = row.querySelector(".approve-button-in-list");
+        if (saveButton) saveInlineEdit(saveButton);
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        const cancelButton = row.querySelector(".reject-button-in-list");
+        if (cancelButton) cancelInlineEdit(cancelButton);
+      }
+    });
+  });
+}
+
+function cancelInlineEdit(button) {
+  const row = button.closest("tr");
+  if (!row) return;
+
+  row.querySelector(".col-id").textContent = row.dataset.originalId || "";
+  row.querySelector(".col-date").textContent = row.dataset.originalDate || "";
+  row.querySelector(".col-location").textContent = row.dataset.originalLocation || "";
+  // row.querySelector(".col-county").textContent = row.dataset.originalCounty || "";
+  row.querySelector(".col-species").textContent = row.dataset.originalSpecies || "";
+  row.querySelector(".col-latin").textContent = row.dataset.originalLatin || "";
+
+  row.querySelector(".col-action").innerHTML = `
+    <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
+    <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
+  `;
+
+  row.dataset.editing = "0";
+  clearRowStatus(row);
+}
+
+async function saveInlineEdit(button) {
+  const row = button.closest("tr");
+  if (!row) return;
+
+  const table = row.closest(".manage-table");
+  const uploadId = table ? table.dataset.uploadId : "";
+  const rowNum = row.dataset.tickid;
+
+  if (!rowNum) {
+    showRowStatus(row, "Missing row id.", "error");
+    return;
+  }
+
+  if (!uploadId) {
+    showRowStatus(row, "Missing upload id.", "error");
+    return;
+  }
+
+  const id = row.querySelector(".col-id input").value.trim();
+  const dateTime = row.querySelector(".col-date input").value.trim();
+  const location = row.querySelector(".col-location input").value.trim();
+  const species = row.querySelector(".col-species input").value.trim();
+  const latinName = row.querySelector(".col-latin input").value.trim();
+
+  const formData = new FormData();
+  formData.append("ajax_action", "save-row");
+  formData.append("upload_id", uploadId);
+  formData.append("row_num", rowNum);
+  formData.append("row_id", id);
+  formData.append("date_time", dateTime);
+  formData.append("location_name", location);
+  formData.append("species_name", species);
+  formData.append("species_latin_name", latinName);
+
+  try {
+    const response = await fetch("../functions/upload-functions.php", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      showRowStatus(row, result.message || "Unable to update row.", "error");
+      return;
+    }
+
+    row.querySelector(".col-id").textContent = id;
+    row.querySelector(".col-date").textContent = dateTime;
+    row.querySelector(".col-location").textContent = location;
+    row.querySelector(".col-species").textContent = species;
+    row.querySelector(".col-latin").textContent = latinName;
+
+    row.querySelector(".col-action").innerHTML = `
+      <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
+      <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
+    `;
+
+    row.dataset.editing = "0";
+
+    delete row.dataset.originalId;
+    delete row.dataset.originalDate;
+    delete row.dataset.originalLocation;
+    delete row.dataset.originalSpecies;
+    delete row.dataset.originalLatin;
+
+    showRowStatus(row, "Row updated successfully.", "success");
+  } catch (error) {
+    showRowStatus(row, "Something went wrong while saving.", "error");
+    console.error(error);
+  }
+}
+
+let currentDeleteRow = null;
+
+function openDeletePopup(button) {
+  const popup = document.getElementById("popup-confirmation");
+  if (!popup) return;
+
+  currentDeleteRow = button.closest("tr");
+  popup.style.display = "flex";
+}
+
+async function deleteInlineRow(row) {
+  if (!row) return;
+
+  const table = row.closest(".manage-table");
+  const uploadId = table ? table.dataset.uploadId : "";
+  const rowNum = row.dataset.tickid;
+
+  if (!rowNum) {
+    showRowStatus(row, "Missing row id.", "error");
+    return;
+  }
+
+  if (!uploadId) {
+    showRowStatus(row, "Missing upload id.", "error");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("ajax_action", "delete-row");
+  formData.append("upload_id", uploadId);
+  formData.append("row_num", rowNum);
+
+  try {
+    const response = await fetch("../functions/upload-functions.php", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      showRowStatus(row, result.message || "Unable to delete row.", "error");
+      return;
+    }
+
+    row.remove();
+  } catch (error) {
+    showRowStatus(row, "Something went wrong while deleting.", "error");
+    console.error(error);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const popup = document.getElementById("popup-confirmation");
+  if (!popup) return;
+
+  const confirmBtn = popup.querySelector(".confirm");
+  const cancelBtn = popup.querySelector(".cancel");
+
+  confirmBtn.addEventListener("click", function () {
+    popup.style.display = "none";
+
+    if (currentDeleteRow) {
+      deleteInlineRow(currentDeleteRow);
+      currentDeleteRow = null;
+    }
+  });
+
+  cancelBtn.addEventListener("click", function () {
+    popup.style.display = "none";
+    currentDeleteRow = null;
+  });
+});
+
+// for map functionality
+document.addEventListener("DOMContentLoaded", function () {
+  const mapElement = document.getElementById("map");
+
+  // stop if this page does not contain the map
+  if (!mapElement) {
+    return;
+  }
+
+  if (typeof L === "undefined") {
+    console.error("Leaflet did not load.");
+    return;
+  }
+
+  const densityByName = window.densityByName || {};
+
+  const ukBounds = [
+    [49.5, -8.8],
+    [60.95, 2.2]
+  ];
+
+  const palette = [
+    "#f6d5cc",
+    "#ee9b7f",
+    "#e1644a",
+    "#cc3a2b",
+    "#8f1d14"
+  ];
+
+  const codeKey = "LAD23CD";
+  const nameKey = "LAD23NM";
+  const LAD_GEOJSON_URL = "../cache/map-boundary.json";
+
+  function calculateGrades() {
+    const values = Object.values(densityByName)
+      .filter(v => v != null && !Number.isNaN(v))
+      .sort((a, b) => a - b);
+
+    if (!values.length) {
+      return [0, 1, 2, 3, 4, 5];
+    }
+
+    const min = values[0];
+    const max = values[values.length - 1];
+    const bucketCount = palette.length;
+    const span = max - min + 1;
+    const step = Math.ceil(span / bucketCount);
+
+    const grades = [min];
+
+    for (let i = 1; i < bucketCount; i++) {
+      grades.push(min + (step * i));
+    }
+
+    grades.push(max);
+    return grades;
+  }
+
+  const grades = calculateGrades();
+
+  function getColor(d) {
+    if (d == null || Number.isNaN(d)) {
+      return "#f5f5f5";
+    }
+
+    for (let i = grades.length - 2; i >= 0; i--) {
+      if (d >= grades[i]) {
+        return palette[i];
+      }
+    }
+
+    return palette[0];
+  }
+
+  function getDensity(props) {
+    const name = props[nameKey];
+    return densityByName[name] !== undefined ? densityByName[name] : null;
+  }
+
+  function style(feature) {
+    const props = feature.properties || {};
+    const density = getDensity(props);
+
+    return {
+      weight: 0.8,
+      opacity: 1,
+      color: "#4b5563",
+      fillOpacity: 0.78,
+      fillColor: getColor(density)
+    };
+  }
+
+  const map = L.map("map", {
+    zoomControl: true,
+    preferCanvas: true,
+    maxBounds: ukBounds,
+    maxBoundsViscosity: 1.0,
+    minZoom: 5,
+    worldCopyJump: false,
+    zoomSnap: 0.5
+  });
+
+  function fitMapProperly() {
+    map.invalidateSize();
+
+    map.fitBounds(ukBounds, {
+      paddingTopLeft: [20, 20],
+      paddingBottomRight: [20, 20]
+    });
+  }
+  map.attributionControl.setPrefix("");
+
+  L.control.attribution({ position: "bottomright" })
+    .addTo(map)
+    .addAttribution("UK boundary data: Office for National Statistics.");
+
+  let geoLayer = null;
+
+  const info = L.control({ position: "topright" });
+
+  info.onAdd = function () {
+    this._div = L.DomUtil.create("div", "map-info-card");
+    this.update();
+    return this._div;
+  };
+
+  info.update = function (props) {
+    if (!props) {
+      this._div.style.display = "none";
+      return;
+    }
+
+    this._div.style.display = "block";
+
+    const name = props[nameKey] || "Unknown area";
+    const code = props[codeKey] || "";
+    const density = getDensity(props);
+
+    this._div.innerHTML =
+      `<div class="map-title">${name}</div>` +
+      `<div class="map-code">Code: ${code}</div>` +
+      `<div><strong>Tick sightings:</strong> ${density == null ? "No data" : density.toLocaleString()}</div>`;
+  };
+
+  info.addTo(map);
+
+  const legend = L.control({ position: "bottomright" });
+
+  legend.onAdd = function () {
+    const div = L.DomUtil.create("div", "map-legend-card");
+    div.innerHTML = `<div class="legend-heading">Tick sightings</div>`;
+
+    for (let i = 0; i < palette.length; i++) {
+      const from = grades[i];
+      const to = grades[i + 1];
+
+      div.innerHTML += `
+              <div class="map-legend-row">
+                  <span class="map-legend-swatch" style="background:${palette[i]}"></span>
+                  <span>${from.toLocaleString()}&ndash;${to.toLocaleString()}</span>
+              </div>
+          `;
+    }
+
+    div.innerHTML += `
+          <div class="map-legend-row">
+              <span class="map-legend-swatch" style="background:#f5f5f5"></span>
+              <span>No data</span>
+          </div>
+      `;
+
+    return div;
+  };
+
+  legend.addTo(map);
+
+  function highlightFeature(e) {
+    const layer = e.target;
+    layer.setStyle({
+      weight: 1.6,
+      color: "#7f1d1d",
+      fillOpacity: 0.95
+    });
+    info.update(layer.feature.properties);
+  }
+
+  function resetHighlight(e) {
+    if (geoLayer) {
+      geoLayer.resetStyle(e.target);
+    }
+    info.update();
+  }
+
+  function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds(), { padding: [20, 20] });
+  }
+
+  function onEachFeature(feature, layer) {
+    layer.on({
+      mouseover: highlightFeature,
+      mouseout: resetHighlight,
+      click: zoomToFeature
+    });
+  }
+
+  async function initMap() {
+    try {
+      const res = await fetch(LAD_GEOJSON_URL);
+
+      if (!res.ok) {
+        throw new Error("Failed to load GeoJSON: " + res.status);
+      }
+
+      const data = await res.json();
+
+      geoLayer = L.geoJSON(data, {
+        style,
+        onEachFeature,
+        smoothFactor: 1.5
+      }).addTo(map);
+
+      setTimeout(() => {
+        fitMapProperly();
+      }, 100);
+
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          fitMapProperly();
+        }, 150);
+      });
+
+      window.addEventListener("resize", () => {
+        fitMapProperly();
+      });
+
+    } catch (err) {
+      console.error("Map failed:", err);
+      mapElement.innerHTML = "<p style='padding:16px;'>Map failed to load.</p>";
+    }
+  }
+  fitMapProperly();
+  initMap();
+});
