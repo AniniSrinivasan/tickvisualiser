@@ -841,3 +841,4 @@ document.addEventListener("DOMContentLoaded", function () {
   fitMapProperly();
   initMap();
 });
+show_inaccurate_only: document.getElementById('show-inaccurate-only').checked ? 1 : 0

@@ -84,7 +84,7 @@ function getRowsByUploadId(mysqli $conn, int $uploadId, bool $showInaccurateOnly
             id,
             date_time,
             city as location_name,
-             county,
+            --  county,
             species as species_name,
             latin_name as species_latin_name
             from inaccurate_sighting
@@ -220,7 +220,7 @@ function updateSighting(
 ): bool {
     try {
         $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
-        $locationId = getOrCreateLocation($conn, $locationName, $county);
+        $locationId = getLocationId()($conn, $locationName, $county);
         $normalisedDateTime = normaliseDateTime($dateTime);
 
         if ($recordId === '' || $normalisedDateTime === null) {
@@ -312,7 +312,7 @@ function parseCsvFile(string $filePath, mysqli $conn): array
             $recordId = trim((string) ($rowAssoc['id'] ?? ''));
             $rawDateTime = trim((string) ($rowAssoc['date_time'] ?? $rowAssoc['date'] ?? ''));
             $locationName = trim((string) ($rowAssoc['location_name'] ?? $rowAssoc['city'] ?? $rowAssoc['location'] ?? ''));
-            // $county = trim((string) ($rowAssoc['county'] ?? ''));
+            $county = trim((string) ($rowAssoc['county'] ?? ''));
             $speciesName = trim((string) ($rowAssoc['species_name'] ?? $rowAssoc['species'] ?? ''));
             $latinName = trim((string) ($rowAssoc['species_latin_name'] ?? $rowAssoc['latin_name'] ?? $rowAssoc['latinName'] ?? ''));
 
@@ -364,9 +364,9 @@ function parseCsvFile(string $filePath, mysqli $conn): array
         fclose($handle);
 
         $conn->commit();
-
+        $showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1';
         return [
-            'rows' => getRowsByUploadId($conn, $uploadId),
+            'rows' => getRowsByUploadId($conn, $uploadId,$showInaccurateOnly),
             'upload_id' => $uploadId,
         ];
     } catch (Throwable $e) {
@@ -483,7 +483,7 @@ function processUpload(mysqli $conn, array $file, string $uploadDirectory): arra
 function handleAjaxRequest(mysqli $conn, string $uploadDirectory): void
 {
     $action = trim((string) ($_POST['ajax_action'] ?? ''));
-
+    $showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1';
     try {
         switch ($action) {
             case 'get-upload-data':
@@ -491,7 +491,7 @@ function handleAjaxRequest(mysqli $conn, string $uploadDirectory): void
 
                 jsonResponse(true, 'Upload data loaded successfully.', [
                     'selected_upload_id' => $uploadId,
-                    'rows' => $uploadId > 0 ? getRowsByUploadId($conn, $uploadId) : [],
+                    'rows' => $uploadId > 0 ? getRowsByUploadId($conn, $uploadId, $showInaccurateOnly) : [],
                     'stored_files' => getStoredFiles($conn),
                 ]);
                 break;
@@ -511,7 +511,7 @@ function handleAjaxRequest(mysqli $conn, string $uploadDirectory): void
                 $recordId = trim((string) ($_POST['row_id'] ?? ''));
                 $dateTime = trim((string) ($_POST['date_time'] ?? ''));
                 $locationName = trim((string) ($_POST['location_name'] ?? ''));
-                // $county = trim((string) ($_POST['county'] ?? ''));
+                $county = trim((string) ($_POST['county'] ?? ''));
                 $speciesName = trim((string) ($_POST['species_name'] ?? ''));
                 $latinName = trim((string) ($_POST['species_latin_name'] ?? ''));
 
@@ -522,13 +522,13 @@ function handleAjaxRequest(mysqli $conn, string $uploadDirectory): void
                 if (!updateSighting($conn, $rowNum, $recordId, $dateTime, $locationName, $speciesName, $latinName)) {
                     jsonResponse(false, 'Unable to update row.', [
                         'selected_upload_id' => $uploadId,
-                        'rows' => getRowsByUploadId($conn, $uploadId),
+                        'rows' => getRowsByUploadId($conn, $uploadId,$showInaccurateOnly),
                     ], 400);
                 }
 
                 jsonResponse(true, 'Row updated successfully.', [
                     'selected_upload_id' => $uploadId,
-                    'rows' => getRowsByUploadId($conn, $uploadId),
+                    'rows' => getRowsByUploadId($conn, $uploadId, $showInaccurateOnly),
                 ]);
                 break;
 
@@ -543,13 +543,13 @@ function handleAjaxRequest(mysqli $conn, string $uploadDirectory): void
                 if (!deleteSighting($conn, $rowNum)) {
                     jsonResponse(false, 'Unable to delete row.', [
                         'selected_upload_id' => $uploadId,
-                        'rows' => getRowsByUploadId($conn, $uploadId),
+                        'rows' => getRowsByUploadId($conn, $uploadId, $showInaccurateOnly),
                     ], 400);
                 }
 
                 jsonResponse(true, 'Row deleted successfully.', [
                     'selected_upload_id' => $uploadId,
-                    'rows' => getRowsByUploadId($conn, $uploadId),
+                    'rows' => getRowsByUploadId($conn, $uploadId, $showInaccurateOnly),
                 ]);
                 break;
 
@@ -580,9 +580,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_files'])) {
         $uploadErrorMessage = $e->getMessage();
     }
 }
-
+$showInaccurateOnly =
+    (isset($_POST['show-inaccurate_only']) && $_POST['show-inaccurate_only'] == '1')
+    || (isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1');
 if ($selectedUploadId > 0 && empty($csvRows)) {
-    $csvRows = getRowsByUploadId($conn, $selectedUploadId);
+    $csvRows = getRowsByUploadId($conn, $selectedUploadId, $showInaccurateOnly);
 }
 
 ?>
