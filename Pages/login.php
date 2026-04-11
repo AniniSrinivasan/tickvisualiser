@@ -39,6 +39,7 @@ if (isset($_POST['signIn'])){
     }
     exit;
   } else{
+    //do css for error message
     echo "Invalid login credentials";
   }
 }
