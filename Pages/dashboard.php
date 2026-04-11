@@ -22,8 +22,13 @@ session_start();
         <div class="content-container">
             <h2>Discover. Analyse. Protect.</h2>
 
-            <form class="search-form">
-                <input type="search" placeholder="Search by city or region or tick species...">
+            <form class="search-form" method="GET" action="">
+                <input
+                    type="search"
+                    name="search"
+                    autocomplete="off"
+                    placeholder="Search by city or region or tick species..."
+                    value="<?php echo htmlspecialchars($_GET['search'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                 <button type="submit" class="btn-primary">Search</button>
             </form>
         </div>

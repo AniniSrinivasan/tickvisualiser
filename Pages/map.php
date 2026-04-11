@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/../functions/map-functions.php';
 
-$densityData = getTickDensityByLocation();
+$search = $_GET['search'] ?? null;
+$densityData = getTickDensityByLocation($search);
 ?>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
