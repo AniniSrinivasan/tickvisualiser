@@ -988,3 +988,11 @@ a {
         font-size: 0.85rem;
     }
 }
+
+/* risk levels page */
+.risk levels-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: -90px auto 60px;
+    display: flex;
+}
