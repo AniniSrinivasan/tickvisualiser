@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS roles (
     role_name VARCHAR(40) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS users ( 
+CREATE TABLE IF NOT EXISTS user ( 
     user_email VARCHAR(100) PRIMARY KEY,
     user_hash_password VARCHAR(20) NOT NULL,
     f_name VARCHAR(40) NOT NULL,
@@ -32,10 +32,11 @@ CREATE TABLE IF NOT EXISTS upload (
 );
 
 CREATE TABLE IF NOT EXISTS sighting (
-    sighting_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    row_num INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id VARCHAR(20),
     species_id INTEGER NOT NULL,
     location_id INTEGER NOT NULL,
-    date_time DATETIME NOT NULL,
+    date_time DATETIME,
     upload_id INTEGER NOT NULL,
     FOREIGN KEY (species_id) REFERENCES species(species_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS sighting (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS tick_sightings (
+CREATE TABLE IF NOT EXISTS inaccurate_sighting (
 	row_num INT AUTO_INCREMENT PRIMARY KEY,
     id VARCHAR(255),
     species VARCHAR(40),
