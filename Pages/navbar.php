@@ -17,7 +17,6 @@ echo'
             <a href="dashboard.php">Home</a>
             <a href="insights.php">Insights</a>
             <a href="browse-data.php">Browse Data</a>
-            <a href="approve-data.php">Approve Data</a>
             <a href="manage-user.php">Manage User</a>
             <a href="contact.php">Contact</a>
             <a href="login.php">Login</a>
