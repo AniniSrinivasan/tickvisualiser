@@ -1,5 +1,5 @@
 <?php
-include('../functions/admin-check.php');
+// include('../functions/session.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
