@@ -14,16 +14,6 @@ include('../functions/risk-levels-functions.php');
     <link rel="stylesheet" href="../style/style.css">
     <script src="../script/script.js"></script>
 </head>
-<?php
-
-while($row=$result->fetch_assoc()){
-    $location_name=$row['location_name'];
-
-    $ticks=getTicksInCity($location_name);
-    $percentage=getPercentage($location_name);
-}
-
-?>
 <!-- order by location and count -->
 
 <body class="dashboard-body" onload="loadNavbar()">
@@ -35,12 +25,44 @@ while($row=$result->fetch_assoc()){
         </div>
     </section>
 
-    <main class="risk levels-container" role="main">
-        <div class="city">
-            <label><?php echo $city; ?>(<?php echo $ticks; ?> ticks)</label>
+    <main class="risk-levels-container" role="main">
+        <?php
 
-            <div class="risk-progress-bar">
+        $result=$conn->query("SELECT location_name FROM location");
+
+        while($row=$result->fetch_assoc()){
+            $city=$row['location_name'];
+
+            $ticks=getTicksInCity($city, $conn);
+            $percentage=getPercentage($city, $conn);
+
+            if($percentage<60){
+                $class="low-risk";
+            }elseif($percentage<80){
+                $class="medium-risk";
+            } else{
+                $class="high-risk";
+            }
+
+        ?>
+        <div class="risk-grid">
+            <div class="risk-card"> 
+                <div class="city">
+                    <label><?php echo $city; ?></label>
+                    <label>(<?php echo $ticks; ?> ticks)</label>
+
+                    <div class="risk-progress-bar">
+                        <div class="risk-progress-fill <?php echo $class; ?>"
+                            style="width: <?php echo $percentage; ?>%;">
+                            <?php echo round($percentage); ?>%
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <?php
+        }
+        ?>
     </main>
 
 </body>

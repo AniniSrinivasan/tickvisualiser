@@ -32,7 +32,7 @@ function addUser($user_email, $user_hash_password, $f_name, $l_name, $role_id)
     return $success;
 }
 
-if (isset($_POST['createUser'])){
+if (isset($_POST['createAdmin'])){
 
     //if time do special chars, capital and number needed for password
 
@@ -52,7 +52,7 @@ if (isset($_POST['createUser'])){
     $hash=password_hash($password, PASSWORD_DEFAULT);
 
     //users role id 
-    $role_id= 1;
+    $role_id= 2;
 
     addUser($_POST['user_email'],
         $hash,
@@ -107,7 +107,7 @@ if (isset($_POST['createUser'])){
                     <input type="password" name="confirmPassword" placeholder="••••••••" required />
                 </label>
 
-                <button type="submit" name="createUser" class="btn-primary btn-full">Create A User Account</button>
+                <button type="submit" name="createAdmin" class="btn-primary btn-full">Create An Admin Account</button>
         
                 <p class="helper"> Want to Login instead? <a class="link" href="login.php">Login</a></p>
             </form>
@@ -125,4 +125,3 @@ if (isset($_POST['createUser'])){
 </body>
 
 </html>
-

@@ -1,9 +1,7 @@
 <?php
-session_start();
-// $_SESSION['UserType'] = ""; // for testing purposes, set user type to empty string (non-admin).']
-$_SESSION['UserType'] = "admin"; // for testing purposes, set user type to admin.
+include('../functions/session.php');
 
-if (($_SESSION['UserType']== "admin")) {
+if (($_SESSION['role_id']== "2")) {
 // <!-- top navigation -->
 echo'
 <header class="top-nav">
@@ -23,12 +21,13 @@ echo'
             <a href="manage-user.php">Manage User</a>
             <a href="contact.php">Contact</a>
             <a href="login.php">Login</a>
+            <a href="admin-register.php">Register an Admin</a>
         </div>
     </div>
 </header>
 ';
 }
-else {
+elseif (($_SESSION['role_id']== "1")) {
     echo'
     <header class="top-nav">
         <div class="nav-container">
