@@ -13,7 +13,7 @@ function getTicksInCity($location_name, $conn){
 
     $stmt=$conn->prepare(
         "SELECT 
-        l.location_name, COUNT(s.sighting_id) 
+        l.location_name, COUNT(s.row_num) 
         AS total_ticks
         FROM sighting s
         INNER JOIN location l ON s.location_id = l.location_id
