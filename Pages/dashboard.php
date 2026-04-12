@@ -61,30 +61,32 @@ session_start();
                 </div>
                 <br />
                 <!-- risks - progress bar view -->
-                <div class="dashboard-card risk-card">
-                    <h2>Regional Risk Levels</h2>
+                <a href="regional-risk-levels.php">
+                    <div class="dashboard-card risk-card">
+                        <h2>Regional Risk Levels</h2>
 
-                    <div class="risk-item">
-                        <label>South East</label>
-                        <div class="progress-bar-container">
-                            <div class="progress-fill high"></div>
+                        <div class="risk-item">
+                            <label>South East</label>
+                            <div class="progress-bar-container">
+                                <div class="progress-fill high"></div>
+                            </div>
+                        </div>
+
+                        <div class="risk-item">
+                            <label>Yorkshire</label>
+                            <div class="progress-bar-container">
+                                <div class="progress-fill medium"></div>
+                            </div>
+                        </div>
+
+                        <div class="risk-item">
+                            <label>Scotland</label>
+                            <div class="progress-bar-container">
+                                <div class="progress-fill low"></div>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="risk-item">
-                        <label>Yorkshire</label>
-                        <div class="progress-bar-container">
-                            <div class="progress-fill medium"></div>
-                        </div>
-                    </div>
-
-                    <div class="risk-item">
-                        <label>Scotland</label>
-                        <div class="progress-bar-container">
-                            <div class="progress-fill low"></div>
-                        </div>
-                    </div>
-                </div>
+                </a>
             </div>
 
         </div>

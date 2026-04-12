@@ -990,9 +990,79 @@ a {
 }
 
 /* risk levels page */
-.risk levels-container {
+.risk-levels-container {
     width: 100%;
     max-width: 1200px;
     margin: -90px auto 60px;
     display: flex;
+    flex-direction: column;
+}
+
+.risk-progress-bar{
+    width: 100%;
+    height: 30px;
+    background-color: #ddd;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 5px;
+    flex: 1;
+}
+
+.risk-progress-fill{
+    height: 100%;
+    width: 0;
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.city{
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.city label{
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    width: 150px;
+}
+
+.low-risk{
+    background-color: #4caf50;
+}
+
+.medium-risk{
+    background-color: #ff9800;
+}
+
+.high-risk{
+    background-color: #f44336;
+}
+
+.risk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* cards */
+.risk-card {
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    transition: transform 0.2s ease;
+    text-decoration: none;
 }

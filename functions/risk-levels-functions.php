@@ -1,6 +1,6 @@
 <?php
 
-function getTotalTicksUK(){
+function getTotalTicksUK($conn){
     include_once('../functions/db_connect.php');
     $result=$conn->query("SELECT COUNT(*) AS total FROM sighting");
     $row=$result->fetch_assoc();
@@ -8,7 +8,7 @@ function getTotalTicksUK(){
     return $row['total'] ?? 0;
 }
 
-function getTicksInCity($location_name){
+function getTicksInCity($location_name, $conn){
     include_once('../functions/db_connect.php');
 
     $stmt=$conn->prepare(
@@ -30,13 +30,13 @@ function getTicksInCity($location_name){
     return $row['total_ticks'] ?? 0;
 }
 
-function getPercentage($location_name){
+function getPercentage($location_name, $conn){
     include_once('../functions/db_connect.php');
-    $totalUK=getTotalTicksUK();
-    $cityTicks=getTicksInCity($location_name);
+    $totalUK=getTotalTicksUK($conn);
+    $cityTicks=getTicksInCity($location_name, $conn);
 
     if ($totalUK==0) return 0;
 
-    return ($cityTicks/$totalUK)*100;
+    return ($cityTicks/$totalUK)*1000;
 }
 ?>
