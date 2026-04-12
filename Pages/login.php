@@ -1,18 +1,9 @@
 <?php 
 session_start();
-?>
-<!DOCTYPE html>
-<html lang="en">
+var_dump($_POST);
+$error="";
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="description" content="Login Page" />
-  <title>Login • Tick Visualiser</title>
-  <link rel="stylesheet" href="../style/login.css" />
-</head>
-
-<?php
-if (isset($_POST['signIn'])){
+if ($_SERVER['REQUEST_METHOD']==='POST'){
   include_once('../functions/db_connect.php');
 
   $email=$_POST['user_email'];
@@ -42,10 +33,19 @@ if (isset($_POST['signIn'])){
     exit();
   } else{
     //do css for error message
-    echo "Invalid login credentials";
+    $error= "Invalid login credentials";
   }
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Login Page" />
+  <title>Login • Tick Visualiser</title>
+  <link rel="stylesheet" href="../style/login.css" />
+</head>
 
 <body>
 
@@ -65,7 +65,14 @@ if (isset($_POST['signIn'])){
         <span class="badge">Secure</span>
       </div>
 
-      <form class="auth-form" method="post">
+      <form class="auth-form" method="post" action="">
+
+        <?php if(!empty($error)): ?>
+          <p style="color: red; margin-bottom:10px;">
+            <?php echo $error; ?>
+          </p>
+        <?php endif; ?>
+
         <label class="field">
           <span>Email</span>
           <input type="email" name="user_email" placeholder="you@example.com" autocomplete="email" required />
@@ -85,7 +92,7 @@ if (isset($_POST['signIn'])){
           <a class="link forgot-password" href="#">Forgot password?</a>
         </div>
 
-        <button type="submit" name="signIn" class="btn-primary btn-full">Sign in</button>
+        <button type="submit" name="signIn" value="1" class="btn-primary btn-full">Sign in</button>
 
         <p class="helper"> Don’t have an account? <a class="link" href="register.php">Create one</a></p>
       </form>
