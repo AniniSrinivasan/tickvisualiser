@@ -21,6 +21,7 @@ echo'
             <a href="manage-user.php">Manage User</a>
             <a href="contact.php">Contact</a>
             <a href="login.php">Login</a>
+            <a href="admin-register.php">Register an Admin</a>
         </div>
     </div>
 </header>

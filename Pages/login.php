@@ -1,6 +1,6 @@
 <?php 
-session_start();
-var_dump($_POST);
+include('../functions/session.php');
+
 $error="";
 
 if ($_SERVER['REQUEST_METHOD']==='POST'){
