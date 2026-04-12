@@ -1,9 +1,7 @@
 <?php
-session_start();
-// $_SESSION['UserType'] = ""; // for testing purposes, set user type to empty string (non-admin).']
-$_SESSION['UserType'] = "admin"; // for testing purposes, set user type to admin.
+include('../functions/admin-check.php');
 
-if (($_SESSION['UserType']== "admin")) {
+if (($_SESSION['role']== "2")) {
 // <!-- top navigation -->
 echo'
 <header class="top-nav">
@@ -28,7 +26,7 @@ echo'
 </header>
 ';
 }
-else {
+elseif (($_SESSION['role']== "1")) {
     echo'
     <header class="top-nav">
         <div class="nav-container">

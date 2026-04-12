@@ -1,3 +1,6 @@
+<?php 
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +12,6 @@
 </head>
 
 <?php
-session_start();
 if (isset($_POST['signIn'])){
   include_once('../functions/db_connect.php');
 
@@ -37,7 +39,7 @@ if (isset($_POST['signIn'])){
     else if($user['role_id']==2){
       header("Location: browse-data.php");
     }
-    exit;
+    exit();
   } else{
     //do css for error message
     echo "Invalid login credentials";
@@ -63,7 +65,7 @@ if (isset($_POST['signIn'])){
         <span class="badge">Secure</span>
       </div>
 
-      <form class="auth-form" method="post" action="#">
+      <form class="auth-form" method="post">
         <label class="field">
           <span>Email</span>
           <input type="email" name="user_email" placeholder="you@example.com" autocomplete="email" required />
