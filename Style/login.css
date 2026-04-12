@@ -152,6 +152,10 @@
     align-items:center;
   }
   
+  .forgot-password{
+    margin-left: auto;
+  }
+
   .link{
     color:#2c7a7b;
     font-weight:600;

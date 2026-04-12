@@ -10,10 +10,40 @@
 
 <?php
 session_start();
-include_once('../functions/db_connect.php');
+if (isset($_POST['signIn'])){
+  include_once('../functions/db_connect.php');
 
 $email = $_POST['user_email'];
+  $email=$_POST['user_email'];
+  $password=$_POST['password'];
 
+  $stmt=$conn->prepare("SELECT * FROM users WHERE user_email=?");
+  $stmt->bind_param("s", $email);
+  $stmt->execute();
+
+  $result= $stmt->get_result();
+  $user = $result->fetch_assoc();
+
+  if ($user && password_verify($password, $user['user_hash_password'])){
+
+    $_SESSION['user_id'] =$user['user_id'];
+    $_SESSION['email'] =$user['user_email'];
+    $_SESSION['role_id'] =$user['role_id'];
+
+    //change when navbar has been ammended for user and admin
+    //role_id=1 when user and 2 when admin
+    if ($user['role_id']==1){
+      header("Location: dashboard.php");
+    }
+    else if($user['role_id']==2){
+      header("Location: browse-data.php");
+    }
+    exit;
+  } else{
+    //do css for error message
+    echo "Invalid login credentials";
+  }
+}
 ?>
 
 <body>
@@ -27,7 +57,7 @@ $email = $_POST['user_email'];
   </section>
 
   <!-- login card -->
-  <main class="auth-wrap" role="Login Page">
+  <main class="auth-wrap" role="main">
     <section class="auth-card" aria-label="Login">
       <div class="auth-header">
         <h2>Log in</h2>
@@ -37,7 +67,7 @@ $email = $_POST['user_email'];
       <form class="auth-form" method="post" action="#">
         <label class="field">
           <span>Email</span>
-          <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+          <input type="email" name="user_email" placeholder="you@example.com" autocomplete="email" required />
         </label>
 
         <label class="field">
@@ -46,15 +76,15 @@ $email = $_POST['user_email'];
         </label>
 
         <div class="form-row">
-          <label class="checkbox">
+          <!-- <label class="checkbox">
             <input type="checkbox" name="remember" />
             <span>Remember me</span>
-          </label>
+          </label> -->
 
-          <a class="link" href="#">Forgot password?</a>
+          <a class="link forgot-password" href="#">Forgot password?</a>
         </div>
 
-        <button type="submit" class="btn-primary btn-full">Sign in</button>
+        <button type="submit" name="signIn" class="btn-primary btn-full">Sign in</button>
 
         <p class="helper"> Don’t have an account? <a class="link" href="register.php">Create one</a></p>
       </form>

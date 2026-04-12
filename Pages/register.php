@@ -37,11 +37,13 @@ if (isset($_POST['createUser'])){
     //if time do special chars, capital and number needed for password
 
     if (strlen($_POST["user_hash_password"])<8 || strlen($_POST["user_hash_password"])>20){
+        //css needed    
         echo "Password must be between 8 and 20 characters!";
         exit;
     }
 
     if ($_POST["user_hash_password"]!==$_POST["confirmPassword"]){
+        //css needed
         echo "Passwords must be identical, \n They must match!";
         exit;
     }
@@ -82,7 +84,7 @@ if (isset($_POST['createUser'])){
             <form class="auth-form" method="post" action="#">
                 <label class="field">
                     <span>First Name</span>
-                    <input type="text" name="f_name" placeholder="Forename" required  autocomplete="off"/>
+                    <input type="text" name="f_name" placeholder="Forename" required  />
                 </label>
 
                 <label class="field">

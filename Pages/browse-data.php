@@ -85,7 +85,13 @@ session_start();
                 <span class="year-badge">Total records: <?php echo $totalRecords; ?></span>
             </div>
 
-            <form class="manage-toolbar" onsubmit="return false;">
+            <form class="manage-toolbar" method="get">
+                <!-- Keep the selected upload ID when using the search and filter options -->
+            <input 
+                type="hidden" 
+                name="uploaded-file-select" 
+                value="<?php echo escape($selectedUploadId); ?>">
+
                 <input
                     type="search"
                     id="browse-data-search"
@@ -93,11 +99,28 @@ session_start();
                     class="manage-toolbar-input"
                     placeholder="Search by ID, location, species or latin name"
                     onkeyup="searchBrowswData(this)">
+
                 <label class="manage-checkbox" for="show-inaccurate-only">
-                    <input type="checkbox" id="show-inaccurate-only" name="show-inaccurate-only">
+                <!-- Hidden input to ensure a value is sent when the checkbox is unchecked     -->
+                <input 
+                    type="hidden" 
+                    name="show-inaccurate-only" 
+                    value="0">
+                    <!-- inaccurate data based on id file uploaded -->
+                <input 
+                    type="checkbox" 
+                    id="show-inaccurate-only" 
+                    name="show-inaccurate-only"
+                    value="1"
+                    onchange="this.form.submit()"
+                    <?php echo (isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1') ? 'checked' : ''; ?>>
                     Show only inaccurate data
                 </label>
             </form>
+            <?php
+            // Determine whether to show only inaccurate data based on the checkbox value
+            $showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1';
+            ?>
 
             <div class="manage-table-wrapper">
                 <table class="manage-table" data-upload-id="<?php echo escape($selectedUploadId); ?>">
