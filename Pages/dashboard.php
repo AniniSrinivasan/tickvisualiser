@@ -66,7 +66,7 @@ session_start();
                 <!-- risks - progress bar view -->
                 <a href="regional-risk-levels.php">
                     <div class="dashboard-card risk-card">
-                        <h2>Regional Risk Levels</h2>
+                        <h2>National Risk Levels</h2>
 
                         <div class="risk-item">
                             <label>South East</label>
