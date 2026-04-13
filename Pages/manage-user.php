@@ -65,7 +65,7 @@
                                 <form>
                                     <input type="submit" class="approve-button-in-list" name="Edit" value="Edit">
                                     <input type="button" class="reject-button-in-list reject-btn" name="delete"
-                                        value="Delete">
+                                        value="Delete" onclick="confirmDelete(this)">
                                 </form>
                             </td>
                         </tr>

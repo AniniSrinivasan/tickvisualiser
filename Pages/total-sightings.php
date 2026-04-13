@@ -10,12 +10,18 @@
 
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div>
-
+    <?php
+    function totalSightings($total) {
+        $total = SELECT * FROM Tick_Sightings;
+    }
+    ?>
     <!-- banner -->
     <section class="banner-section">
         <div class="content-container">
             <h1>Total Sightings in the Database:</h1>
-            <h2>12540</h2> <!-- update to live database data with php -->
+            <h2>
+                <?php echo totalSightings($total); ?>
+            </h2> <!-- update to live database data with php -->
         </div>
     </section>
 
