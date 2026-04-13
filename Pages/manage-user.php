@@ -20,16 +20,18 @@ session_start();
         <div class="content-container">
             <h1>Manage User</h1>
             <p> Manage all registered accounts</p>
-            <form class="search-form">
-                <input type="search" placeholder="Search by ID, Name or Email..." onkeyup="searchBrowswData(this)">
-                <button type="submit" class="btn-primary">Search</button>
-            </form>
         </div>
     </section>
     <main class="dashboard-container" role="main">
         <div class="dashboard-card">
             <div class="card-header">
-                <h2>Browse Users</h2> <input type="button" class="btn-primary" name="Create" value="Create User">
+                <h2>Browse Users</h2>
+                <input type="button" class="btn-primary" name="Create" value="Create User">
+            </div>
+            <br/>
+            <div>
+                <input type="search" id="browse-user-search" name="browse-user-search" class="manage-toolbar-input"
+                    placeholder="Search by ID, Name or Email..." onkeyup="searchBrowswData(this)">
             </div>
             <div class="manage-table-wrapper">
                 <table class="manage-table">

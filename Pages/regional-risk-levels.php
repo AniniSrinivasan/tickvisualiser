@@ -21,7 +21,7 @@ include('../functions/risk-levels-functions.php');
 
     <section class="banner-section">
         <div class="content-container">
-            <h1>Regional Risk Levels</h1>
+            <h1>National Risk Levels</h1>
         </div>
     </section>
 
