@@ -1066,3 +1066,27 @@ a {
     transition: transform 0.2s ease;
     text-decoration: none;
 }
+
+/* regional risks */
+.risk-levels-container .col-grp {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
+    gap: 25px;
+    margin-bottom: 20px;
+    align-items: start;
+}
+
+.risk-levels-container .col-grp > .risk-grid {
+    width: 100%;
+}
+
+.risk-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+    .risk-levels-container .col-grp {
+        grid-template-columns: 1fr;
+    }
+}

@@ -18,7 +18,7 @@ include('../functions/risk-levels-functions.php');
 
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div> <!-- Navbar will be loaded here -->
-    
+
     <section class="banner-section">
         <div class="content-container">
             <h1>Regional Risk Levels</h1>
@@ -26,44 +26,47 @@ include('../functions/risk-levels-functions.php');
     </section>
 
     <main class="risk-levels-container" role="main">
-        <?php
+        <div class="col-grp">
+            <?php
 
-        $result=$conn->query("SELECT location_name FROM location");
+            $result = $conn->query("SELECT location_name FROM location");
 
-        while($row=$result->fetch_assoc()){
-            $city=$row['location_name'];
+            while ($row = $result->fetch_assoc()) {
+                $city = $row['location_name'];
 
-            $ticks=getTicksInCity($city, $conn);
-            $percentage=getPercentage($city, $conn);
+                $ticks = getTicksInCity($city, $conn);
+                $percentage = getPercentage($city, $conn);
 
-            if($percentage<60){
-                $class="low-risk";
-            }elseif($percentage<80){
-                $class="medium-risk";
-            } else{
-                $class="high-risk";
-            }
+                if ($percentage < 60) {
+                    $class = "low-risk";
+                } elseif ($percentage < 80) {
+                    $class = "medium-risk";
+                } else {
+                    $class = "high-risk";
+                }
 
-        ?>
-        <div class="risk-grid">
-            <div class="risk-card"> 
-                <div class="city">
-                    <label><?php echo $city; ?></label>
-                    <label>(<?php echo $ticks; ?> ticks)</label>
+                ?>
+                <div class="risk-grid">
+                    <div class="risk-card">
+                        <div class="city">
+                            <label><?php echo $city; ?></label>
+                            <label>(<?php echo $ticks; ?> ticks)</label>
 
-                    <div class="risk-progress-bar">
-                        <div class="risk-progress-fill <?php echo $class; ?>"
-                            style="width: <?php echo $percentage; ?>%;">
-                            <?php echo round($percentage); ?>%
+                            <div class="risk-progress-bar">
+                                <div class="risk-progress-fill <?php echo $class; ?>"
+                                    style="width: <?php echo $percentage; ?>%;">
+                                    <?php echo round($percentage); ?>%
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <?php
+            }
+            ?>
         </div>
-        <?php
-        }
-        ?>
     </main>
 
 </body>
+
 </html>

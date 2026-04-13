@@ -24,10 +24,7 @@ session_start();
             <h2>Discover. Analyse. Protect.</h2>
 
             <form class="search-form" method="GET" action="">
-                <input
-                    type="search"
-                    name="search"
-                    autocomplete="off"
+                <input type="search" name="search" autocomplete="off"
                     placeholder="Search by city or region or tick species..."
                     value="<?php echo htmlspecialchars($_GET['search'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                 <button type="submit" class="btn-primary">Search</button>
@@ -90,6 +87,11 @@ session_start();
                             <div class="progress-bar-container">
                                 <div class="progress-fill low"></div>
                             </div>
+                        </div>
+                        <br />
+                        <div class="more-info">
+                            <!-- Goes to extra info section -->
+                            <a href="regional-risk-levels.php">Want more info?</a>
                         </div>
                     </div>
                 </a>
