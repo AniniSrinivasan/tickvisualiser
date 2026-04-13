@@ -6,7 +6,7 @@ require_once('../functions/db_connect.php');
 $query = 'SELECT (MONTHNAME(si.date_time)) AS month, COUNT(si.row_num) AS sighting_count
 FROM sighting si
 GROUP BY month
-ORDER BY MONTH(STR_TO_DATE(month, "%M"))';
+ORDER BY MONTH(si.date_time);';
 $result = $conn->query($query);
 $data = [];
 if ($result) {
@@ -14,6 +14,7 @@ if ($result) {
         $data[] = $row; 
     }
 }
+
 echo json_encode($data);
 $conn->close();
 ?>

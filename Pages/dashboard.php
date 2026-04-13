@@ -60,7 +60,7 @@ session_start();
                 <!-- trend - graph view -->
                 <div class="dashboard-card trend-card">
                     <h2>Monthly Trend</h2>
-                    <canvas id="trendChart"></canvas>
+                    <canvas id="MonthlyTrendChart" value="6"></canvas>
                 </div>
                 <br />
                 <!-- risks - progress bar view -->

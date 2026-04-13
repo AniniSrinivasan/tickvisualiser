@@ -79,18 +79,23 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch('../functions/monthly-trend-function.php')
     .then(response => response.json())
     .then(data => {
-      const Xdata = data.map(row => row.month);
+      $range = monthlyTrendCanvas.getAttribute("value");
+      if ($range == null){
+        $range = 12; // default to 12 months if not specified
+      }
+
+      const Xdata = (data.map(row => row.month)).slice(0, $range);
       const Ydata = data.map(row => row.sighting_count);
       const type = 'line';
       const Xlabel = 'Months';
       const Ylabel = 'Monthly Sightings';
       const title = 'Monthly Tick Sightings';
-      createChart(monthlyTrendCanvas, data, Xdata, Ydata, Xlabel, Ylabel, title, type);
+      createChart(monthlyTrendCanvas, data, Xdata, Ydata, Xlabel, Ylabel, title, type,$range);
     })
     .catch(err => console.error('Error fetching chart data:', err));
 });
 
-function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, type) {
+function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, type, $range = 12) {
   new Chart(canvas, {
     type: type || 'line', // default to line if type not provided
     data: {
