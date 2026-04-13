@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS roles (
     role_name VARCHAR(40) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS user ( 
+CREATE TABLE IF NOT EXISTS users ( 
     user_email VARCHAR(100) PRIMARY KEY,
     user_hash_password VARCHAR(20) NOT NULL,
     f_name VARCHAR(40) NOT NULL,
@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS species (
 CREATE TABLE IF NOT EXISTS location (
     location_id INTEGER PRIMARY KEY AUTO_INCREMENT,
     location_name VARCHAR(40) NOT NULL UNIQUE,
-    county VARCHAR(40)
 );
 
 CREATE TABLE IF NOT EXISTS upload (

@@ -1,6 +1,7 @@
 <?php
 include('../functions/session.php');
-
+$_SESSION['role_id'] = '2';
+//Admin
 if (($_SESSION['role_id']== "2")) {
 // <!-- top navigation -->
 echo'
@@ -26,6 +27,8 @@ echo'
 </header>
 ';
 }
+
+//User
 elseif (($_SESSION['role_id']== "1")) {
     echo'
     <header class="top-nav">
