@@ -181,10 +181,9 @@ function getOrCreateLocation(mysqli $conn, string $locationName, string $county 
 
     return $locationId;
 }
-function getLocationId(mysqli $conn, string $locationName, string $county = ''): int
+function getLocationId(mysqli $conn, string $locationName): int
 {
     $locationName = trim($locationName);
-    $county = trim($county);
 
     if ($locationName === '') {
         throw new RuntimeException('Location name is required.');
@@ -192,11 +191,10 @@ function getLocationId(mysqli $conn, string $locationName, string $county = ''):
 
     $sqlSelect = "SELECT location_id FROM location 
                   WHERE location_name = ? 
-                  AND (county = ? OR county IS NULL OR county = '') 
                   LIMIT 1";
 
     $stmtSelect = $conn->prepare($sqlSelect);
-    $stmtSelect->bind_param("ss", $locationName, $county);
+    $stmtSelect->bind_param("s", $locationName);
     $stmtSelect->execute();
     $result = $stmtSelect->get_result();
 
@@ -220,7 +218,7 @@ function updateSighting(
 ): bool {
     try {
         $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
-        $locationId = getLocationId()($conn, $locationName, $county);
+        $locationId = getLocationId($conn, $locationName);
         $normalisedDateTime = normaliseDateTime($dateTime);
 
         if ($recordId === '' || $normalisedDateTime === null) {
@@ -343,7 +341,7 @@ function parseCsvFile(string $filePath, mysqli $conn): array
 
             try {
                 $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
-                $locationId = getLocationId($conn, $locationName, $county);
+                $locationId = getLocationId($conn, $locationName);
 
                 $insertSightingStmt->bind_param("siisi", $recordId, $speciesId, $locationId, $dateTime, $uploadId);
                 $insertSightingStmt->execute();
