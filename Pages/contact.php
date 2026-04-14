@@ -35,17 +35,17 @@ session_start();
                 <div class="contact-method-list">
                     <div class="contact-method">
                         <span class="contact-method-label">General enquiries</span>
-                        <a href="mailto:example1@email.com" class="contact-pill">example1@email.com</a>
+                        <a href="mailto:general_enquiries@email.com" class="contact-pill">general_enquiries@email.com</a>
                     </div>
 
                     <div class="contact-method">
                         <span class="contact-method-label">Dataset support</span>
-                        <a href="mailto:example2@email.com" class="contact-pill">example2@email.com</a>
+                        <a href="mailto:tick_support@email.com" class="contact-pill">tick_support@email.com</a>
                     </div>
 
                     <div class="contact-method">
                         <span class="contact-method-label">Technical issues</span>
-                        <a href="mailto:example3@email.com" class="contact-pill">example3@email.com</a>
+                        <a href="mailto:tick_technical@email.com" class="contact-pill">tick_technical@email.com</a>
                     </div>
                 </div>
             </article>
