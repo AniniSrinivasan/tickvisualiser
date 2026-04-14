@@ -22,6 +22,7 @@ echo'
             <a href="manage-user.php">Manage User</a>
             <a href="contact.php">Contact</a>
             <a href="admin-register.php">Register an Admin</a>
+            <a href="logout.php">Logout</a>
         </div>
     </div>
 </header>
@@ -44,6 +45,7 @@ else{
                 if (($_SESSION['role_id']!= "1")) {
                     echo '<a href="login.php">Login</a>';
                 }
+                echo '<a href="logout.php">Logout</a>';
             echo '</div>
         </div>
     </header>
