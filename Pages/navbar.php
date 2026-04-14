@@ -1,6 +1,7 @@
 <?php
 include('../functions/session.php');
-$_SESSION['role_id'] = '2';
+//Temp for testing
+$_SESSION['role_id'] = '1';
 //Admin
 if (($_SESSION['role_id']== "2")) {
 // <!-- top navigation -->
@@ -20,7 +21,6 @@ echo'
             <a href="browse-data.php">Browse Data</a>
             <a href="manage-user.php">Manage User</a>
             <a href="contact.php">Contact</a>
-            <a href="login.php">Login</a>
             <a href="admin-register.php">Register an Admin</a>
         </div>
     </div>
@@ -29,7 +29,7 @@ echo'
 }
 
 //User
-elseif (($_SESSION['role_id']== "1")) {
+else{
     echo'
     <header class="top-nav">
         <div class="nav-container">
@@ -40,9 +40,11 @@ elseif (($_SESSION['role_id']== "1")) {
             <div class="top-menu">
                 <a href="dashboard.php">Home</a>
                 <a href="insights.php">Insights</a>
-                <a href="contact.php">Contact</a>
-                <a href="login.php">Login</a>
-            </div>
+                <a href="contact.php">Contact</a>';
+                if (($_SESSION['role_id']!= "1")) {
+                    echo '<a href="login.php">Login</a>';
+                }
+            echo '</div>
         </div>
     </header>
     ';

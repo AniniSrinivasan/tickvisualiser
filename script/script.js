@@ -76,26 +76,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const monthlyTrendCanvas = document.getElementById("MonthlyTrendChart");
   if (!monthlyTrendCanvas) return;
 
-  fetch('../functions/monthly-trend-function.php')
+  // Use data-range if available, otherwise default to 0
+  const range = monthlyTrendCanvas.dataset.range || 0;
+
+  fetch(`../functions/monthly-trend-function.php?months=${range}`)
     .then(response => response.json())
     .then(data => {
-      $range = monthlyTrendCanvas.getAttribute("value");
-      if ($range == null){
-        $range = 12; // default to 12 months if not specified
-      }
 
-      const Xdata = (data.map(row => row.month)).slice(0, $range);
+      const Xdata = data.map(row => row.month);
       const Ydata = data.map(row => row.sighting_count);
       const type = 'line';
       const Xlabel = 'Months';
       const Ylabel = 'Monthly Sightings';
       const title = 'Monthly Tick Sightings';
-      createChart(monthlyTrendCanvas, data, Xdata, Ydata, Xlabel, Ylabel, title, type,$range);
+      createChart(monthlyTrendCanvas, data, Xdata, Ydata, Xlabel, Ylabel, title, type,range);
     })
     .catch(err => console.error('Error fetching chart data:', err));
 });
 
-function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, type, $range = 12) {
+function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, type, range) {
   new Chart(canvas, {
     type: type || 'line', // default to line if type not provided
     data: {
@@ -113,7 +112,7 @@ function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, typ
       responsive: true,
       plugins: {
         legend: { display: false },
-        title: { display: true, text: title }
+        title: { display: true, text: [title,"(All Documented Years)" ] }
       },
       scales: {
         x: {
@@ -125,7 +124,9 @@ function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, typ
         },
         y: {
           title: { display: true, text: Ylabel },
-          beginAtZero: true,
+          // min: 0, // can be set to 0 if you want the y-axis to always start at 0
+          suggestedMin: Math.min(...Ydata) - 5, // adds some space below the shortest bar/point
+          suggestedMax: Math.max(...Ydata) + 5, // adds some space above the tallest bar/point
           ticks: {
             precision: 0 // ensures whole numbers
           }
