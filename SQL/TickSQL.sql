@@ -3,6 +3,7 @@ SELECT * FROM sighting;
 SELECT * FROM inaccurate_sighting;
 SELECT * FROM species;
 SELECT * FROM users;
+SELECT * FROM roles;
 SELECT * FROM upload;
 
 -- for dropping the tables
