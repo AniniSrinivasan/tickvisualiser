@@ -1,7 +1,7 @@
 <?php
 include('../functions/session.php');
 //Temp for testing
-$_SESSION['role_id'] = '1';
+$_SESSION['role_id'] = '2';
 //Admin
 if (($_SESSION['role_id']== "2")) {
 // <!-- top navigation -->
