@@ -80,12 +80,12 @@ session_start();
             <div class="bottom-row">
                 <div class="dashboard-card">
                     <!-- Bar graph -->
-                    <h2>Graph:</h2>
+                    <h2>Tick Sightings by Species(All Documented Years)</h2>
                     <canvas id="BarChart"></canvas>
                 </div>
                 <div class="dashboard-card">
                     <!-- Line graph -->
-                    <h2>Graph:</h2>
+                    <h2>Monthly Tick Sightings(All Documented Years)</h2>
                     <canvas id="MonthlyTrendChart"></canvas>
                 </div>
                 <!-- // Add more graph cards here in future -->

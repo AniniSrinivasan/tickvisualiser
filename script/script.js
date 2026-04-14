@@ -112,7 +112,7 @@ function createChart(canvas, chartData, Xdata, Ydata, Xlabel, Ylabel, title, typ
       responsive: true,
       plugins: {
         legend: { display: false },
-        title: { display: true, text: [title,"(All Documented Years)" ] }
+        title: { display: false, text: [title,"(All Documented Years)" ] }
       },
       scales: {
         x: {
