@@ -207,14 +207,7 @@ function getLocationId(mysqli $conn, string $locationName): int
     $stmtSelect->close();
     throw new RuntimeException('Location not found.');
 }
-function updateSighting(
-    mysqli $conn,
-    int $rowNum,
-    string $recordId,
-    string $dateTime,
-    string $locationName,
-    string $speciesName,
-    string $latinName
+function updateSighting(mysqli $conn,int $rowNum,string $recordId,string $dateTime,string $locationName,string $speciesName,string $latinName
 ): bool {
     try {
         $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
