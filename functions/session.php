@@ -10,9 +10,10 @@ function checkUserLoggedIn(){
 }
 
 function adminCheck(){
+    checkUserLoggedIn();
+
     if ($_SESSION['role_id']!==2){
-        header("Location: dashboard.php");
-        exit();
+        die("Access denied!");
     }
 }
 ?>

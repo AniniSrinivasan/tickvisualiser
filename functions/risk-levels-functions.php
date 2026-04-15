@@ -19,6 +19,7 @@ function getTicksInCity($location_name, $conn){
         INNER JOIN location l ON s.location_id = l.location_id
         WHERE l.location_name=?
         GROUP BY l.location_name 
+        ORDER BY total_ticks ASC
         ");
 
     $stmt->bind_param("s", $location_name);
@@ -37,6 +38,7 @@ function getPercentage($location_name, $conn){
 
     if ($totalUK==0) return 0;
 
+    //if *100 percentage is too small
     return ($cityTicks/$totalUK)*1000;
 }
 ?>

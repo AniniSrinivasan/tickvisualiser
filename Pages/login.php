@@ -29,7 +29,7 @@ $email = $_POST['user_email'];
       header("Location: dashboard.php");
     }
     else if($user['role_id']==2){
-      header("Location: browse-data.php");
+      header("Location: dashboard.php");
     }
     exit();
   } else{
