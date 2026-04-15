@@ -1,6 +1,7 @@
 <?php
-// include('../functions/session.php');
-session_start();
+include('../functions/session.php');
+// print_r($_SESSION);
+// checkUserLoggedIn();
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,5 +1,5 @@
 <?php
-session_start();
+include("../functions/session.php");
 include('../functions/db_connect.php');
 include('../functions/risk-levels-functions.php');
 ?>
