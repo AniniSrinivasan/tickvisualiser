@@ -13,36 +13,66 @@ include('../functions/session.php');
     <script src="../script/script.js"></script>
 </head>
 
-<body class="dashboard-body" onload="loadNavbar()">
+<body class="dashboard-body contact-page" onload="loadNavbar()">
     <div id="navbar-container"></div> <!-- Navbar will be loaded here -->
 
     <section class="banner-section">
         <div class="content-container">
             <h1>Contact our team</h1>
-            <p>For general enquiries or dataset questions, get in touch with the platform team using the contact
-                details</p>
+            <p>For general enquiries, data questions, or platform support, reach the team using the details below.</p>
         </div>
     </section>
 
-        <main class="contact-container" role="main">
-            <div class="contact-grid">
-                <div class="contact-card"> 
-                    <span class="larger-font">For general enquiries contact:</span><br /><br />
-                    <p class="contact-email-box">example1@email.com</p>
-                    <p class="contact-email-box">example2@email.com</p>
-                    <p class="contact-email-box">example3@email.com</p>
+    <main class="contact-container" role="main">
+        <section class="contact-grid">
+            <article class="contact-card contact-card-primary">
+                <div class="contact-card-header">
+                    <span class="contact-badge">Support channels</span>
+                    <h2>Reach the Tick Visualiser team</h2>
+                    <p>Select the most relevant contact and we will route your enquiry quickly.</p>
                 </div>
-                
-                <div class="contact-card"> 
-                    <span class="larger-font">For more info about us: </span><br />
-                    <span>To learn more about us visit: </span>
-                    <a href="https://my.elanco.com/en_gb/about/about-elanco"
-                        class="contact-link">https://www.elanco.com/us</a>
-                    <a href="dashboard.php" class="contact-btn">Return to our dashboard</a>
-                    <a href="login.php" class="contact-btn">Login to your account</a>
+
+                <div class="contact-method-list">
+                    <div class="contact-method">
+                        <span class="contact-method-label">General enquiries</span>
+                        <a href="mailto:general_enquiries@email.com" class="contact-pill">general_enquiries@email.com</a>
+                    </div>
+
+                    <div class="contact-method">
+                        <span class="contact-method-label">Dataset support</span>
+                        <a href="mailto:tick_support@email.com" class="contact-pill">tick_support@email.com</a>
+                    </div>
+
+                    <div class="contact-method">
+                        <span class="contact-method-label">Technical issues</span>
+                        <a href="mailto:tick_technical@email.com" class="contact-pill">tick_technical@email.com</a>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </article>
+
+            <aside class="contact-card contact-card-secondary">
+                <div class="contact-card-header">
+                    <span class="contact-badge">Company details</span>
+                    <h2>Learn more and continue exploring</h2>
+                    <p>Use the quick links below to read about Elanco or return to the application.</p>
+                </div>
+
+                <div class="contact-action-list">
+                    <a href="https://my.elanco.com/en_gb/about/about-elanco" class="contact-action contact-action-link">
+                        Visit Elanco
+                    </a>
+                    <a href="dashboard.php" class="contact-action">
+                        Return to dashboard
+                    </a>
+                    <a href="login.php" class="contact-action contact-action-muted">
+                        Login to your account
+                    </a>
+                </div>
+
+
+            </aside>
+        </section>
     </main>
 </body>
+
 </html>

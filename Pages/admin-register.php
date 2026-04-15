@@ -10,21 +10,23 @@ include('../functions/session.php');
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/login.css">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/script.js"></script>
 </head>
 
 <?php
-require_once '../functions/error.php'; 
+require_once '../functions/error.php';
 
 function addUser($user_email, $user_hash_password, $f_name, $l_name, $role_id)
 {
     include_once('../functions/db_connect.php');
 
-    $stmt=$conn->prepare("INSERT INTO users(user_email, user_hash_password, f_name, l_name, role_id)
+    $stmt = $conn->prepare("INSERT INTO users(user_email, user_hash_password, f_name, l_name, role_id)
     VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param('ssssi', $user_email, $user_hash_password, $f_name, $l_name, $role_id);
     // echo $user__hash_password;
     echo $_POST["user_hash_password"];
-    $success=$stmt->execute();
+    $success = $stmt->execute();
 
     $stmt->close();
     $conn->close();
@@ -32,33 +34,34 @@ function addUser($user_email, $user_hash_password, $f_name, $l_name, $role_id)
     return $success;
 }
 
-if (isset($_POST['createAdmin'])){
+if (isset($_POST['createAdmin'])) {
 
     //if time do special chars, capital and number needed for password
 
-    if (strlen($_POST["user_hash_password"])<8 || strlen($_POST["user_hash_password"])>20){
+    if (strlen($_POST["user_hash_password"]) < 8 || strlen($_POST["user_hash_password"]) > 20) {
         //css needed    
         echo "Password must be between 8 and 20 characters!";
         exit;
     }
 
-    if ($_POST["user_hash_password"]!==$_POST["confirmPassword"]){
+    if ($_POST["user_hash_password"] !== $_POST["confirmPassword"]) {
         //css needed
         echo "Passwords must be identical, \n They must match!";
         exit;
     }
 
-    $password=$_POST['user_hash_password'];
-    $hash=password_hash($password, PASSWORD_DEFAULT);
+    $password = $_POST['user_hash_password'];
+    $hash = password_hash($password, PASSWORD_DEFAULT);
 
     //users role id 
-    $role_id= 2;
+    $role_id = 2;
 
-    addUser($_POST['user_email'],
+    addUser(
+        $_POST['user_email'],
         $hash,
         $_POST['f_name'],
-        $_POST['l_name'], 
-        $role_id 
+        $_POST['l_name'],
+        $role_id
     );
 
     header('Location: login.php');
@@ -66,14 +69,16 @@ if (isset($_POST['createAdmin'])){
 
 ?>
 
-<body>
+<body class="dashboard-body" onload="loadNavbar()">
+    <div id="navbar-container"></div> <!-- Navbar will be loaded here -->
+    
     <section class="banner-section">
         <div class="content-container">
             <h1>Welcome!</h1>
             <p><b>Create an account to access your dashboard and uploads</b></p>
         </div>
     </section>
-
+    <br/>
     <main class="auth-wrap-two" role="main">
         <section class="auth-card" aria-label="Register">
             <div class="auth-header">
@@ -84,7 +89,7 @@ if (isset($_POST['createAdmin'])){
             <form class="auth-form" method="post" action="#">
                 <label class="field">
                     <span>First Name</span>
-                    <input type="text" name="f_name" placeholder="Forename" required  />
+                    <input type="text" name="f_name" placeholder="Forename" required />
                 </label>
 
                 <label class="field">
@@ -108,7 +113,7 @@ if (isset($_POST['createAdmin'])){
                 </label>
 
                 <button type="submit" name="createAdmin" class="btn-primary btn-full">Create An Admin Account</button>
-        
+
                 <p class="helper"> Want to Login instead? <a class="link" href="login.php">Login</a></p>
             </form>
         </section>

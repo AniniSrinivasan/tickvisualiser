@@ -12,6 +12,40 @@ include("../functions/session.php");
     <script src="../script/script.js"></script>
 </head>
 
+<?php function addAdmin($admin_name, $admin_email, $admin_location, $admin_role)
+{
+    include_once('../functions/db_connect.php');
+
+    $stmt=$conn->prepare("INSERT INTO admin(admin_name, admin_email, admin_location, admin_role)
+    VALUES (?, ?, ?, ?)");
+    $stmt->bind_param('ssssi', $admin_name, $admin_email, $admin_location, $admin_role);
+
+    $success=$stmt->execute();
+
+    $stmt->close();
+    $conn->close();
+
+    return $success;}
+
+    function deleteAdmin($admin_id)
+    {
+        include_once('../functions/db_connect.php');
+
+        $stmt=$conn->prepare("DELETE FROM admin WHERE admin_id=?");
+        $stmt->bind_param('i', $admin_id);
+
+        $success=$stmt->execute();
+
+        $stmt->close();
+        $conn->close();
+
+        return $success;
+    }
+
+
+
+?>
+
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div>
 
@@ -20,16 +54,18 @@ include("../functions/session.php");
         <div class="content-container">
             <h1>Manage User</h1>
             <p> Manage all registered accounts</p>
-            <form class="search-form">
-                <input type="search" placeholder="Search by ID, Name or Email..." onkeyup="searchBrowswData(this)">
-                <button type="submit" class="btn-primary">Search</button>
-            </form>
         </div>
     </section>
     <main class="dashboard-container" role="main">
         <div class="dashboard-card">
             <div class="card-header">
-                <h2>Browse Users</h2> <input type="button" class="btn-primary" name="Create" value="Create User">
+                <h2>Browse Users</h2>
+                <input type="button" class="btn-primary" name="Create" value="Create User">
+            </div>
+            <br/>
+            <div>
+                <input type="search" id="browse-user-search" name="browse-user-search" class="manage-toolbar-input"
+                    placeholder="Search by ID, Name or Email..." onkeyup="searchBrowswData(this)">
             </div>
             <div class="manage-table-wrapper">
                 <table class="manage-table">
@@ -68,7 +104,7 @@ include("../functions/session.php");
                                 <form>
                                     <input type="submit" class="approve-button-in-list" name="Edit" value="Edit">
                                     <input type="button" class="reject-button-in-list reject-btn" name="delete"
-                                        value="Delete">
+                                        value="Delete" onclick="confirmDelete(this)">
                                 </form>
                             </td>
                         </tr>

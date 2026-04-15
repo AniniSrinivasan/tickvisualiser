@@ -60,14 +60,14 @@ include('../functions/session.php');
                 <br />
                 <!-- trend - graph view -->
                 <div class="dashboard-card trend-card">
-                    <h2>Monthly Trend</h2>
-                    <canvas id="trendChart"></canvas>
+                    <h2>Monthly Trend (6 months)</h2>
+                    <canvas id="MonthlyTrendChart" data-range="6"></canvas>
                 </div>
                 <br />
                 <!-- risks - progress bar view -->
                 <a href="regional-risk-levels.php">
                     <div class="dashboard-card risk-card">
-                        <h2>Regional Risk Levels</h2>
+                        <h2>National Risk Levels</h2>
 
                         <div class="risk-item">
                             <label>South East</label>
