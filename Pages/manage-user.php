@@ -9,6 +9,40 @@
     <script src="../script/script.js"></script>
 </head>
 
+<?php function addAdmin($admin_name, $admin_email, $admin_location, $admin_role)
+{
+    include_once('../functions/db_connect.php');
+
+    $stmt=$conn->prepare("INSERT INTO admin(admin_name, admin_email, admin_location, admin_role)
+    VALUES (?, ?, ?, ?)");
+    $stmt->bind_param('ssssi', $admin_name, $admin_email, $admin_location, $admin_role);
+
+    $success=$stmt->execute();
+
+    $stmt->close();
+    $conn->close();
+
+    return $success;}
+
+    function deleteAdmin($admin_id)
+    {
+        include_once('../functions/db_connect.php');
+
+        $stmt=$conn->prepare("DELETE FROM admin WHERE admin_id=?");
+        $stmt->bind_param('i', $admin_id);
+
+        $success=$stmt->execute();
+
+        $stmt->close();
+        $conn->close();
+
+        return $success;
+    }
+
+
+
+?>
+
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div>
 

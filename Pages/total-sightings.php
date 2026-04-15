@@ -20,7 +20,8 @@
         <div class="content-container">
             <h1>Total Sightings in the Database:</h1>
             <h2>
-                <?php echo totalSightings($total); ?>
+                <?php totalSightings()
+                 echo $total; ?>
             </h2> <!-- update to live database data with php -->
         </div>
     </section>
