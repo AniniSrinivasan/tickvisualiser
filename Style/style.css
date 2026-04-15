@@ -153,13 +153,16 @@ a {
     gap: 20px;
 }
 
-/* cards */
+/* Cards */
 .dashboard-card {
     background: #fff;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     padding: 25px;
     transition: transform 0.2s ease;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .dashboard-card:hover {
@@ -171,38 +174,69 @@ a {
     font-weight: 800;
 }
 
-/* Insights page */
+/* insights page */
 .insight-grid {
     display: grid;
     grid-template-rows: repeat(2, 1fr);
     gap: 20px;
 }
-.insight-card {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    padding: 15px;
-    transition: transform 0.2s ease;
-}
 
 .top-row {
-  display: flex;
-  gap: 15px;
-}
-.top-row .dashboard-card {
-  flex: 1 1 0;
-  max-width: 18%; /* roughly 1/5th width*/
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    width: 100%;
 }
 
 .bottom-row {
-  display: flex;
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
 }
+
+.dashboard-card canvas {
+    width: 100%;
+    height: auto;
+    max-height: 350px;
+    display: block;
+}
+
 .bottom-row .dashboard-card {
-  flex: 1 1 0;
-  max-width: 47%; 
-  min-height: 350px; /* make them taller */
-  max-height: fit-content;
+    min-height: auto;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.more-info {
+    margin-top: auto;
+    font-weight: 600;
+    color: #0077cc;
+    cursor: pointer;
+}
+
+.extra-info {
+    display: grid;
+    gap: 20px;
+
+}
+
+.extra-info .dashboard-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.extra-info .card-text {
+    flex: 1;
+}
+
+.extra-info .card-image img {
+    width: 150px;
+    height: auto;
+    border-radius: 8px;
 }
 
 /* map */
@@ -294,10 +328,6 @@ a {
 /* card layout - span */
 .summary-card {
     grid-column: span 6;
-}
-
-.map-card {
-    grid-column: span 8;
 }
 
 .trend-card {
@@ -624,83 +654,532 @@ a {
 }
 
 /* contact page */
-.content-container p{
+.content-container p {
     font-size: larger;
     font-weight: 600;
 }
 
-.contact-card p {
-    color: white;
-}
-
-.contact-card a {
-    color: white;
-}
-
-.larger-font {
-    font-size: larger;
-}
-
-.contact-card span{
-    font-weight:700;
-}
-
-/* button for right box */
-.contact-btn {
-    display: block;
-    padding: 10px;
-    background-color: var(--primary);
-    text-align: center;
-    border-radius: 10px;
-    margin: 4px auto;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* link button for right box */
-.contact-link {
-    display: block;
-    padding: 10px;
-    background-color: var(--primary);
-    text-align: center;
-    border-radius: 10px;
-    margin: 4px auto;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.contact-btn:hover, 
-.contact-link:hover {
-    transform: translateY(-2px);
-}
-
-/* boxes for left box */
-.contact-email-box {
-    display: block;
-    padding: 10px;
-    background-color: var(--primary);
-    text-align: center;
-    border-radius: 10px;
-    margin: 4px auto;
-    text-decoration: none;
+.contact-page .banner-section {
+    padding-bottom: 190px;
 }
 
 .contact-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: -90px auto 60px;
-    display: flex;
+    width: min(1120px, 90%);
+    margin: -112px auto 72px;
+    position: relative;
+    z-index: 2;
 }
 
 .contact-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.9fr);
+    gap: 24px;
+    align-items: stretch;
+}
+
+.contact-card {
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 28px;
+    box-shadow: 0 20px 50px rgba(21, 55, 73, 0.12);
+    padding: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    color: #102a36;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    backdrop-filter: blur(10px);
+}
+
+.contact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 54px rgba(21, 55, 73, 0.15);
+}
+
+.contact-card-primary {
+    background:
+        radial-gradient(circle at top right, rgba(91, 192, 190, 0.18), transparent 34%),
+        rgba(255, 255, 255, 0.97);
+}
+
+.contact-card-secondary {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.contact-card-header h2 {
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 12px;
+}
+
+.contact-card-header p {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.65;
+    color: #51707d;
+}
+
+.contact-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    margin-bottom: 18px;
+    border-radius: 999px;
+    background: rgba(117, 237, 235, 0.2);
+    color: var(--primary);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.contact-method-list,
+.contact-action-list {
+    display: grid;
+    gap: 16px;
+}
+
+.contact-method {
+    padding: 18px 20px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #f7fdfd, #eef9f7);
+    border: 1px solid rgba(31, 122, 122, 0.08);
+}
+
+.contact-method-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    color: #315563;
+}
+
+.contact-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 18px;
+    background: #ffffff;
+    color: #1f4c59;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid rgba(31, 122, 122, 0.14);
+    box-shadow: 0 8px 18px rgba(21, 55, 73, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.contact-pill:hover,
+.contact-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(21, 55, 73, 0.12);
+}
+
+.contact-pill:hover {
+    background: #f8fdfd;
+    border-color: rgba(31, 122, 122, 0.24);
+}
+
+.contact-note,
+.contact-mini-card {
+    padding: 20px 22px;
+    border-radius: 22px;
+    background: #f4fbfb;
+    border: 1px solid rgba(31, 122, 122, 0.08);
+}
+
+.contact-note {
+    margin-top: 22px;
+}
+
+.contact-note strong,
+.contact-mini-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #20414d;
+}
+
+.contact-note p,
+.contact-mini-card p {
+    color: #55727f;
+    line-height: 1.65;
+    font-weight: 500;
+}
+
+.contact-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    padding: 14px 18px;
+    border-radius: 18px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 14px 26px rgba(31, 122, 122, 0.18);
+}
+
+.contact-action-link {
+    background: #e9f6f5;
+    color: var(--primary);
+    box-shadow: none;
+}
+
+.contact-action-muted {
+    background: #eef7f7;
+    color: var(--primary);
+    box-shadow: none;
+}
+
+.contact-action-muted:hover {
+    box-shadow: 0 10px 18px rgba(31, 122, 122, 0.1);
+}
+
+@media (max-width: 900px) {
+    .contact-page .banner-section {
+        padding-bottom: 150px;
+    }
+
+    .contact-container {
+        margin-top: -86px;
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-card {
+        padding: 24px;
+        border-radius: 24px;
+    }
+
+    .contact-card-header h2 {
+        font-size: 1rem;
+    }
+}
+
+/* ajax inline edit styles */
+.manage-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.manage-table tbody tr:hover {
+    background: #f9ffff;
+}
+
+.manage-table tbody tr[data-editing="1"] {
+    background: #f3fbfb;
+}
+
+.manage-table td.col-action {
+    white-space: nowrap;
+}
+
+.col-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.col-action button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+}
+
+/* inline inputs inside table */
+.manage-table td input[type="text"] {
+    width: 100%;
+    min-width: 120px;
+    border: 1px solid #d9eeee;
+    outline: none;
+    background: #f8fdfd;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    color: #111;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.manage-table td input[type="text"]:focus {
+    border-color: var(--secondary);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(91, 192, 190, 0.16);
+}
+
+.approve-button-in-list,
+.reject-button-in-list,
+.pending-button-in-list,
+.complete-button-in-list {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    line-height: 1;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    white-space: nowrap;
+}
+
+.approve-button-in-list:hover,
+.reject-button-in-list:hover,
+.pending-button-in-list:hover,
+.complete-button-in-list:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
+}
+
+/* ajax success / error markers */
+.row-status-message {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    margin-left: 4px;
+    font-size: 16px;
+    font-weight: 800;
+    border-radius: 999px;
+}
+
+.row-status-success {
+    color: #156534;
+    background: #e1f1e5;
+}
+
+.row-status-error {
+    color: #910b0b;
+    background: #f0b7b7;
+}
+
+/* popup buttons */
+.popup-actions .cancel {
+    background: #eef4f4;
+    color: #1f7a7a;
+}
+
+.popup-actions .cancel:hover {
+    background: #ddeeee;
+    transform: scale(1.03);
+}
+
+/* mobile */
+@media (max-width: 900px) {
+    .col-action {
+        min-width: 170px;
+    }
+
+    .manage-table td input[type="text"] {
+        min-width: 100px;
+    }
+}
+
+/* maps */
+.map-card {
+    grid-column: span 8;
+    padding-bottom: 12px;
+    min-height: 620px;
+}
+
+.map-card h2 {
+    margin-bottom: 12px;
+}
+
+.dashboard-map-wrap {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+}
+
+.dashboard-map-inner {
+    width: 100%;
+    height: 100%;
+    min-height: 540px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f4f7fa;
+    position: relative;
+}
+
+#map {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100% !important;
+    min-height: 540px;
+    display: block;
+    background: #f4f7fa;
+}
+
+.leaflet-container {
+    width: 100%;
+    height: 100% !important;
+    min-height: 540px;
+    background: #f4f7fa;
+}
+
+.leaflet-pane,
+.leaflet-map-pane,
+.leaflet-overlay-pane,
+.leaflet-zoom-animated {
+    max-width: none !important;
+    max-height: none !important;
+}
+
+.map-info-card {
+    display: none;
+    background: rgba(255, 255, 255, 0.97);
+    padding: 12px 14px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(31, 122, 122, 0.12);
+    min-width: 180px;
+    color: #1f2937;
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.map-title {
+    font-weight: 800;
+    font-size: 0.96rem;
+    margin-bottom: 4px;
+    color: #0f172a;
+}
+
+.map-code {
+    font-size: 0.82rem;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.map-legend-card {
+    background: rgba(255, 255, 255, 0.96);
+    padding: 12px 14px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(31, 122, 122, 0.12);
+    min-width: 150px;
+    color: #1f2937;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.legend-heading {
+    font-weight: 800;
+    font-size: 0.92rem;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+.map-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.map-legend-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    flex: 0 0 16px;
+}
+
+@media (max-width: 900px) {
+    .map-card {
+        min-height: 480px;
+    }
+
+    .dashboard-map-inner,
+    #map,
+    .leaflet-container {
+        min-height: 420px;
+    }
+
+    .map-info-card,
+    .map-legend-card {
+        font-size: 0.85rem;
+    }
+}
+
+/* risk levels page */
+.risk-levels-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: -90px auto 60px;
+    display: flex;
+    flex-direction: column;
+}
+
+.risk-progress-bar {
+    width: 100%;
+    height: 30px;
+    background-color: #ddd;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 5px;
+    flex: 1;
+}
+
+.risk-progress-fill {
+    height: 100%;
+    width: 0;
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.city {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.city label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    width: 150px;
+}
+
+.low-risk {
+    background-color: #4caf50;
+}
+
+.medium-risk {
+    background-color: #ff9800;
+}
+
+.high-risk {
+    background-color: #f44336;
+}
+
+.risk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 20px;
     width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 /* cards */
-.contact-card {
+.risk-card {
     width: 100%;
     height: auto;
     background: #fff;
@@ -709,4 +1188,28 @@ a {
     padding: 25px;
     transition: transform 0.2s ease;
     text-decoration: none;
+}
+
+/* regional risks */
+.risk-levels-container .col-grp {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
+    gap: 25px;
+    margin-bottom: 20px;
+    align-items: start;
+}
+
+.risk-levels-container .col-grp>.risk-grid {
+    width: 100%;
+}
+
+.risk-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+    .risk-levels-container .col-grp {
+        grid-template-columns: 1fr;
+    }
 }

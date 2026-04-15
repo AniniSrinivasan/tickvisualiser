@@ -1,3 +1,7 @@
+<?php
+// include('../functions/session.php');
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,14 +17,16 @@
 
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div> <!-- Navbar will be loaded here -->
-    
+
     <!-- banner -->
     <section class="banner-section">
         <div class="content-container">
             <h2>Discover. Analyse. Protect.</h2>
 
-            <form class="search-form">
-                <input type="search" placeholder="Search by city or region or tick species...">
+            <form class="search-form" method="GET" action="">
+                <input type="search" name="search" autocomplete="off"
+                    placeholder="Search by city or region or tick species..."
+                    value="<?php echo htmlspecialchars($_GET['search'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                 <button type="submit" class="btn-primary">Search</button>
             </form>
         </div>
@@ -33,55 +39,62 @@
             <!-- distribution - map view -->
             <div class="dashboard-card map-card left">
                 <h2>UK Tick Distribution</h2>
-                <div class="map-container">
-                    Interactive Map Placeholder
-                </div>
+                <!-- <div class="map-container"> -->
+                <?php include 'map.php'; ?>
+                <!-- </div> -->
             </div>
 
             <!-- summary -->
             <div class="right">
                 <div class="dashboard-card summary-card">
                     <a href="total-sightings.php">
-                    <div class="card-header">
-                        <h2>Total Sightings</h2>
-                        <span class="year-badge">2026</span>
-                    </div>
-                    <p class="metric-value">12,540</p>
-                    <p class="card-subtext">Cleaned & validated dataset</p>
+                        <div class="card-header">
+                            <h2>Total Sightings</h2>
+                            <span class="year-badge">2026</span>
+                        </div>
+                        <p class="metric-value">12,540</p>
+                        <p class="card-subtext">Cleaned & validated dataset</p>
                     </a>
                 </div>
                 <br />
                 <!-- trend - graph view -->
                 <div class="dashboard-card trend-card">
-                    <h2>Monthly Trend</h2>
-                    <canvas id="trendChart"></canvas>
+                    <h2>Monthly Trend (6 months)</h2>
+                    <canvas id="MonthlyTrendChart" data-range="6"></canvas>
                 </div>
                 <br />
                 <!-- risks - progress bar view -->
-                <div class="dashboard-card risk-card">
-                    <h2>Regional Risk Levels</h2>
+                <a href="regional-risk-levels.php">
+                    <div class="dashboard-card risk-card">
+                        <h2>National Risk Levels</h2>
 
-                    <div class="risk-item">
-                        <label>South East</label>
-                        <div class="progress-bar-container">
-                            <div class="progress-fill high"></div>
+                        <div class="risk-item">
+                            <label>South East</label>
+                            <div class="progress-bar-container">
+                                <div class="progress-fill high"></div>
+                            </div>
+                        </div>
+
+                        <div class="risk-item">
+                            <label>Yorkshire</label>
+                            <div class="progress-bar-container">
+                                <div class="progress-fill medium"></div>
+                            </div>
+                        </div>
+
+                        <div class="risk-item">
+                            <label>Scotland</label>
+                            <div class="progress-bar-container">
+                                <div class="progress-fill low"></div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="more-info">
+                            <!-- Goes to extra info section -->
+                            <a href="regional-risk-levels.php">Want more info?</a>
                         </div>
                     </div>
-
-                    <div class="risk-item">
-                        <label>Yorkshire</label>
-                        <div class="progress-bar-container">
-                            <div class="progress-fill medium"></div>
-                        </div>
-                    </div>
-
-                    <div class="risk-item">
-                        <label>Scotland</label>
-                        <div class="progress-bar-container">
-                            <div class="progress-fill low"></div>
-                        </div>
-                    </div>
-                </div>
+                </a>
             </div>
 
         </div>

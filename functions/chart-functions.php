@@ -2,8 +2,7 @@
 require_once('../functions/db_connect.php');
 
 //SQL
-// $query = "SELECT * FROM species";
-$query = "SELECT s.species_name,s.species_latin_name, COUNT(si.sighting_id) AS sighting_count
+$query = "SELECT s.species_name,s.species_latin_name, COUNT(si.row_num) AS sighting_count
 FROM species s
 LEFT JOIN sighting si ON s.species_id = si.species_id
 GROUP BY s.species_id,s.species_latin_name";
