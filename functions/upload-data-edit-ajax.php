@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $action = trim((string) ($_POST['ajax_action'] ?? ''));
+$showInaccurateOnly = isset($_POST['show-inaccurate-only']) && $_POST['show-inaccurate-only'] == '1';
 
 if ($action === 'save-row') {
     $rowNum = (int) ($_POST['row_num'] ?? 0);
@@ -28,17 +29,29 @@ if ($action === 'save-row') {
         ]);
         exit;
     }
-
-    $updated = updateSighting(
-        $conn,
-        $rowNum,
-        $recordId,
-        $dateTime,
-        $locationName,
-        $speciesName,
-        $latinName
-    );
-
+    if ($showInaccurateOnly) {
+        $updated = updateInaccurateSighting(
+            $conn,
+            $rowNum,
+            $recordId,
+            $dateTime,
+            $locationName,
+            $speciesName,
+            $latinName
+        );
+    }
+    else {
+            // If we're showing all data, we just want to update the existing row
+        $updated = updateSighting(
+            $conn,
+            $rowNum,
+            $recordId,
+            $dateTime,
+            $locationName,
+            $speciesName,
+            $latinName
+        );
+    }
     echo json_encode([
         'success' => $updated,
         'message' => $updated ? 'Row updated successfully.' : 'Unable to update row.'
@@ -56,12 +69,51 @@ if ($action === 'delete-row') {
         ]);
         exit;
     }
-
-    $deleted = deleteSighting($conn, $rowNum);
+    if ($showInaccurateOnly) {
+        // If we're showing only inaccurate data, we want to delete from the inaccurate table
+        $deleted = deleteInaccurateData($conn, $rowNum);
+    } else {
+        // If we're showing all data, we want to delete from the sightings table
+        $deleted = deleteSighting($conn, $rowNum);
+    }
 
     echo json_encode([
         'success' => $deleted,
         'message' => $deleted ? 'Row deleted successfully.' : 'Unable to delete row.'
+    ]);
+    exit;
+}
+
+if ($action === 'approve-row') {
+    $rowNum = (int) ($_POST['row_num'] ?? 0);
+
+    if ($rowNum <= 0) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Invalid row number.'
+        ]);
+        exit;
+    }
+        // move the row to the sightings table
+        $approved = addUpdatedInaccurateData(
+            $conn,
+            $rowNum,
+            $recordId,
+            $dateTime,
+            $locationName,
+            $speciesName,
+            $latinName,
+            $uploadId
+        );
+        if ($approved) {
+            // If the row was successfully added to the sightings table, delete it from the inaccurate table
+            deleteInaccurateData($conn, $rowNum);
+            
+        }
+
+    echo json_encode([
+        'success' => $approved,
+        'message' => $approved ? 'Row approved successfully.' : 'Unable to approve row.'
     ]);
     exit;
 }

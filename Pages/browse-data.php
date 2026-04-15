@@ -140,11 +140,15 @@ session_start();
                                 <tr data-tickid="<?php echo escape($row['row_num'] ?? ''); ?>" data-editing="0">
                                     <td class="col-id"><?php echo escape($row['id'] ?? ''); ?></td>
                                     <td class="col-date"><?php echo escape($row['date_time'] ?? ''); ?></td>
-                                    <td class="col-location"><?php echo escape($row['location_name'] ?? ''); ?></td>                                    <td class="col-species"><?php echo escape($row['species_name'] ?? ''); ?></td>
+                                    <td class="col-location"><?php echo escape($row['location_name'] ?? ''); ?></td>                                    
+                                    <td class="col-species"><?php echo escape($row['species_name'] ?? ''); ?></td>
                                     <td class="col-latin"><?php echo escape($row['species_latin_name'] ?? ''); ?></td>
                                     <td class="col-action">
                                         <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
                                         <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
+                                        <?php if($showInaccurateOnly) { ?>
+                                            <button type="button" class="approve-button-in-list" onclick="moveToSightings(this)">Approve</button>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
