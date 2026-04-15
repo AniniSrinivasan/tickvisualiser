@@ -14,17 +14,17 @@ include('../functions/session.php');
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div>
     <?php
-    function totalSightings($total) {
-        $total = SELECT * FROM Tick_Sightings;
-    }
+    // function totalSightings($total) {
+    //     $total = SELECT * FROM Tick_Sightings;
+    // }
     ?>
     <!-- banner -->
     <section class="banner-section">
         <div class="content-container">
             <h1>Total Sightings in the Database:</h1>
             <h2>
-                <?php totalSightings()
-                 echo $total; ?>
+                <?php //totalSightings()
+                 //echo $total; ?>
             </h2> <!-- update to live database data with php -->
         </div>
     </section>

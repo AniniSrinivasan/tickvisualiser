@@ -693,12 +693,6 @@ a {
     box-shadow: 0 24px 54px rgba(21, 55, 73, 0.15);
 }
 
-.contact-card-primary {
-    background:
-        radial-gradient(circle at top right, rgba(91, 192, 190, 0.18), transparent 34%),
-        rgba(255, 255, 255, 0.97);
-}
-
 .contact-card-secondary {
     display: flex;
     flex-direction: column;
