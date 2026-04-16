@@ -29,17 +29,19 @@ include('../functions/risk-levels-functions.php');
         <div class="col-grp">
             <?php
 
-            $result = $conn->query("SELECT location_name FROM location");
+            $cities = getTicksInCity($conn);
+            $totalUK = getTotalTicksUK($conn);
 
-            while ($row = $result->fetch_assoc()) {
+
+            foreach($cities as $row){
                 $city = $row['location_name'];
+                $ticks = $row['total_ticks'];
 
-                $ticks = getTicksInCity($city, $conn);
-                $percentage = getPercentage($city, $conn);
+                $percentage = getPercentage($ticks, $totalUK);
 
                 if ($percentage < 60) {
                     $class = "low-risk";
-                } elseif ($percentage < 80) {
+                } elseif ($percentage < 75) {
                     $class = "medium-risk";
                 } else {
                     $class = "high-risk";
@@ -61,7 +63,7 @@ include('../functions/risk-levels-functions.php');
                         </div>
                     </div>
                 </div>
-                <?php
+            <?php
             }
             ?>
         </div>
