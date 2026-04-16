@@ -207,14 +207,7 @@ function getLocationId(mysqli $conn, string $locationName): int
     $stmtSelect->close();
     throw new RuntimeException('Location not found.');
 }
-function updateSighting(
-    mysqli $conn,
-    int $rowNum,
-    string $recordId,
-    string $dateTime,
-    string $locationName,
-    string $speciesName,
-    string $latinName
+function updateSighting(mysqli $conn,int $rowNum,string $recordId,string $dateTime,string $locationName,string $speciesName,string $latinName
 ): bool {
     try {
         $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
@@ -246,6 +239,74 @@ function deleteSighting(mysqli $conn, int $rowNum): bool
 {
     try {
         $sql = "DELETE FROM sighting
+                WHERE row_num = ?
+                LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $rowNum);
+        $stmt->execute();
+        $deleted = $stmt->affected_rows > 0;
+        $stmt->close();
+
+        return $deleted;
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+function updateInaccurateSighting(mysqli $conn,int $rowNum,string $recordId,string $dateTime,string $locationName,string $speciesName,string $latinName
+): bool{
+    error_log("updateInaccurateSighting CALLED with rowNum: $rowNum");
+    try {
+        $sql = "UPDATE inaccurate_sighting
+                SET id = ?, species = ?, latin_name = ?, city = ?, date_time = ?
+                WHERE row_num = ?
+                LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssssi", $recordId, $speciesName, $latinName, $locationName, $dateTime, $rowNum);
+        $stmt->execute();
+        $affected = $stmt->affected_rows;
+        $stmt->close();
+
+        return $affected >= 0;
+    } catch (Throwable $e) {
+        error_log("updateInaccurateSighting failed: " . $e->getMessage());
+        return false;
+    }
+}
+function addUpdatedInaccurateData(mysqli $conn,int $rowNum,string $recordId,string $dateTime,string $locationName,string $speciesName,string $latinName,int $uploadId
+): bool {
+    try {
+        // Get correct foreign keys
+        $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
+        $locationId = getOrCreateLocation($conn, $locationName);
+        $normalisedDateTime = normaliseDateTime($dateTime);
+
+        if ($recordId === '' || $normalisedDateTime === null) {
+            throw new RuntimeException('Invalid data.');
+        }
+
+        $sql = "INSERT INTO sighting (id, date_time, species_id, location_id, upload_id)
+        VALUES (?, ?, ?, ?, ?)";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssiii", $recordId, $normalisedDateTime, $speciesId, $locationId, $uploadId);
+        $stmt->execute();
+
+        $inserted = $stmt->affected_rows > 0;
+        $stmt->close();
+
+        return $inserted;
+
+    } catch (Throwable $e) {
+        error_log("UPDATE ERROR: " . $e->getMessage());
+        return false;
+    }
+}
+function deleteInaccurateData(mysqli $conn, int $rowNum): bool
+{
+    try {
+        $sql = "DELETE FROM inaccurate_sighting
                 WHERE row_num = ?
                 LIMIT 1";
 
@@ -480,7 +541,9 @@ function processUpload(mysqli $conn, array $file, string $uploadDirectory): arra
 
 function handleAjaxRequest(mysqli $conn, string $uploadDirectory): void
 {
+
     $action = trim((string) ($_POST['ajax_action'] ?? ''));
+    //get or post 
     $showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1';
     try {
         switch ($action) {
@@ -509,21 +572,55 @@ function handleAjaxRequest(mysqli $conn, string $uploadDirectory): void
                 $recordId = trim((string) ($_POST['row_id'] ?? ''));
                 $dateTime = trim((string) ($_POST['date_time'] ?? ''));
                 $locationName = trim((string) ($_POST['location_name'] ?? ''));
-                $county = trim((string) ($_POST['county'] ?? ''));
                 $speciesName = trim((string) ($_POST['species_name'] ?? ''));
                 $latinName = trim((string) ($_POST['species_latin_name'] ?? ''));
 
-                if ($rowNum <= 0 || $uploadId <= 0) {
-                    jsonResponse(false, 'Invalid row or upload selected.', [], 400);
+                // if ($rowNum <= 0 || $uploadId <= 0) {
+                //     jsonResponse(false, 'Invalid row or upload selected.', [], 400);
+                // }
+
+                // if (!updateSighting($conn, $rowNum, $recordId, $dateTime, $locationName, $speciesName, $latinName)) {
+                //     jsonResponse(false, 'Unable to update row.', [
+                //         'selected_upload_id' => $uploadId,
+                //         'rows' => getRowsByUploadId($conn, $uploadId,$showInaccurateOnly),
+                //     ], 400);
+                // }
+
+                // jsonResponse(true, 'Row updated successfully.', [
+                //     'selected_upload_id' => $uploadId,
+                //     'rows' => getRowsByUploadId($conn, $uploadId, $showInaccurateOnly),
+                // ]);
+                if ($showInaccurateOnly) {
+                    $updated = addUpdatedInaccurateData(
+                        $conn,
+                        $rowNum,
+                        $recordId,
+                        $dateTime,
+                        $locationName,
+                        $speciesName,
+                        $latinName
+                    );
+                    if ($updated) {
+                        deleteInaccurateData($conn, $rowNum);
+                    }
+                } else {
+                    $updated = updateSighting(
+                        $conn,
+                        $rowNum,
+                        $recordId,
+                        $dateTime,
+                        $locationName,
+                        $speciesName,
+                        $latinName
+                    );
                 }
 
-                if (!updateSighting($conn, $rowNum, $recordId, $dateTime, $locationName, $speciesName, $latinName)) {
+                if (!$updated) {
                     jsonResponse(false, 'Unable to update row.', [
                         'selected_upload_id' => $uploadId,
-                        'rows' => getRowsByUploadId($conn, $uploadId,$showInaccurateOnly),
+                        'rows' => getRowsByUploadId($conn, $uploadId, $showInaccurateOnly),
                     ], 400);
                 }
-
                 jsonResponse(true, 'Row updated successfully.', [
                     'selected_upload_id' => $uploadId,
                     'rows' => getRowsByUploadId($conn, $uploadId, $showInaccurateOnly),
@@ -534,11 +631,23 @@ function handleAjaxRequest(mysqli $conn, string $uploadDirectory): void
                 $uploadId = (int) ($_POST['upload_id'] ?? 0);
                 $rowNum = (int) ($_POST['row_num'] ?? 0);
 
-                if ($rowNum <= 0 || $uploadId <= 0) {
-                    jsonResponse(false, 'Invalid row or upload selected.', [], 400);
+                // if ($rowNum <= 0 || $uploadId <= 0) {
+                //     jsonResponse(false, 'Invalid row or upload selected.', [], 400);
+                // }
+
+                // if (!deleteSighting($conn, $rowNum)) {
+                //     jsonResponse(false, 'Unable to delete row.', [
+                //         'selected_upload_id' => $uploadId,
+                //         'rows' => getRowsByUploadId($conn, $uploadId, $showInaccurateOnly),
+                //     ], 400);
+                // }
+                if ($showInaccurateOnly) {
+                    $deleted = deleteInaccurateData($conn, $rowNum);
+                } else {
+                    $deleted = deleteSighting($conn, $rowNum);
                 }
 
-                if (!deleteSighting($conn, $rowNum)) {
+                if (!$deleted) {
                     jsonResponse(false, 'Unable to delete row.', [
                         'selected_upload_id' => $uploadId,
                         'rows' => getRowsByUploadId($conn, $uploadId, $showInaccurateOnly),

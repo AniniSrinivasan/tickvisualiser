@@ -491,6 +491,10 @@ async function saveInlineEdit(button) {
   formData.append("species_name", species);
   formData.append("species_latin_name", latinName);
 
+  const checkbox = document.getElementById('show-inaccurate-only');
+  const showInaccurateOnly = checkbox && checkbox.checked ? 1 : 0;
+  formData.append("show-inaccurate-only", showInaccurateOnly);
+
   try {
     const response = await fetch("../functions/upload-functions.php", {
       method: "POST",
@@ -561,6 +565,10 @@ async function deleteInlineRow(row) {
   formData.append("ajax_action", "delete-row");
   formData.append("upload_id", uploadId);
   formData.append("row_num", rowNum);
+
+  const checkbox = document.getElementById('show-inaccurate-only');
+  const showInaccurateOnly = checkbox && checkbox.checked ? 1 : 0;
+  formData.append("show-inaccurate-only", showInaccurateOnly);
 
   try {
     const response = await fetch("../functions/upload-functions.php", {
