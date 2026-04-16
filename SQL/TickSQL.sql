@@ -40,4 +40,6 @@ drop table if exists species;
 drop table if exists upload;
 drop table if exists Tick_Sightings;
 drop table if exists inaccurate_sighting;
+drop table if exists roles;
+drop table if exists users;
 SET FOREIGN_KEY_CHECKS = 1;

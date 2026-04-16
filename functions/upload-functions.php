@@ -274,31 +274,42 @@ function updateInaccurateSighting(mysqli $conn,int $rowNum,string $recordId,stri
 }
 function addUpdatedInaccurateData(mysqli $conn,int $rowNum,string $recordId,string $dateTime,string $locationName,string $speciesName,string $latinName,int $uploadId
 ): bool {
-    try {
-        // Get correct foreign keys
-        $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
-        $locationId = getOrCreateLocation($conn, $locationName);
         $normalisedDateTime = normaliseDateTime($dateTime);
 
-        if ($recordId === '' || $normalisedDateTime === null) {
-            throw new RuntimeException('Invalid data.');
+        $hasAccurateData = (
+            $recordId !== '' &&
+            $speciesName !== '' &&
+            $latinName !== '' &&
+            $locationName !== '' &&
+            $normalisedDateTime !== null &&
+            //string length check for record ID
+            strlen($recordId) === 20
+            );
+    if ($hasAccurateData) {
+        try {
+            // Get correct foreign keys
+            $speciesId = getOrCreateSpecies($conn, $speciesName, $latinName);
+            $locationId = getOrCreateLocation($conn, $locationName);
+
+            $sql = "INSERT INTO sighting (id, date_time, species_id, location_id, upload_id)
+            VALUES (?, ?, ?, ?, ?)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssiii", $recordId, $normalisedDateTime, $speciesId, $locationId, $uploadId);
+            $stmt->execute();
+
+            $inserted = $stmt->affected_rows > 0;
+            $stmt->close();
+
+            return $inserted;
+
+        } catch (Throwable $e) {
+            error_log("UPDATE ERROR: " . $e->getMessage());
+            return false;
         }
-
-        $sql = "INSERT INTO sighting (id, date_time, species_id, location_id, upload_id)
-        VALUES (?, ?, ?, ?, ?)";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssiii", $recordId, $normalisedDateTime, $speciesId, $locationId, $uploadId);
-        $stmt->execute();
-
-        $inserted = $stmt->affected_rows > 0;
-        $stmt->close();
-
-        return $inserted;
-
-    } catch (Throwable $e) {
-        error_log("UPDATE ERROR: " . $e->getMessage());
-        return false;
+    }
+    else{
+        throw new RuntimeException('Invalid data.');
     }
 }
 function deleteInaccurateData(mysqli $conn, int $rowNum): bool
@@ -542,7 +553,6 @@ function handleAjaxRequest(mysqli $conn, string $uploadDirectory): void
 
     $action = trim((string) ($_POST['ajax_action'] ?? ''));
 
-    // $showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1';
     $showInaccurateOnly = $_POST['show-inaccurate-only'] ?? 0;
     try {
         switch ($action) {
