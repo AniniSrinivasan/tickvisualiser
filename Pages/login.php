@@ -6,7 +6,6 @@ $error="";
 if ($_SERVER['REQUEST_METHOD']==='POST'){
   include_once('../functions/db_connect.php');
 
-$email = $_POST['user_email'];
   $email=$_POST['user_email'];
   $password=$_POST['password'];
 
