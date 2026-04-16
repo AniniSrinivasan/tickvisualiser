@@ -102,10 +102,10 @@ include('../functions/session.php');
 
                 <label class="manage-checkbox" for="show-inaccurate-only">
                 <!-- Hidden input to ensure a value is sent when the checkbox is unchecked     -->
-                <input 
+                <!-- <input 
                     type="hidden" 
                     name="show-inaccurate-only" 
-                    value="0">
+                    value="0"> -->
                     <!-- inaccurate data based on id file uploaded -->
                 <input 
                     type="checkbox" 
@@ -119,7 +119,8 @@ include('../functions/session.php');
             </form>
             <?php
             // Determine whether to show only inaccurate data based on the checkbox value
-            $showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1';
+            $showInaccurateOnly = $_GET['show-inaccurate-only'] ?? 0;
+            // $showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] === '1';
             ?>
 
             <div class="manage-table-wrapper">
@@ -146,7 +147,7 @@ include('../functions/session.php');
                                     <td class="col-action">
                                         <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
                                         <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
-                                        <?php if($showInaccurateOnly) { ?>
+                                        <?php if($showInaccurateOnly === '1') { ?>
                                             <button type="button" class="approve-button-in-list" onclick="moveToSightings(this)">Approve</button>
                                         <?php } ?>
                                     </td>

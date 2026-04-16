@@ -564,6 +564,15 @@ a {
     padding: 10px;
     cursor: pointer;
 }
+/* approve button Inaccurate*/
+.approve-button{
+    background-color: #E1F1E5;
+    color: #156534;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+}
 
 /* pending button */
 .pending-button-in-list {
@@ -586,7 +595,8 @@ a {
 }
 
 .approve-button-in-list,
-.reject-button-in-list {
+.reject-button-in-list,
+.approve-button {
     padding: 10px 14px;
     white-space: nowrap;
 }
@@ -913,6 +923,7 @@ a {
 
 .approve-button-in-list,
 .reject-button-in-list,
+.approve-button,
 .pending-button-in-list,
 .complete-button-in-list {
     padding: 10px 14px;
@@ -926,6 +937,7 @@ a {
 
 .approve-button-in-list:hover,
 .reject-button-in-list:hover,
+.approve-button,
 .pending-button-in-list:hover,
 .complete-button-in-list:hover {
     transform: translateY(-1px);

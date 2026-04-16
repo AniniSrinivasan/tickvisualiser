@@ -451,6 +451,7 @@ function cancelInlineEdit(button) {
   row.querySelector(".col-action").innerHTML = `
     <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
     <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
+    <button type="button" class="approve-button" onclick="moveToSightings(this)">Approve</button>
   `;
 
   row.dataset.editing = "0";
@@ -517,6 +518,7 @@ async function saveInlineEdit(button) {
     row.querySelector(".col-action").innerHTML = `
       <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
       <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
+      <button type="button" class="approve-button" onclick="moveToSightings(this)">Approve</button>
     `;
 
     row.dataset.editing = "0";
@@ -587,6 +589,56 @@ async function deleteInlineRow(row) {
   } catch (error) {
     showRowStatus(row, "Something went wrong while deleting.", "error");
     console.error(error);
+  }
+}
+async function moveToSightings(button) {
+  const row = button.closest("tr");
+  if (!row) return;
+
+  const table = row.closest(".manage-table");
+  const uploadId = table ? table.dataset.uploadId : "";
+  const rowNum = row.dataset.tickid;
+
+  if (!uploadId || !rowNum) {
+    showRowStatus(row, "Missing upload or row ID.", "error");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("ajax_action", "approve-row");
+  formData.append("upload_id", uploadId);
+  formData.append("row_num", rowNum);
+
+  formData.append("row_id", row.querySelector(".col-id").textContent.trim());
+  formData.append("date_time", row.querySelector(".col-date").textContent.trim());
+  formData.append("location_name", row.querySelector(".col-location").textContent.trim());
+  formData.append("species_name", row.querySelector(".col-species").textContent.trim());
+  formData.append("species_latin_name", row.querySelector(".col-latin").textContent.trim());
+
+  const checkbox = document.getElementById('show-inaccurate-only');
+  const showInaccurateOnly = checkbox && checkbox.checked ? 1 : 0;
+  formData.append("show-inaccurate-only", showInaccurateOnly);
+
+  try {
+    const res = await fetch("../functions/upload-functions.php", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await res.json();
+
+    if (!result.success) {
+      showRowStatus(row, result.message || "Approval failed.", "error");
+      return;
+    }
+    showRowStatus(row, "Moved to sightings.", "success");
+    setTimeout(() => {
+      row.remove();
+    }, 500);
+
+  } catch (err) {
+    console.error(err);
+    showRowStatus(row, "Server error.", "error");
   }
 }
 
@@ -855,4 +907,3 @@ document.addEventListener("DOMContentLoaded", function () {
   fitMapProperly();
   initMap();
 });
-show_inaccurate_only: document.getElementById('show-inaccurate-only').checked ? 1 : 0
