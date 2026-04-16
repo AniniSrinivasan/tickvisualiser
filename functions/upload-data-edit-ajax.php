@@ -41,7 +41,7 @@ if ($action === 'save-row') {
         );
     }
     else {
-            // If we're showing all data, we just want to update the existing row
+        // If we're showing all data, we just want to update the existing row
         $updated = updateSighting(
             $conn,
             $rowNum,
