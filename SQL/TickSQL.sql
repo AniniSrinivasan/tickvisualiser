@@ -42,7 +42,3 @@ VALUES
 ("user"),
 ("admin");
 
-INSERT INTO users(user_email,user_hash_password,f_name,l_name,role_id)
-VALUES
-("Admin@example.com","adminuser","admin","user","2"),
-("user@example.com","useruser","user","user","1");
