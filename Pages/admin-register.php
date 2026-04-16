@@ -6,9 +6,9 @@ include('../functions/session.php');
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Register page">
+    <meta name="description" content="Admin Register page">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Register • Tick Visualiser</title>
+    <title>Admin Register • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/login.css">
     <link rel="stylesheet" href="../style/style.css">
     <script src="../script/script.js"></script>
