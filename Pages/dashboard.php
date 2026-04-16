@@ -68,32 +68,42 @@ include('../functions/session.php');
                 <a href="regional-risk-levels.php">
                     <div class="dashboard-card risk-card">
                         <h2>National Risk Levels</h2>
+                        <?php 
+                        include_once('../functions/risk-levels-functions.php');
+                        $cities = getTicksInCityLimit3($conn);
+                        $totalUK = getTotalTicksUK($conn);
 
-                        <div class="risk-item">
-                            <label>South East</label>
-                            <div class="progress-bar-container">
-                                <div class="progress-fill high"></div>
-                            </div>
-                        </div>
+                        foreach($cities as $row){
+                            $city = $row['location_name'];
+                            $ticks = $row['total_ticks'];
 
-                        <div class="risk-item">
-                            <label>Yorkshire</label>
-                            <div class="progress-bar-container">
-                                <div class="progress-fill medium"></div>
-                            </div>
-                        </div>
+                            $percentage = getPercentage($ticks, $totalUK);
 
-                        <div class="risk-item">
-                            <label>Scotland</label>
-                            <div class="progress-bar-container">
-                                <div class="progress-fill low"></div>
+                            if ($percentage < 60) {
+                                $class = "low-risk";
+                            } elseif ($percentage < 75) {
+                                $class = "medium-risk";
+                            } else {
+                                $class = "high-risk";
+                            }
+                            ?>
+                            <div class="risk-item">
+                                <label><?php echo $city; ?></label>
+                                <div class="risk-progress-bar">
+                                    <div class="risk-progress-fill <?php echo $class; ?>"
+                                        style="width: <?php echo $percentage; ?>%; border:thick;">
+                                        <?php echo round($percentage); ?>%
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <br />
-                        <div class="more-info">
-                            <!-- Goes to extra info section -->
-                            <a href="regional-risk-levels.php">Want more info?</a>
-                        </div>
+                            <br />
+                        <?php
+                        }
+                        ?>
+                            <div class="more-info">
+                                <!-- Goes to extra info section -->
+                                <a href="regional-risk-levels.php">Want more info?</a>
+                            </div>
                     </div>
                 </a>
             </div>

@@ -84,15 +84,6 @@ $email = $_POST['user_email'];
           <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
         </label>
 
-        <div class="form-row">
-          <!-- <label class="checkbox">
-            <input type="checkbox" name="remember" />
-            <span>Remember me</span>
-          </label> -->
-
-          <a class="link forgot-password" href="#">Forgot password?</a>
-        </div>
-
         <button type="submit" name="signIn" value="1" class="btn-primary btn-full">Sign in</button>
 
         <p class="helper"> Don’t have an account? <a class="link" href="register.php">Create one</a></p>
