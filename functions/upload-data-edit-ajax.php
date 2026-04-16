@@ -12,11 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $action = trim((string) ($_POST['ajax_action'] ?? ''));
-$showInaccurateOnly = isset($_POST['show-inaccurate-only']) && $_POST['show-inaccurate-only'] == '1';
+$showInaccurateOnly = (isset($_GET['show-inaccurate-only']) && (int)$_GET['show-inaccurate-only'] === 1) ? 1 : 0;
 
 if ($action === 'save-row') {
     $rowNum = (int) ($_POST['row_num'] ?? 0);
-    $recordId = trim((string) ($_POST['id'] ?? ''));
+    $recordId = trim((string) ($_POST['row_id'] ?? ''));
     $dateTime = trim((string) ($_POST['date_time'] ?? ''));
     $locationName = trim((string) ($_POST['location_name'] ?? ''));
     $speciesName = trim((string) ($_POST['species_name'] ?? ''));
@@ -29,7 +29,7 @@ if ($action === 'save-row') {
         ]);
         exit;
     }
-    if ($showInaccurateOnly) {
+    if ($showInaccurateOnly === 1) {
         $updated = updateInaccurateSighting(
             $conn,
             $rowNum,
@@ -69,7 +69,7 @@ if ($action === 'delete-row') {
         ]);
         exit;
     }
-    if ($showInaccurateOnly) {
+    if ($showInaccurateOnly === 1) {
         // If we're showing only inaccurate data, we want to delete from the inaccurate table
         $deleted = deleteInaccurateData($conn, $rowNum);
     } else {
@@ -86,6 +86,11 @@ if ($action === 'delete-row') {
 
 if ($action === 'approve-row') {
     $rowNum = (int) ($_POST['row_num'] ?? 0);
+    $recordId = trim((string) ($_POST['row_id'] ?? ''));
+    $dateTime = trim((string) ($_POST['date_time'] ?? ''));
+    $locationName = trim((string) ($_POST['location_name'] ?? ''));
+    $speciesName = trim((string) ($_POST['species_name'] ?? ''));
+    $latinName = trim((string) ($_POST['species_latin_name'] ?? ''));
 
     if ($rowNum <= 0) {
         echo json_encode([
