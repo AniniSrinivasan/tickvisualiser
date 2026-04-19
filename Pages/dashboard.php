@@ -16,6 +16,23 @@ include('../functions/session.php');
     <script src="../script/script.js"></script>
 </head>
 
+<?php
+include_once('../functions/db_connect.php');
+$totalsightings = 993;
+
+function getTotalSightings(mysqli $conn): int {
+    $sql = "SELECT COUNT(*) AS total FROM sighting";
+    $result = $conn->query($sql);
+    if ($result && $row = $result->fetch_assoc()) {
+        return (int)$row['total'];
+    }
+    return 0;
+}
+$totalsightings = getTotalSightings($conn);
+
+
+?>
+
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div> <!-- Navbar will be loaded here -->
 
@@ -48,14 +65,12 @@ include('../functions/session.php');
             <!-- summary -->
             <div class="right">
                 <div class="dashboard-card summary-card">
-                    <a href="total-sightings.php">
                         <div class="card-header">
                             <h2>Total Sightings</h2>
                             <span class="year-badge">2026</span>
                         </div>
-                        <p class="metric-value">12,540</p>
-                        <p class="card-subtext">Cleaned & validated dataset</p>
-                    </a>
+                        <p class="metric-value"><?php echo $totalsightings; ?></p>
+                    <p class="card-subtext">Cleaned & validated dataset</p>
                 </div>
                 <br />
                 <!-- trend - graph view -->
