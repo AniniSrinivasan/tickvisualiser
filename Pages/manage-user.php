@@ -1,6 +1,10 @@
 <?php
 include("../functions/session.php");
-?>
+include("../functions/manage-functions.php");
+include_once('../functions/db_connect.php'); ?>
+<?php require_once '../functions/upload-functions.php'; ?>
+<?php require_once '../functions/error.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,41 +13,27 @@ include("../functions/session.php");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../style/style.css">
     <title>Total-Sightings • Tick Visualiser</title>
-    <script src="../script/script.js"></script>
+    <script src="../script/script.js" defer></script>
 </head>
 
-<?php function addAdmin($admin_name, $admin_email, $admin_location, $admin_role)
-{
-    include_once('../functions/db_connect.php');
+<?php
+require_once '../functions/db_connect.php';
+require_once '../functions/manage-functions.php';
 
-    $stmt=$conn->prepare("INSERT INTO admin(admin_name, admin_email, admin_location, admin_role)
-    VALUES (?, ?, ?, ?)");
-    $stmt->bind_param('ssssi', $admin_name, $admin_email, $admin_location, $admin_role);
+$action = trim((string) ($_POST['ajax_action'] ?? ''));
 
-    $success=$stmt->execute();
+if ($action) {
+    handleUserAjaxRequest($conn, ''); // No upload directory for users
+    exit;
+}
 
-    $stmt->close();
-    $conn->close();
+if (isset($_POST['delete_user'])) {
+    $user_email = trim((string) ($_POST['user_email'] ?? ''));
 
-    return $success;}
-
-    function deleteAdmin($admin_id)
-    {
-        include_once('../functions/db_connect.php');
-
-        $stmt=$conn->prepare("DELETE FROM admin WHERE admin_id=?");
-        $stmt->bind_param('i', $admin_id);
-
-        $success=$stmt->execute();
-
-        $stmt->close();
-        $conn->close();
-
-        return $success;
+    if ($user_email !== '') {
+        $deleted = deleteUser($conn, $user_email);
     }
-
-
-
+}
 ?>
 
 <body class="dashboard-body" onload="loadNavbar()">
@@ -60,9 +50,9 @@ include("../functions/session.php");
         <div class="dashboard-card">
             <div class="card-header">
                 <h2>Browse Users</h2>
-                <input type="button" class="btn-primary" name="Create" value="Create User">
+                <a type="button" class="btn-primary" name="Create" href="register.php"> Create User </a>
             </div>
-            <br/>
+            <br />
             <div>
                 <input type="search" id="browse-user-search" name="browse-user-search" class="manage-toolbar-input"
                     placeholder="Search by ID, Name or Email..." onkeyup="searchBrowswData(this)">
@@ -71,45 +61,42 @@ include("../functions/session.php");
                 <table class="manage-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
                             <th>Email</th>
-                            <th>Location</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
                             <th>Role</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $user = getUsers($conn); ?>
+                        <?php foreach ($user as $row): ?>
                         <tr>
-                            <td>1</td>
-                            <td>Anini Srinivasan</td>
-                            <td>anini@example.com</td>
-                            <td>Sheffield</td>
-                            <td>Admin</td>
-                            <td>
-                                <form>
-                                    <input type="submit" class="approve-button-in-list" name="Edit" value="Edit">
-                                    <input type="button" class="reject-button-in-list reject-btn" name="delete"
-                                        value="Delete">
+                            <td class="col-email" ><?php echo escape($row['user_email'] ?? ''); ?></td>
+                            <td class="col-f_name" ><?php echo escape($row['f_name'] ?? ''); ?></td>
+                            <td class="col-l_name" ><?php echo escape($row['l_name'] ?? ''); ?></td>
+                            <td class="col-role_name"><?php echo escape($row['role_name'] ?? ''); ?></td>
+                            <td class="col-action">
+                                <form method="POST" action="" style="display:inline;">
+                                    <button type="button" name = "update_user" class="approve-button-in-list" onclick="enableUserInlineEdit(this)">Edit</button>
+                                    <input type="hidden" name="user_email" value="<?php echo escape($row['user_email'] ?? ''); ?>">
+                                    <button type="submit" name="delete_user" class="reject-button-in-list" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
                                 </form>
                             </td>
                         </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Rachel Kirtland</td>
-                            <td>rachel@example.com</td>
-                            <td>Sheffield</td>
-                            <td>User</td>
-                            <td>
-                                <form>
-                                    <input type="submit" class="approve-button-in-list" name="Edit" value="Edit">
-                                    <input type="button" class="reject-button-in-list reject-btn" name="delete"
-                                        value="Delete" onclick="confirmDelete(this)">
-                                </form>
-                            </td>
-                        </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div id="popup-confirmation" class="popup-overlay" style="display: none;">
+            <div class="popup-box">
+                <h3>Delete</h3>
+                <p>Are you sure you want to delete this?</p>
+                <div class="popup-actions">
+                    <button id="confirm" type="submit" class="confirm" name="delete">Yes, Delete</button>
+                    <button id="cancel" class="cancel">Cancel</button>
+                </div>
             </div>
         </div>
     </main>

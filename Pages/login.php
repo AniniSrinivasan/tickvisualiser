@@ -67,12 +67,6 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
 
       <form class="auth-form" method="post" action="">
 
-        <?php if(!empty($error)): ?>
-          <p style="color: red; margin-bottom:10px;">
-            <?php echo $error; ?>
-          </p>
-        <?php endif; ?>
-
         <label class="field">
           <span>Email</span>
           <input type="email" name="user_email" placeholder="you@example.com" autocomplete="email" required />
@@ -82,6 +76,12 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
           <span>Password</span>
           <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
         </label>
+
+        <?php if(!empty($error)): ?>
+          <p style="color: red; margin-bottom:10px;">
+            <?php echo $error; ?>
+          </p>
+        <?php endif; ?>
 
         <button type="submit" name="signIn" value="1" class="btn-primary btn-full">Sign in</button>
 

@@ -17,6 +17,8 @@ include('../functions/session.php');
 <?php
 require_once '../functions/error.php';
 
+$error="";
+
 function addUser($user_email, $user_hash_password, $f_name, $l_name, $role_id)
 {
     include_once('../functions/db_connect.php');
@@ -40,31 +42,31 @@ if (isset($_POST['createAdmin'])) {
 
     if (strlen($_POST["user_hash_password"]) < 8 || strlen($_POST["user_hash_password"]) > 20) {
         //css needed    
-        echo "Password must be between 8 and 20 characters!";
-        exit;
+        $error= "Password must be between 8 and 20 characters!";
     }
 
-    if ($_POST["user_hash_password"] !== $_POST["confirmPassword"]) {
+    elseif ($_POST["user_hash_password"] !== $_POST["confirmPassword"]) {
         //css needed
-        echo "Passwords must be identical, \n They must match!";
-        exit;
+        $error= "Passwords must be identical, \n They must match!";
     }
 
-    $password = $_POST['user_hash_password'];
-    $hash = password_hash($password, PASSWORD_DEFAULT);
+    else{
+        $password = $_POST['user_hash_password'];
+        $hash = password_hash($password, PASSWORD_DEFAULT);
 
-    //users role id 
-    $role_id = 2;
+        //users role id 
+        $role_id = 2;
 
-    addUser(
-        $_POST['user_email'],
-        $hash,
-        $_POST['f_name'],
-        $_POST['l_name'],
-        $role_id
-    );
+        addUser(
+            $_POST['user_email'],
+            $hash,
+            $_POST['f_name'],
+            $_POST['l_name'],
+            $role_id
+        );
 
-    header('Location: login.php');
+        header('Location: login.php');
+    }
 }
 
 ?>
@@ -111,6 +113,13 @@ if (isset($_POST['createAdmin'])) {
                     <span>Confirm Password</span>
                     <input type="password" name="confirmPassword" placeholder="••••••••" required />
                 </label>
+
+                <?php
+                if (!empty($error)): ?>
+                    <p style="color: red; margin-bottom:10px;">
+                        <?php echo $error; ?>
+                    </p>    
+                <?php endif; ?>
 
                 <button type="submit" name="createAdmin" class="btn-primary btn-full">Create An Admin Account</button>
 
