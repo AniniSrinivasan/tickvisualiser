@@ -96,7 +96,10 @@ include('../functions/session.php');
                         <b>Passerine tick</b>
                         <p>Dermacentor frontalis<br>
                         Generally found in birds nest in woodland, parks and gardens.<br>
-                        Feeds on songbirds (passerines) like thrushes, warblers, and blackbirds.</p>
+                        Feeds on songbirds (passerines) like thrushes, warblers, and blackbirds.<br>
+                        <div class="more-info">
+                        <a href="https://www.esccapuk.org.uk/page/Ixodes+frontalis/79/">Source: ESCCAP</a>
+                        </div></p>
                     </div>
                     <div class="card-image">
                         <img src="../TickImages/PasserineTick.jpg" alt="Passerine tick">
@@ -107,7 +110,10 @@ include('../functions/session.php');
                         <b>Fox/Badger tick</b>
                         <p>Ixodes canisuga<br>
                         Commonly found in areas with high populations of foxes and badgers.<br>
-                        Feeds on foxes, cats, dogs, horses, badgers and sheep.</p>
+                        Feeds on foxes, cats, dogs, horses, badgers and sheep.<br>
+                        <div class="more-info">
+                        <a href="https://www.esccapuk.org.uk/page/Ixodes+canisuga/66/">Source: ESCCAP</a>
+                        </div></p>
                     </div>
                     <div class="card-image">
                         <img src="../TickImages/FoxBadgerTick.jpg" alt="Fox/Badger tick">
@@ -118,7 +124,10 @@ include('../functions/session.php');
                         <b>Southern rodent tick</b>
                         <p>Ixodes acuminatus<br>
                         Typically found in grassy and wooded areas, Primarily in southern England<br>
-                        It specializes in parasitizing small rodents within their burrows and nests.</p>
+                        It specializes in parasitizing small rodents within their burrows and nests.<br>
+                        <div class="more-info">
+                        <a href="https://www.esccapuk.org.uk/page/Ixodes+acuminatus/75/">Source: ESCCAP</a>
+                        </div></p>
                     </div>
                     <div class="card-image">
                         <img src="../TickImages/SouthernRodentTick.jpg" alt="Southern rodent tick">
@@ -129,7 +138,10 @@ include('../functions/session.php');
                         <b>Tree-hole tick</b>
                         <p>Ixodes arboricola<br>
                         Commonly found in tree holes and other sheltered areas<br>
-                        Infests cavity-nesting birds.</p>
+                        Infests cavity-nesting birds.<br>
+                        <div class="more-info">
+                        <a href="https://www.esccapuk.org.uk/page/Ixodes+arboricola/77/">Source: ESCCAP</a>
+                        </div></p>
                     </div>
                     <div class="card-image">
                         <img src="../TickImages/TreeHoleTick.jpg" alt="Tree-hole tick">
@@ -141,7 +153,9 @@ include('../functions/session.php');
                         <p>Ixodes apronophorus<br> 
                            Typically found in marshy and humid areas<br>
                            Feeds on large animals such as dogs, cattle, sheep, foxes.
-                        </p>
+                           <div class="more-info">
+                        <a href="https://www.esccapuk.org.uk/page/Ixodes+apronophorus/76/">Source: ESCCAP</a>
+                        </div></p>
                     </div>
                     <div class="card-image">
                         <img src="../TickImages/MarshTick.jpg" alt="Marsh tick">
