@@ -907,3 +907,276 @@ document.addEventListener("DOMContentLoaded", function () {
   fitMapProperly();
   initMap();
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("dashboard-search-input");
+  const suggestionsBox = document.getElementById("dashboard-search-suggestions");
+  const searchForm = document.getElementById("dashboard-search-form");
+
+  if (!searchInput || !suggestionsBox || !searchForm) {
+    return;
+  }
+
+  const columns = [
+    { value: "location_name", label: "location" },
+    { value: "species_name", label: "species" },
+    { value: "species_latin_name", label: "species_latin" }
+  ];
+
+  const operators = [
+    { value: "AND", label: "AND" },
+    { value: "OR", label: "OR" }
+  ];
+
+  let activeIndex = -1;
+  let currentItems = [];
+
+  function hideSuggestions() {
+    suggestionsBox.style.display = "none";
+    suggestionsBox.innerHTML = "";
+    currentItems = [];
+    activeIndex = -1;
+  }
+
+  function renderSuggestions(items, type) {
+    currentItems = items;
+    activeIndex = -1;
+
+    if (!items.length) {
+      hideSuggestions();
+      return;
+    }
+
+    suggestionsBox.innerHTML = items.map(function (item, index) {
+      return '<button type="button" data-index="' + index + '" data-type="' + type + '" style="display:block; width:100%; text-align:left; padding:12px 14px; border:0; background:#fff; cursor:pointer; font:inherit;">' + escapeHtml(item.label) + '</button>';
+    }).join("");
+
+    suggestionsBox.style.display = "block";
+  }
+
+  function updateActiveItem() {
+    const buttons = suggestionsBox.querySelectorAll("button");
+
+    buttons.forEach(function (button, index) {
+      button.style.background = index === activeIndex ? "#f1f5f9" : "#fff";
+    });
+  }
+
+  function getLastClauseInfo() {
+    const value = searchInput.value;
+    const operatorMatch = value.match(/(?:^|\s)(AND|OR)\s+(@[^@]*)$/i);
+
+    if (operatorMatch) {
+      return {
+        prefix: value.slice(0, value.length - operatorMatch[2].length),
+        segment: operatorMatch[2]
+      };
+    }
+
+    const clauseMatch = value.match(/(^|.*\s(?:AND|OR)\s)(@[^@]*)$/i);
+
+    if (clauseMatch) {
+      return {
+        prefix: clauseMatch[1],
+        segment: clauseMatch[2]
+      };
+    }
+
+    return {
+      prefix: "",
+      segment: value
+    };
+  }
+
+  function replaceLastClause(nextValue) {
+    const clauseInfo = getLastClauseInfo();
+    searchInput.value = clauseInfo.prefix + nextValue;
+  }
+
+  function getColumnSuggestions() {
+    const clauseInfo = getLastClauseInfo();
+    const value = clauseInfo.segment;
+
+    if (!value.startsWith("@")) {
+      hideSuggestions();
+      return;
+    }
+
+    if (value.includes(":")) {
+      fetchValueSuggestions();
+      return;
+    }
+
+    const searchText = value.slice(1).trim().toLowerCase();
+    const items = columns
+      .filter(function (column) {
+        return column.label.toLowerCase().includes(searchText);
+      })
+      .map(function (column) {
+        return {
+          value: column.value,
+          label: column.label
+        };
+      });
+
+    renderSuggestions(items, "column");
+  }
+
+  function getOperatorSuggestions() {
+    const trimmedRight = searchInput.value.replace(/\s+$/, "");
+    const operatorText = trimmedRight.match(/(?:\s+)(A|AN|AND|O|OR)?$/i);
+
+    if (!/@[a-zA-Z_][a-zA-Z0-9_]*\s*:\s*.+$/i.test(trimmedRight)) {
+      hideSuggestions();
+      return;
+    }
+
+    if (!operatorText) {
+      renderSuggestions(operators, "operator");
+      return;
+    }
+
+    const current = (operatorText[1] || "").toUpperCase();
+    const items = operators.filter(function (operator) {
+      return operator.label.indexOf(current) === 0;
+    });
+
+    renderSuggestions(items, "operator");
+  }
+
+  async function fetchValueSuggestions() {
+    const clauseInfo = getLastClauseInfo();
+    const value = clauseInfo.segment;
+
+    if (!value.startsWith("@") || !value.includes(":")) {
+      hideSuggestions();
+      return;
+    }
+
+    try {
+      const response = await fetch("../functions/search-functions.php?ajax=dashboard-search-values&term=" + encodeURIComponent(value), {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        hideSuggestions();
+        return;
+      }
+
+      const data = await response.json();
+      const items = (data.suggestions || []).map(function (item) {
+        return {
+          value: item,
+          label: item
+        };
+      });
+
+      renderSuggestions(items, "value");
+    } catch (error) {
+      hideSuggestions();
+    }
+  }
+
+  function applySuggestion(item, type) {
+    if (type === "column") {
+      replaceLastClause("@" + item.value + ":");
+      fetchValueSuggestions();
+    } else if (type === "operator") {
+      searchInput.value = searchInput.value.replace(/\s*$/, "") + " " + item.value + " @";
+      getColumnSuggestions();
+    } else {
+      const clauseInfo = getLastClauseInfo();
+      const colonIndex = clauseInfo.segment.indexOf(":");
+
+      if (colonIndex === -1) {
+        replaceLastClause(item.value);
+      } else {
+        replaceLastClause(clauseInfo.segment.slice(0, colonIndex + 1) + item.value);
+      }
+
+      renderSuggestions(operators, "operator");
+    }
+
+    searchInput.focus();
+    const valueLength = searchInput.value.length;
+    searchInput.setSelectionRange(valueLength, valueLength);
+  }
+
+  function updateSuggestions() {
+    const value = searchInput.value;
+    const trimmed = value.trim();
+
+    if (!trimmed) {
+      hideSuggestions();
+      return;
+    }
+
+    if (/\s+(AND|OR)\s*@[^:]*$/i.test(value) || /^@[^:]*$/i.test(trimmed)) {
+      getColumnSuggestions();
+      return;
+    }
+
+    if (/\s+(AND|OR)\s*$/i.test(value) || /@[a-zA-Z_][a-zA-Z0-9_]*\s*:\s*.+\s+(A|AN|AND|O|OR)?$/i.test(value)) {
+      getOperatorSuggestions();
+      return;
+    }
+
+    if (/@[a-zA-Z_][a-zA-Z0-9_]*\s*:[^@]*$/i.test(value)) {
+      fetchValueSuggestions();
+      return;
+    }
+
+    hideSuggestions();
+  }
+
+  searchInput.addEventListener("input", function () {
+    updateSuggestions();
+  });
+
+  searchInput.addEventListener("focus", function () {
+    updateSuggestions();
+  });
+
+  searchInput.addEventListener("keydown", function (event) {
+    if (suggestionsBox.style.display === "none" || !currentItems.length) {
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      activeIndex = (activeIndex + 1) % currentItems.length;
+      updateActiveItem();
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      activeIndex = activeIndex <= 0 ? currentItems.length - 1 : activeIndex - 1;
+      updateActiveItem();
+    } else if (event.key === "Enter" && activeIndex >= 0) {
+      event.preventDefault();
+      const activeButton = suggestionsBox.querySelector('button[data-index="' + activeIndex + '"]');
+
+      if (activeButton) {
+        applySuggestion(currentItems[activeIndex], activeButton.dataset.type);
+      }
+    } else if (event.key === "Escape") {
+      hideSuggestions();
+    }
+  });
+
+  suggestionsBox.addEventListener("mousedown", function (event) {
+    const button = event.target.closest("button");
+
+    if (!button) {
+      return;
+    }
+
+    event.preventDefault();
+    const index = Number(button.dataset.index);
+    applySuggestion(currentItems[index], button.dataset.type);
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!searchForm.contains(event.target)) {
+      hideSuggestions();
+    }
+  });
+});

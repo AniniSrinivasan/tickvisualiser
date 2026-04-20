@@ -1,7 +1,11 @@
 <?php
 include('../functions/session.php');
+require_once('../functions/search-functions.php');
 // print_r($_SESSION);
 // checkUserLoggedIn();
+
+$dashboardSearch = $_GET['search'] ?? '';
+$densityData = getDashboardMapDensity($conn, $dashboardSearch);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,10 +28,11 @@ include('../functions/session.php');
         <div class="content-container">
             <h2>Discover. Analyse. Protect.</h2>
 
-            <form class="search-form" method="GET" action="">
-                <input type="search" name="search" autocomplete="off"
+            <form class="search-form" method="GET" action="" id="dashboard-search-form" style="position: relative;">
+                <input type="search" name="search" autocomplete="off" id="dashboard-search-input"
                     placeholder="Search by city or region or tick species..."
-                    value="<?php echo htmlspecialchars($_GET['search'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                    value="<?php echo htmlspecialchars($dashboardSearch, ENT_QUOTES, 'UTF-8'); ?>">
+                <div id="dashboard-search-suggestions"></div>
                 <button type="submit" class="btn-primary">Search</button>
             </form>
         </div>
@@ -40,9 +45,7 @@ include('../functions/session.php');
             <!-- distribution - map view -->
             <div class="dashboard-card map-card left">
                 <h2>UK Tick Distribution</h2>
-                <!-- <div class="map-container"> -->
                 <?php include 'map.php'; ?>
-                <!-- </div> -->
             </div>
 
             <!-- summary -->
