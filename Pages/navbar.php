@@ -10,7 +10,7 @@ if (($_SESSION['role_id']== "2")) {
 echo'
 <header class="top-nav">
     <div class="nav-container">
-        <div class="logo-title"><a href="dashboard.php">Tick Visualiser</div>
+        <div class="logo-title">Tick Visualiser</div>
 
         <!-- default hidden on large screens, only appears on mobile screens -->
         <button class="menu-toggle" aria-label="Toggle Menu">
