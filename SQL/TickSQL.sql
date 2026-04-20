@@ -30,6 +30,13 @@ VALUES
 ("user"),
 ("admin");
 
+-- inserting into users table
+INSERT INTO 
+users(user_email, user_hash_password, f_name, l_name, role_id) 
+VALUES 
+("anini@example.com","password123","Anini","Srinivasan","2"),
+("rachel@example.com","Hallam86","Rachel","Kirtland","1");
+
 -- for dropping the tables
 SET FOREIGN_KEY_CHECKS = 0;
 drop table if exists user;

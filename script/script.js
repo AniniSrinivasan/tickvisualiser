@@ -909,3 +909,393 @@ document.addEventListener("DOMContentLoaded", function () {
   fitMapProperly();
   initMap();
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("dashboard-search-input");
+  const suggestionsBox = document.getElementById("dashboard-search-suggestions");
+  const searchForm = document.getElementById("dashboard-search-form");
+
+  if (!searchInput || !suggestionsBox || !searchForm) {
+    return;
+  }
+
+  const columns = [
+    { value: "location_name", label: "location" },
+    { value: "species_name", label: "species" },
+    { value: "species_latin_name", label: "species_latin" }
+  ];
+
+  const operators = [
+    { value: "AND", label: "AND" },
+    { value: "OR", label: "OR" }
+  ];
+
+  let activeIndex = -1;
+  let currentItems = [];
+
+  function hideSuggestions() {
+    suggestionsBox.style.display = "none";
+    suggestionsBox.innerHTML = "";
+    currentItems = [];
+    activeIndex = -1;
+  }
+
+  function renderSuggestions(items, type) {
+    currentItems = items;
+    activeIndex = -1;
+
+    if (!items.length) {
+      hideSuggestions();
+      return;
+    }
+
+    suggestionsBox.innerHTML = items.map(function (item, index) {
+      return '<button type="button" data-index="' + index + '" data-type="' + type + '" style="display:block; width:100%; text-align:left; padding:12px 14px; border:0; background:#fff; cursor:pointer; font:inherit;">' + escapeHtml(item.label) + '</button>';
+    }).join("");
+
+    suggestionsBox.style.display = "block";
+  }
+
+  function updateActiveItem() {
+    const buttons = suggestionsBox.querySelectorAll("button");
+
+    buttons.forEach(function (button, index) {
+      button.style.background = index === activeIndex ? "#f1f5f9" : "#fff";
+    });
+  }
+
+  function getLastClauseInfo() {
+    const value = searchInput.value;
+    const operatorMatch = value.match(/(?:^|\s)(AND|OR)\s+(@[^@]*)$/i);
+
+    if (operatorMatch) {
+      return {
+        prefix: value.slice(0, value.length - operatorMatch[2].length),
+        segment: operatorMatch[2]
+      };
+    }
+
+    const clauseMatch = value.match(/(^|.*\s(?:AND|OR)\s)(@[^@]*)$/i);
+
+    if (clauseMatch) {
+      return {
+        prefix: clauseMatch[1],
+        segment: clauseMatch[2]
+      };
+    }
+
+    return {
+      prefix: "",
+      segment: value
+    };
+  }
+
+  function replaceLastClause(nextValue) {
+    const clauseInfo = getLastClauseInfo();
+    searchInput.value = clauseInfo.prefix + nextValue;
+  }
+
+  function getColumnSuggestions() {
+    const clauseInfo = getLastClauseInfo();
+    const value = clauseInfo.segment;
+
+    if (!value.startsWith("@")) {
+      hideSuggestions();
+      return;
+    }
+
+    if (value.includes(":")) {
+      fetchValueSuggestions();
+      return;
+    }
+
+    const searchText = value.slice(1).trim().toLowerCase();
+    const items = columns
+      .filter(function (column) {
+        return column.label.toLowerCase().includes(searchText);
+      })
+      .map(function (column) {
+        return {
+          value: column.value,
+          label: column.label
+        };
+      });
+
+    renderSuggestions(items, "column");
+  }
+
+  function getOperatorSuggestions() {
+    const trimmedRight = searchInput.value.replace(/\s+$/, "");
+    const operatorText = trimmedRight.match(/(?:\s+)(A|AN|AND|O|OR)?$/i);
+
+    if (!/@[a-zA-Z_][a-zA-Z0-9_]*\s*:\s*.+$/i.test(trimmedRight)) {
+      hideSuggestions();
+      return;
+    }
+
+    if (!operatorText) {
+      renderSuggestions(operators, "operator");
+      return;
+    }
+
+    const current = (operatorText[1] || "").toUpperCase();
+    const items = operators.filter(function (operator) {
+      return operator.label.indexOf(current) === 0;
+    });
+
+    renderSuggestions(items, "operator");
+  }
+
+  async function fetchValueSuggestions() {
+    const clauseInfo = getLastClauseInfo();
+    const value = clauseInfo.segment;
+
+    if (!value.startsWith("@") || !value.includes(":")) {
+      hideSuggestions();
+      return;
+    }
+
+    try {
+      const response = await fetch("../functions/search-functions.php?ajax=dashboard-search-values&term=" + encodeURIComponent(value), {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        hideSuggestions();
+        return;
+      }
+
+      const data = await response.json();
+      const items = (data.suggestions || []).map(function (item) {
+        return {
+          value: item,
+          label: item
+        };
+      });
+
+      renderSuggestions(items, "value");
+    } catch (error) {
+      hideSuggestions();
+    }
+  }
+
+  function applySuggestion(item, type) {
+    if (type === "column") {
+      replaceLastClause("@" + item.value + ":");
+      fetchValueSuggestions();
+    } else if (type === "operator") {
+      searchInput.value = searchInput.value.replace(/\s*$/, "") + " " + item.value + " @";
+      getColumnSuggestions();
+    } else {
+      const clauseInfo = getLastClauseInfo();
+      const colonIndex = clauseInfo.segment.indexOf(":");
+
+      if (colonIndex === -1) {
+        replaceLastClause(item.value);
+      } else {
+        replaceLastClause(clauseInfo.segment.slice(0, colonIndex + 1) + item.value);
+      }
+
+      renderSuggestions(operators, "operator");
+    }
+
+    searchInput.focus();
+    const valueLength = searchInput.value.length;
+    searchInput.setSelectionRange(valueLength, valueLength);
+  }
+
+  function updateSuggestions() {
+    const value = searchInput.value;
+    const trimmed = value.trim();
+
+    if (!trimmed) {
+      hideSuggestions();
+      return;
+    }
+
+    if (/\s+(AND|OR)\s*@[^:]*$/i.test(value) || /^@[^:]*$/i.test(trimmed)) {
+      getColumnSuggestions();
+      return;
+    }
+
+    if (/\s+(AND|OR)\s*$/i.test(value) || /@[a-zA-Z_][a-zA-Z0-9_]*\s*:\s*.+\s+(A|AN|AND|O|OR)?$/i.test(value)) {
+      getOperatorSuggestions();
+      return;
+    }
+
+    if (/@[a-zA-Z_][a-zA-Z0-9_]*\s*:[^@]*$/i.test(value)) {
+      fetchValueSuggestions();
+      return;
+    }
+
+    hideSuggestions();
+  }
+
+  searchInput.addEventListener("input", function () {
+    updateSuggestions();
+  });
+
+  searchInput.addEventListener("focus", function () {
+    updateSuggestions();
+  });
+
+  searchInput.addEventListener("keydown", function (event) {
+    if (suggestionsBox.style.display === "none" || !currentItems.length) {
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      activeIndex = (activeIndex + 1) % currentItems.length;
+      updateActiveItem();
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      activeIndex = activeIndex <= 0 ? currentItems.length - 1 : activeIndex - 1;
+      updateActiveItem();
+    } else if (event.key === "Enter" && activeIndex >= 0) {
+      event.preventDefault();
+      const activeButton = suggestionsBox.querySelector('button[data-index="' + activeIndex + '"]');
+
+      if (activeButton) {
+        applySuggestion(currentItems[activeIndex], activeButton.dataset.type);
+      }
+    } else if (event.key === "Escape") {
+      hideSuggestions();
+    }
+  });
+
+  suggestionsBox.addEventListener("mousedown", function (event) {
+    const button = event.target.closest("button");
+
+    if (!button) {
+      return;
+    }
+
+    event.preventDefault();
+    const index = Number(button.dataset.index);
+    applySuggestion(currentItems[index], button.dataset.type);
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!searchForm.contains(event.target)) {
+      hideSuggestions();
+    }
+  });
+});
+function enableUserInlineEdit(button) {
+  const row = button.closest("tr");
+  if (!row || row.dataset.editing === "1") return;
+
+  row.dataset.editing = "1";
+  clearRowStatus(row);
+
+  const email = row.querySelector(".col-email").textContent.trim();
+  const f_name = row.querySelector(".col-f_name").textContent.trim();
+  const l_name = row.querySelector(".col-l_name").textContent.trim();
+  const role_name = row.querySelector(".col-role_name").textContent.trim();
+
+  row.dataset.originalEmail = email;
+  row.dataset.originalF_name = f_name;
+  row.dataset.originalL_name = l_name;
+  row.dataset.originalRole = role_name;
+
+  row.querySelector(".col-email").innerHTML = `<input type="text" value="${escapeHtml(email)}">`;
+  row.querySelector(".col-f_name").innerHTML = `<input type="text" value="${escapeHtml(f_name)}">`;
+  row.querySelector(".col-l_name").innerHTML = `<input type="text" value="${escapeHtml(l_name)}">`;
+  row.querySelector(".col-role_name").innerHTML = `<input type="text" value="${escapeHtml(role_name)}">`;
+
+  row.querySelector(".col-action").innerHTML = `
+    <button type="button" class="approve-button-in-list" onclick="saveUserInlineEdit(this)">Save</button>
+    <button type="button" class="reject-button-in-list" onclick="cancelUserInlineEdit(this)">Cancel</button>
+  `;
+
+  row.querySelectorAll("input").forEach(input => {
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        saveUserInlineEdit(row.querySelector(".approve-button-in-list"));
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        cancelUserInlineEdit(row.querySelector(".reject-button-in-list"));
+      }
+    });
+  });
+}
+
+function cancelUserInlineEdit(button) {
+  const row = button.closest("tr");
+  if (!row) return;
+
+  row.querySelector(".col-email").textContent = row.dataset.originalEmail || "";
+  row.querySelector(".col-f_name").textContent = row.dataset.originalF_name || "";
+  row.querySelector(".col-l_name").textContent = row.dataset.originalL_name || "";
+  row.querySelector(".col-role_name").textContent = row.dataset.originalRole || "";
+
+  row.querySelector(".col-action").innerHTML = `
+    <form method="POST" action="" style="display:inline;">
+      <button type="button" name="update_user" class="approve-button-in-list" onclick="enableUserInlineEdit(this)">Edit</button>
+      <input type="hidden" name="user_email" value="${row.dataset.originalEmail}">
+      <button type="submit" name="delete_user" class="reject-button-in-list" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+    </form>
+  `;
+
+  row.dataset.editing = "0";
+  clearRowStatus(row);
+}
+
+async function saveUserInlineEdit(button) {
+  const row = button.closest("tr");
+  if (!row) return;
+
+  const user_email = row.dataset.originalEmail;
+  const f_name = row.querySelector(".col-f_name input").value.trim();
+  const l_name = row.querySelector(".col-l_name input").value.trim();
+  const role_name = row.querySelector(".col-role_name input").value.trim();
+
+  if (!f_name || !l_name || !role_name) {
+    showRowStatus(row, "All fields are required.", "error");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("ajax_action", "update-user");
+  formData.append("user_email", user_email);
+  formData.append("f_name", f_name);
+  formData.append("l_name", l_name);
+  formData.append("role_name", role_name);
+
+  try {
+    const response = await fetch("manage-user.php", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      showRowStatus(row, result.message || "Unable to update user.", "error");
+      return;
+    }
+
+    row.querySelector(".col-email").textContent = user_email;
+    row.querySelector(".col-f_name").textContent = f_name;
+    row.querySelector(".col-l_name").textContent = l_name;
+    row.querySelector(".col-role_name").textContent = role_name;
+
+    row.querySelector(".col-action").innerHTML = `
+      <form method="POST" action="" style="display:inline;">
+        <button type="button" name="update_user" class="approve-button-in-list" onclick="enableUserInlineEdit(this)">Edit</button>
+        <input type="hidden" name="user_email" value="${user_email}">
+        <button type="submit" name="delete_user" class="reject-button-in-list" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+      </form>
+    `;
+
+    row.dataset.editing = "0";
+    showRowStatus(row, "User updated successfully.", "success");
+  } catch (error) {
+    showRowStatus(row, "Error updating user.", "error");
+    console.error(error);
+  }
+}
+
+
