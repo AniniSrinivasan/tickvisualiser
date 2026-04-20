@@ -907,3 +907,121 @@ document.addEventListener("DOMContentLoaded", function () {
   fitMapProperly();
   initMap();
 });
+
+function enableUserInlineEdit(button) {
+  const row = button.closest("tr");
+  if (!row || row.dataset.editing === "1") return;
+
+  row.dataset.editing = "1";
+  clearRowStatus(row);
+
+  const email = row.querySelector(".col-email").textContent.trim();
+  const f_name = row.querySelector(".col-f_name").textContent.trim();
+  const l_name = row.querySelector(".col-l_name").textContent.trim();
+  const role_name = row.querySelector(".col-role_name").textContent.trim();
+
+  row.dataset.originalEmail = email;
+  row.dataset.originalF_name = f_name;
+  row.dataset.originalL_name = l_name;
+  row.dataset.originalRole = role_name;
+
+  row.querySelector(".col-email").innerHTML = `<input type="text" value="${escapeHtml(email)}">`;
+  row.querySelector(".col-f_name").innerHTML = `<input type="text" value="${escapeHtml(f_name)}">`;
+  row.querySelector(".col-l_name").innerHTML = `<input type="text" value="${escapeHtml(l_name)}">`;
+  row.querySelector(".col-role_name").innerHTML = `<input type="text" value="${escapeHtml(role_name)}">`;
+
+  row.querySelector(".col-action").innerHTML = `
+    <button type="button" class="approve-button-in-list" onclick="saveUserInlineEdit(this)">Save</button>
+    <button type="button" class="reject-button-in-list" onclick="cancelUserInlineEdit(this)">Cancel</button>
+  `;
+
+  row.querySelectorAll("input").forEach(input => {
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        saveUserInlineEdit(row.querySelector(".approve-button-in-list"));
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        cancelUserInlineEdit(row.querySelector(".reject-button-in-list"));
+      }
+    });
+  });
+}
+
+function cancelUserInlineEdit(button) {
+  const row = button.closest("tr");
+  if (!row) return;
+
+  row.querySelector(".col-email").textContent = row.dataset.originalEmail || "";
+  row.querySelector(".col-f_name").textContent = row.dataset.originalF_name || "";
+  row.querySelector(".col-l_name").textContent = row.dataset.originalL_name || "";
+  row.querySelector(".col-role_name").textContent = row.dataset.originalRole || "";
+
+  row.querySelector(".col-action").innerHTML = `
+    <form method="POST" action="" style="display:inline;">
+      <button type="button" name="update_user" class="approve-button-in-list" onclick="enableUserInlineEdit(this)">Edit</button>
+      <input type="hidden" name="user_email" value="${row.dataset.originalEmail}">
+      <button type="submit" name="delete_user" class="reject-button-in-list" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+    </form>
+  `;
+
+  row.dataset.editing = "0";
+  clearRowStatus(row);
+}
+
+async function saveUserInlineEdit(button) {
+  const row = button.closest("tr");
+  if (!row) return;
+
+  const user_email = row.dataset.originalEmail;
+  const f_name = row.querySelector(".col-f_name input").value.trim();
+  const l_name = row.querySelector(".col-l_name input").value.trim();
+  const role_name = row.querySelector(".col-role_name input").value.trim();
+
+  if (!f_name || !l_name || !role_name) {
+    showRowStatus(row, "All fields are required.", "error");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("ajax_action", "update-user");
+  formData.append("user_email", user_email);
+  formData.append("f_name", f_name);
+  formData.append("l_name", l_name);
+  formData.append("role_name", role_name);
+
+  try {
+    const response = await fetch("manage-user.php", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      showRowStatus(row, result.message || "Unable to update user.", "error");
+      return;
+    }
+
+    row.querySelector(".col-email").textContent = user_email;
+    row.querySelector(".col-f_name").textContent = f_name;
+    row.querySelector(".col-l_name").textContent = l_name;
+    row.querySelector(".col-role_name").textContent = role_name;
+
+    row.querySelector(".col-action").innerHTML = `
+      <form method="POST" action="" style="display:inline;">
+        <button type="button" name="update_user" class="approve-button-in-list" onclick="enableUserInlineEdit(this)">Edit</button>
+        <input type="hidden" name="user_email" value="${user_email}">
+        <button type="submit" name="delete_user" class="reject-button-in-list" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+      </form>
+    `;
+
+    row.dataset.editing = "0";
+    showRowStatus(row, "User updated successfully.", "success");
+  } catch (error) {
+    showRowStatus(row, "Error updating user.", "error");
+    console.error(error);
+  }
+}
+
+
