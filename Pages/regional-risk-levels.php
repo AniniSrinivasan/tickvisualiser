@@ -1,6 +1,5 @@
 <?php
 include("../functions/session.php");
-checkUserLoggedIn();
 include('../functions/db_connect.php');
 include('../functions/risk-levels-functions.php');
 ?>

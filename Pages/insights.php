@@ -1,7 +1,5 @@
 <?php
 include('../functions/session.php');
-// checkUserLoggedIn(); 
-// // No need to check if user is logged in, this page is public
 ?>
 <!DOCTYPE html>
 <html lang="en">
