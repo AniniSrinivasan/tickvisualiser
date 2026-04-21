@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const Xlabel = 'Species';
       const Ylabel = 'Sightings';
       const title = 'Tick Sightings by Species';
-      createChart(barCanvas,Xdata, Ydata, Xlabel, Ylabel, title, type);
+      createChart(barCanvas, Xdata, Ydata, Xlabel, Ylabel, title, type);
     })
     .catch(err => console.error('Error fetching chart data:', err));
 });
@@ -441,18 +441,27 @@ function cancelInlineEdit(button) {
   const row = button.closest("tr");
   if (!row) return;
 
+  const checkbox = document.getElementById('show-inaccurate-only');
+  const showInaccurateOnly = checkbox && checkbox.checked ? 1 : 0;
+  // formData.append("show-inaccurate-only", showInaccurateOnly);
+
   row.querySelector(".col-id").textContent = row.dataset.originalId || "";
   row.querySelector(".col-date").textContent = row.dataset.originalDate || "";
   row.querySelector(".col-location").textContent = row.dataset.originalLocation || "";
   // row.querySelector(".col-county").textContent = row.dataset.originalCounty || "";
   row.querySelector(".col-species").textContent = row.dataset.originalSpecies || "";
   row.querySelector(".col-latin").textContent = row.dataset.originalLatin || "";
-
-  row.querySelector(".col-action").innerHTML = `
+  
+  if (showInaccurateOnly !== 1) {
+    row.querySelector(".col-action").innerHTML = `
+      <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
+      <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>`;
+  } else {
+    row.querySelector(".col-action").innerHTML = `
     <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
     <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
-    <button type="button" class="approve-button" onclick="moveToSightings(this)">Approve</button>
-  `;
+    <button type="button" class="approve-button" onclick="moveToSightings(this)">Approve</button>`;
+  }
 
   row.dataset.editing = "0";
   clearRowStatus(row);
@@ -515,11 +524,18 @@ async function saveInlineEdit(button) {
     row.querySelector(".col-species").textContent = species;
     row.querySelector(".col-latin").textContent = latinName;
 
-    row.querySelector(".col-action").innerHTML = `
+    if (showInaccurateOnly !== 1) {
+      row.querySelector(".col-action").innerHTML = `
+        <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
+        <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
+      `;
+    }     else {
+      row.querySelector(".col-action").innerHTML = `
       <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
       <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
       <button type="button" class="approve-button" onclick="moveToSightings(this)">Approve</button>
     `;
+    }
 
     row.dataset.editing = "0";
 
