@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const Xlabel = 'Species';
       const Ylabel = 'Sightings';
       const title = 'Tick Sightings by Species';
-      createChart(barCanvas, data, Xdata, Ydata, Xlabel, Ylabel, title, type);
+      createChart(barCanvas,Xdata, Ydata, Xlabel, Ylabel, title, type);
     })
     .catch(err => console.error('Error fetching chart data:', err));
 });
@@ -89,19 +89,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const Xlabel = 'Months';
       const Ylabel = 'Monthly Sightings';
       const title = 'Monthly Tick Sightings';
-      createChart(monthlyTrendCanvas,Xdata, Ydata, Xlabel, Ylabel, title, type, range);
+      createChart(monthlyTrendCanvas,Xdata, Ydata, Xlabel, Ylabel, title, type);
     })
     .catch(err => console.error('Error fetching chart data:', err));
 });
 
-function createChart(canvas, Xdata, Ydata, Xlabel, Ylabel, title, type, range) {
+function createChart(canvas, Xdata, Ydata, Xlabel, Ylabel, title, type) {
   new Chart(canvas, {
     type: type || 'line', // default to line if type not provided
     data: {
-      //Add range to the title if provided
       labels: Xdata,
       datasets: [{
-        //Add range to data if provided (for monthly trend chart)
         data: Ydata,
         tension: 0.4, // makes the line curved
         fill: type === 'line' ? true : false, // only fill for line charts
