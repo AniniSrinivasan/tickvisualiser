@@ -1,5 +1,6 @@
 <?php
 include('../functions/session.php');
+checkUserLoggedIn();
 require_once('../functions/search-functions.php');
 
 $dashboardSearch = $_GET['search'] ?? '';
@@ -119,12 +120,47 @@ $totalsightings = getTotalSightings($conn);
                             <?php
                         }
                         ?>
+                <div class="dashboard-card risk-card">
+                    <h2>National Risk Levels</h2>
+                    <?php 
+                    include_once('../functions/risk-levels-functions.php');
+                    $cities = getTicksInCityLimit3($conn);
+                    $totalUK = getTotalTicksUK($conn);
+
+                    foreach($cities as $row){
+                        $city = $row['location_name'];
+                        $ticks = $row['total_ticks'];
+
+                        $percentage = getPercentage($ticks, $totalUK);
+
+                        if ($percentage < 60) {
+                            $class = "low-risk";
+                        } elseif ($percentage < 75) {
+                            $class = "medium-risk";
+                        } else {
+                            $class = "high-risk";
+                        }
+                        ?>
+                        <div class="risk-item">
+                            <label><?php echo $city; ?></label>
+                            <div class="risk-progress-bar">
+                                <div class="risk-progress-fill <?php echo $class; ?>"
+                                    style="width: <?php echo $percentage; ?>%; border:thick;">
+                                    <?php echo round($percentage); ?>%
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                    <?php
+                    }
+                    ?>
                         <div class="more-info">
                             <!-- Goes to extra info section -->
                             <a href="regional-risk-levels.php">Want more info?</a>
                         </div>
                     </div>
                 </a>
+                </div>
             </div>
 
         </div>

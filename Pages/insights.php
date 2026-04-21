@@ -1,5 +1,6 @@
 <?php
 include('../functions/session.php');
+checkUserLoggedIn(); 
 ?>
 <!DOCTYPE html>
 <html lang="en">

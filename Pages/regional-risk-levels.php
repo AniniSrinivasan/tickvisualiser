@@ -1,5 +1,6 @@
 <?php
 include("../functions/session.php");
+checkUserLoggedIn();
 include('../functions/db_connect.php');
 include('../functions/risk-levels-functions.php');
 ?>
@@ -14,7 +15,6 @@ include('../functions/risk-levels-functions.php');
     <link rel="stylesheet" href="../style/style.css">
     <script src="../script/script.js"></script>
 </head>
-<!-- order by location and count -->
 
 <body class="dashboard-body" onload="loadNavbar()">
     <div id="navbar-container"></div> <!-- Navbar will be loaded here -->

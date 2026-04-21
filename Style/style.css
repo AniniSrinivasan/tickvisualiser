@@ -1181,14 +1181,17 @@ overflow-y:auto;
 
 .low-risk {
     background-color: #4caf50;
+    text-shadow: #000000 1px 0px 2px;
 }
 
 .medium-risk {
     background-color: #ff9800;
+    text-shadow: #000000 1px 0px 2px;
 }
 
 .high-risk {
     background-color: #f44336;
+    text-shadow: #000000 1px 0px 2px;
 }
 
 .risk-grid {

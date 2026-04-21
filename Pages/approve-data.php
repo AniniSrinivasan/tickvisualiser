@@ -1,5 +1,6 @@
 <?php
 include('../functions/session.php');
+adminCheck();
 ?>
 <!DOCTYPE html>
 <html lang="en">

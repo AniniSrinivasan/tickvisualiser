@@ -1,5 +1,6 @@
 <?php
 include("../functions/session.php");
+adminCheck();
 include("../functions/manage-functions.php");
 include_once('../functions/db_connect.php'); ?>
 <?php require_once '../functions/upload-functions.php'; ?>
