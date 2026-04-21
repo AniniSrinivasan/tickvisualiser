@@ -77,8 +77,8 @@ if (isset($_POST['createAdmin'])) {
     
     <section class="banner-section">
         <div class="content-container">
-            <h1>Welcome!</h1>
-            <p><b>Create an account to access your dashboard and uploads</b></p>
+            <h1>Register</h1>
+            <p><b>Create an account for new admins</b></p>
         </div>
     </section>
     <br/>
