@@ -101,13 +101,6 @@ adminCheck();
                     placeholder="Search by ID, location, species or latin name"
                     onkeyup="searchBrowswData(this)">
 
-                <label class="manage-checkbox" for="show-inaccurate-only">
-                <!-- Hidden input to ensure a value is sent when the checkbox is unchecked     -->
-                <!-- <input 
-                    type="hidden" 
-                    name="show-inaccurate-only" 
-                    value="0"> -->
-                    <!-- inaccurate data based on id file uploaded -->
                 <input 
                     type="checkbox" 
                     id="show-inaccurate-only" 
@@ -121,7 +114,6 @@ adminCheck();
             <?php
             // Determine whether to show only inaccurate data based on the checkbox value
             $showInaccurateOnly = $_GET['show-inaccurate-only'] ?? 0;
-            // $showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] === '1';
             ?>
 
             <div class="manage-table-wrapper">

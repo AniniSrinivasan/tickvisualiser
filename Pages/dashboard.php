@@ -1,6 +1,7 @@
 <?php
 include('../functions/session.php');
-checkUserLoggedIn();
+// checkUserLoggedIn();
+// No need to check if user is logged in, this page is public
 require_once('../functions/search-functions.php');
 
 $dashboardSearch = $_GET['search'] ?? '';
@@ -44,7 +45,7 @@ $totalsightings = getTotalSightings($conn);
     <section class="banner-section">
         <div class="content-container">
             <h2>Discover. Analyse. Protect.</h2>
-
+            <?php echo $_SESSION['role_id']; ?> <!-- Temp for testing -->
             <form class="search-form" method="GET" action="" id="dashboard-search-form" style="position: relative;">
                 <input type="search" name="search" autocomplete="off" id="dashboard-search-input"
                     placeholder="Search by city, species name or both..."
