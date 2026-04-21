@@ -1,8 +1,6 @@
 <?php
 include('../functions/session.php');
 require_once('../functions/search-functions.php');
-// print_r($_SESSION);
-// checkUserLoggedIn();
 
 $dashboardSearch = $_GET['search'] ?? '';
 $densityData = getDashboardMapDensity($conn, $dashboardSearch);
@@ -24,11 +22,12 @@ $densityData = getDashboardMapDensity($conn, $dashboardSearch);
 include_once('../functions/db_connect.php');
 $totalsightings = 993;
 
-function getTotalSightings(mysqli $conn): int {
+function getTotalSightings(mysqli $conn): int
+{
     $sql = "SELECT COUNT(*) AS total FROM sighting";
     $result = $conn->query($sql);
     if ($result && $row = $result->fetch_assoc()) {
-        return (int)$row['total'];
+        return (int) $row['total'];
     }
     return 0;
 }
@@ -47,11 +46,13 @@ $totalsightings = getTotalSightings($conn);
 
             <form class="search-form" method="GET" action="" id="dashboard-search-form" style="position: relative;">
                 <input type="search" name="search" autocomplete="off" id="dashboard-search-input"
-                    placeholder="Search by city or region or tick species..."
+                    placeholder="Search by city, species name or both..."
                     value="<?php echo htmlspecialchars($dashboardSearch, ENT_QUOTES, 'UTF-8'); ?>">
                 <div id="dashboard-search-suggestions"></div>
                 <button type="submit" class="btn-primary">Search</button>
             </form>
+            <p style="font-size:12px">Type @ for advanced search (e.g. @location_name:Manchester AND @species_name:Marsh Tick   ) </p>
+
         </div>
     </section>
 
@@ -68,11 +69,11 @@ $totalsightings = getTotalSightings($conn);
             <!-- summary -->
             <div class="right">
                 <div class="dashboard-card summary-card">
-                        <div class="card-header">
-                            <h2>Total Sightings</h2>
-                            <span class="year-badge">2026</span>
-                        </div>
-                        <p class="metric-value"><?php echo $totalsightings; ?></p>
+                    <div class="card-header">
+                        <h2>Total Sightings</h2>
+                        <span class="year-badge">2026</span>
+                    </div>
+                    <p class="metric-value"><?php echo $totalsightings; ?></p>
                     <p class="card-subtext">Cleaned & validated dataset</p>
                 </div>
                 <br />
@@ -86,12 +87,12 @@ $totalsightings = getTotalSightings($conn);
                 <a href="regional-risk-levels.php">
                     <div class="dashboard-card risk-card">
                         <h2>National Risk Levels</h2>
-                        <?php 
+                        <?php
                         include_once('../functions/risk-levels-functions.php');
                         $cities = getTicksInCityLimit3($conn);
                         $totalUK = getTotalTicksUK($conn);
 
-                        foreach($cities as $row){
+                        foreach ($cities as $row) {
                             $city = $row['location_name'];
                             $ticks = $row['total_ticks'];
 
@@ -115,13 +116,13 @@ $totalsightings = getTotalSightings($conn);
                                 </div>
                             </div>
                             <br />
-                        <?php
+                            <?php
                         }
                         ?>
-                            <div class="more-info">
-                                <!-- Goes to extra info section -->
-                                <a href="regional-risk-levels.php">Want more info?</a>
-                            </div>
+                        <div class="more-info">
+                            <!-- Goes to extra info section -->
+                            <a href="regional-risk-levels.php">Want more info?</a>
+                        </div>
                     </div>
                 </a>
             </div>
