@@ -19,8 +19,8 @@ echo'
             <a href="insights.php">Insights</a>
             <a href="browse-data.php">Browse Data</a>
             <a href="manage-user.php">Manage User</a>
-            <a href="contact.php">Contact</a>
             <a href="admin-register.php">Register an Admin</a>
+            <a href="contact.php">Contact</a>
             <a href="logout.php">Logout</a>
         </div>
     </div>

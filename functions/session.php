@@ -18,7 +18,7 @@ function adminCheck(){
     // echo "</pre>";
     // exit();
 
-    if ($_SESSION['role_id']!=="2"){
+    if ($_SESSION['role_id']!="2"){
         die("Access denied!");
     }
 }
