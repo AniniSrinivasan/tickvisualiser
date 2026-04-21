@@ -18,9 +18,9 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
 
   if ($user && password_verify($password, $user['user_hash_password'])){
 
-    $_SESSION['user_id'] =$user['user_id'];
     $_SESSION['email'] =$user['user_email'];
     $_SESSION['role_id'] =$user['role_id'];
+    
 
     //change when navbar has been ammended for user and admin
     //role_id=1 when user and 2 when admin

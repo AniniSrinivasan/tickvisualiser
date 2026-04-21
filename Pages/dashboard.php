@@ -1,8 +1,7 @@
 <?php
 include('../functions/session.php');
+checkUserLoggedIn();
 require_once('../functions/search-functions.php');
-// print_r($_SESSION);
-// checkUserLoggedIn();
 
 $dashboardSearch = $_GET['search'] ?? '';
 $densityData = getDashboardMapDensity($conn, $dashboardSearch);
