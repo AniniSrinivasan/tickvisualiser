@@ -101,7 +101,9 @@ adminCheck();
                     placeholder="Search by ID, location, species or latin name"
                     onkeyup="searchBrowswData(this)">
 
+                
                 <input 
+                    aria-label="Show only inaccurate data checkbox"
                     type="checkbox" 
                     id="show-inaccurate-only" 
                     name="show-inaccurate-only"
@@ -109,7 +111,6 @@ adminCheck();
                     onchange="this.form.submit()"
                     <?php echo (isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1') ? 'checked' : ''; ?>>
                     Show only inaccurate data
-                </label>
             </form>
             <?php
             // Determine whether to show only inaccurate data based on the checkbox value
