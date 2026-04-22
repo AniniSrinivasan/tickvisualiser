@@ -22,10 +22,17 @@ require_once '../functions/manage-functions.php';
 
 $action = trim((string) ($_POST['ajax_action'] ?? ''));
 
-if ($action) {
-    handleUserAjaxRequest($conn, ''); // No upload directory for users
-    exit;
+if (isset($_POST['update_user'])) {
+    $user_email = trim((string) ($_POST['user_email'] ?? ''));
+    $f_name = trim((string) ($_POST['f_name'] ?? ''));
+    $l_name = trim((string) ($_POST['l_name'] ?? ''));
+    $role_id = trim((string) ($_POST['role_id'] ?? ''));
+
+    if ($user_email !== '' && $f_name !== '' && $l_name !== '' && $role_id !== '') {
+        $updated = updateUser($conn, $user_email, $f_name, $l_name, $role_id);
+    }
 }
+
 
 if (isset($_POST['delete_user'])) {
     $user_email = trim((string) ($_POST['user_email'] ?? ''));
@@ -87,16 +94,6 @@ if (isset($_POST['delete_user'])) {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            </div>
-        </div>
-        <div id="popup-confirmation" class="popup-overlay" style="display: none;">
-            <div class="popup-box">
-                <h3>Delete</h3>
-                <p>Are you sure you want to delete this?</p>
-                <div class="popup-actions">
-                    <button id="confirm" type="submit" class="confirm" name="delete">Yes, Delete</button>
-                    <button id="cancel" class="cancel">Cancel</button>
-                </div>
             </div>
         </div>
     </main>
