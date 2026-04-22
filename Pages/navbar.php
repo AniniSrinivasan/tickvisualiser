@@ -1,16 +1,13 @@
 <?php
 include('../functions/session.php');
 
-//Temp for testing
-$_SESSION['role_id'] = '2';
-
 //Admin
 if (($_SESSION['role_id']== "2")) {
 // <!-- top navigation -->
 echo'
 <header class="top-nav">
     <div class="nav-container">
-        <div class="logo-title"><a href="dashboard.php">Tick Visualiser</div>
+        <div class="logo-title">Tick Visualiser</div>
 
         <!-- default hidden on large screens, only appears on mobile screens -->
         <button class="menu-toggle" aria-label="Toggle Menu">
@@ -22,8 +19,8 @@ echo'
             <a href="insights.php">Insights</a>
             <a href="browse-data.php">Browse Data</a>
             <a href="manage-user.php">Manage User</a>
-            <a href="contact.php">Contact</a>
             <a href="admin-register.php">Register an Admin</a>
+            <a href="contact.php">Contact</a>
             <a href="logout.php">Logout</a>
         </div>
     </div>

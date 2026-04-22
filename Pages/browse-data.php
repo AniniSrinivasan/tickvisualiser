@@ -1,5 +1,6 @@
 <?php
 include('../functions/session.php');
+adminCheck();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -100,14 +101,9 @@ include('../functions/session.php');
                     placeholder="Search by ID, location, species or latin name"
                     onkeyup="searchBrowswData(this)">
 
-                <label class="manage-checkbox" for="show-inaccurate-only">
-                <!-- Hidden input to ensure a value is sent when the checkbox is unchecked     -->
-                <!-- <input 
-                    type="hidden" 
-                    name="show-inaccurate-only" 
-                    value="0"> -->
-                    <!-- inaccurate data based on id file uploaded -->
+                
                 <input 
+                    aria-label="Show only inaccurate data checkbox"
                     type="checkbox" 
                     id="show-inaccurate-only" 
                     name="show-inaccurate-only"
@@ -115,12 +111,10 @@ include('../functions/session.php');
                     onchange="this.form.submit()"
                     <?php echo (isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] == '1') ? 'checked' : ''; ?>>
                     Show only inaccurate data
-                </label>
             </form>
             <?php
             // Determine whether to show only inaccurate data based on the checkbox value
             $showInaccurateOnly = $_GET['show-inaccurate-only'] ?? 0;
-            // $showInaccurateOnly = isset($_GET['show-inaccurate-only']) && $_GET['show-inaccurate-only'] === '1';
             ?>
 
             <div class="manage-table-wrapper">

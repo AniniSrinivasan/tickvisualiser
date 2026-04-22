@@ -1,9 +1,9 @@
 <?php
 require_once('../functions/db_connect.php');
 
-// Check if months parameter exists
-// $months = isset($_GET['months']) ? (int)$_GET['months'] : null;
-$months = 6;
+// Check if months parameter exists else null
+$months = isset($_GET['months']) ? (int)$_GET['months'] : null;
+
 $query = "SELECT DATE_FORMAT(si.date_time, '%m') AS month_num,
 DATE_FORMAT(si.date_time, '%b') AS month,
 COUNT(si.row_num) AS sighting_count
@@ -21,7 +21,7 @@ if ($result) {
 }
 
 // Filter data based on the months parameter if it exists
-if ($months !== null) {
+if ($months != null) {
     $currentMonth = (int)date('m');
     $filtered = [];
     foreach ($data as $row) {
