@@ -1254,3 +1254,8 @@ overflow-y:auto;
 .add-users:hover {
     background: #3aafa9;
 }
+
+.dropdown-content{
+    background-color: black;
+    color: white;
+}

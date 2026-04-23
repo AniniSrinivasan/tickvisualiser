@@ -58,9 +58,9 @@ if (isset($_POST['delete_user'])) {
             <div class="card-header">
                 <h2>Browse Users</h2>
                 <select id="add-users" name="add-users" class="add-users" required onchange="redirectUser(this.value)">
-                    <option value="" disabled selected> Add User </option>
-                    <option value="admin">Admin User</option>
-                    <option value="user">Public User</option>
+                    <option class="dropdown-content" value="" disabled selected> Add User </option>
+                    <option class="dropdown-content" value="admin">Admin User</option>
+                    <option class="dropdown-content" value="user">Public User</option>
                 </select>
             </div>
             <br />

@@ -78,8 +78,15 @@ if ($_SESSION['role_id'] == 2) {
 ?>
     <section class="banner-section">
         <div class="content-container">
-            <h1>Welcome!</h1>
-            <p><b>Create an account to access your dashboard and uploads</b></p>
+            <?php
+            if (($_SESSION['role_id'])==2){
+                echo "<h1>Add Account</h1>";
+
+            }else{
+                echo "<h1>Welcome!</h1>";
+            }
+            ?>
+            <p><b>Create an account to access your dashboard and uploads</b></p><br />
         </div>
     </section>
 
