@@ -66,7 +66,7 @@ if (isset($_POST['createAdmin'])) {
             $role_id
         );
 
-        header('Location: login.php');
+        header('Location: manage-user.php');
     }
 }
 

@@ -60,8 +60,11 @@ if (isset($_POST['createUser'])){
             $_POST['l_name'], 
             $role_id 
         );
-
-        header('Location: login.php');
+        if (($_SESSION['role_id'])==1){
+            header('Location: login.php');
+        } else{
+            header('Location: manage-user.php');
+        }
     }
 }
 try{
