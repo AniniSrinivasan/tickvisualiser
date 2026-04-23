@@ -1239,3 +1239,18 @@ overflow-y:auto;
         grid-template-columns: 1fr;
     }
 }
+
+.add-users {
+    background: var(--primary);
+    border-radius: 999px;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    cursor: pointer;
+    font-weight: 700;
+    max-width: 160px;
+}
+
+.add-users:hover {
+    background: #3aafa9;
+}

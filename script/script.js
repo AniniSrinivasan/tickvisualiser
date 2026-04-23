@@ -1313,4 +1313,12 @@ async function saveUserInlineEdit(button) {
   }
 }
 
+function redirectUser(value) {
+  if (value === "admin") {
+    window.location.href = "../pages/admin-register.php";
+  } else if (value === "user") {
+    window.location.href = "../pages/register.php";
+  }
+}
+
 

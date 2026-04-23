@@ -59,8 +59,11 @@ if (isset($_POST['delete_user'])) {
         <div class="dashboard-card">
             <div class="card-header">
                 <h2>Browse Users</h2>
-                <a type="button" class="btn-primary" name="Create" href="register.php"> Create User </a>
-                <a type="button" class="btn-primary" name="Create" href="admin-register.php"> Create Admin </a>
+                <select id="add-users" name="add-users" class="add-users" required onchange="redirectUser(this.value)">
+                    <option value="" disabled selected> Add User </option>
+                    <option value="admin">Admin User</option>
+                    <option value="user">Public User</option>
+                </select>
             </div>
             <br />
             <div>
