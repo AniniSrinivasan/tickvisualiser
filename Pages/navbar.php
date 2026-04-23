@@ -43,8 +43,9 @@ else{
                 <a href="contact.php">Contact</a>';
                 if (($_SESSION['role_id']!= "1")) {
                     echo '<a href="login.php">Login</a>';
-                }
+                } else if (($_SESSION['role_id'])){
                 echo '<a href="logout.php">Logout</a>';
+                }
             echo '</div>
         </div>
     </header>
