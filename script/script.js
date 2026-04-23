@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const Xlabel = 'Months';
       const Ylabel = 'Monthly Sightings';
       const title = 'Monthly Tick Sightings';
-      createChart(monthlyTrendCanvas,Xdata, Ydata, Xlabel, Ylabel, title, type);
+      createChart(monthlyTrendCanvas, Xdata, Ydata, Xlabel, Ylabel, title, type);
     })
     .catch(err => console.error('Error fetching chart data:', err));
 });
@@ -112,7 +112,7 @@ function createChart(canvas, Xdata, Ydata, Xlabel, Ylabel, title, type) {
       responsive: true,
       plugins: {
         legend: { display: false },
-        title: { display: false, text: [title,"(All Documented Years)" ] }
+        title: { display: false, text: [title, "(All Documented Years)"] }
       },
       scales: {
         x: {
@@ -451,7 +451,7 @@ function cancelInlineEdit(button) {
   // row.querySelector(".col-county").textContent = row.dataset.originalCounty || "";
   row.querySelector(".col-species").textContent = row.dataset.originalSpecies || "";
   row.querySelector(".col-latin").textContent = row.dataset.originalLatin || "";
-  
+
   if (showInaccurateOnly !== 1) {
     row.querySelector(".col-action").innerHTML = `
       <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
@@ -529,7 +529,7 @@ async function saveInlineEdit(button) {
         <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
         <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
       `;
-    }     else {
+    } else {
       row.querySelector(".col-action").innerHTML = `
       <button type="button" class="approve-button-in-list" onclick="enableInlineEdit(this)">Edit</button>
       <button type="button" class="reject-button-in-list" onclick="openDeletePopup(this)">Delete</button>
@@ -711,6 +711,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const codeKey = "LAD23CD";
   const nameKey = "LAD23NM";
+  // data source : https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Local_Authority_Districts_December_2023_Boundaries_UK_BGC/FeatureServer/0/query?where=LAD23CD%20LIKE%20%27E%25%27%20OR%20LAD23CD%20LIKE%20%27S%25%27%20OR%20LAD23CD%20LIKE%20%27W%25%27%20OR%20LAD23CD%20LIKE%20%27N%25%27&outFields=LAD23CD,LAD23NM&returnGeometry=true&f=geojson
   const LAD_GEOJSON_URL = "../cache/map-boundary.json";
 
   function calculateGrades() {

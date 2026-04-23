@@ -2,9 +2,10 @@
 include("../functions/session.php");
 adminCheck();
 include("../functions/manage-functions.php");
-include_once('../functions/db_connect.php'); ?>
-<?php require_once '../functions/upload-functions.php'; ?>
-<?php require_once '../functions/error.php'; ?>
+include_once('../functions/db_connect.php');
+require_once '../functions/upload-functions.php';
+require_once '../functions/error.php';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +15,7 @@ include_once('../functions/db_connect.php'); ?>
     <meta name="description" content="Manage User page">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../style/style.css">
-    <title>Total-Sightings • Tick Visualiser</title>
+    <title>Manage User • Tick Visualiser</title>
     <script src="../script/script.js" defer></script>
 </head>
 
@@ -24,9 +25,15 @@ require_once '../functions/manage-functions.php';
 
 $action = trim((string) ($_POST['ajax_action'] ?? ''));
 
-if ($action) {
-    handleUserAjaxRequest($conn, ''); // No upload directory for users
-    exit;
+if (isset($_POST['update_user'])) {
+    $user_email = trim((string) ($_POST['user_email'] ?? ''));
+    $f_name = trim((string) ($_POST['f_name'] ?? ''));
+    $l_name = trim((string) ($_POST['l_name'] ?? ''));
+    $role_id = trim((string) ($_POST['role_id'] ?? ''));
+
+    if ($user_email !== '' && $f_name !== '' && $l_name !== '' && $role_id !== '') {
+        $updated = updateUser($conn, $user_email, $f_name, $l_name, $role_id);
+    }
 }
 
 if (isset($_POST['delete_user'])) {
@@ -74,19 +81,22 @@ if (isset($_POST['delete_user'])) {
                     <tbody>
                         <?php $user = getUsers($conn); ?>
                         <?php foreach ($user as $row): ?>
-                        <tr>
-                            <td class="col-email" ><?php echo escape($row['user_email'] ?? ''); ?></td>
-                            <td class="col-f_name" ><?php echo escape($row['f_name'] ?? ''); ?></td>
-                            <td class="col-l_name" ><?php echo escape($row['l_name'] ?? ''); ?></td>
-                            <td class="col-role_name"><?php echo escape($row['role_name'] ?? ''); ?></td>
-                            <td class="col-action">
-                                <form method="POST" action="" style="display:inline;">
-                                    <button type="button" name = "update_user" class="approve-button-in-list" onclick="enableUserInlineEdit(this)">Edit</button>
-                                    <input type="hidden" name="user_email" value="<?php echo escape($row['user_email'] ?? ''); ?>">
-                                    <button type="submit" name="delete_user" class="reject-button-in-list" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td class="col-email"><?php echo escape($row['user_email'] ?? ''); ?></td>
+                                <td class="col-f_name"><?php echo escape($row['f_name'] ?? ''); ?></td>
+                                <td class="col-l_name"><?php echo escape($row['l_name'] ?? ''); ?></td>
+                                <td class="col-role_name"><?php echo escape($row['role_name'] ?? ''); ?></td>
+                                <td class="col-action">
+                                    <form method="POST" action="" style="display:inline;">
+                                        <button type="submit" name="update_user" class="approve-button-in-list"
+                                            onclick="enableUserInlineEdit(this)">Edit</button>
+                                        <input type="hidden" name="user_email"
+                                            value="<?php echo escape($row['user_email'] ?? ''); ?>">
+                                        <button type="submit" name="delete_user" class="reject-button-in-list"
+                                            onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -97,7 +107,7 @@ if (isset($_POST['delete_user'])) {
                 <h3>Delete</h3>
                 <p>Are you sure you want to delete this?</p>
                 <div class="popup-actions">
-                    <button id="confirm" type="submit" class="confirm" name="delete">Yes, Delete</button>
+                    <button id="confirm" class="confirm">Yes, Delete</button>
                     <button id="cancel" class="cancel">Cancel</button>
                 </div>
             </div>
