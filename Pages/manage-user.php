@@ -20,8 +20,6 @@ require_once '../functions/error.php';
 </head>
 
 <?php
-require_once '../functions/db_connect.php';
-require_once '../functions/manage-functions.php';
 
 $action = trim((string) ($_POST['ajax_action'] ?? ''));
 
