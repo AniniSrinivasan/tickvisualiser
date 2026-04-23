@@ -53,6 +53,7 @@ if (isset($_POST['delete_user'])) {
             <div class="card-header">
                 <h2>Browse Users</h2>
                 <a type="button" class="btn-primary" name="Create" href="register.php"> Create User </a>
+                <a type="button" class="btn-primary" name="Create" href="admin-register.php"> Create Admin </a>
             </div>
             <br />
             <div>

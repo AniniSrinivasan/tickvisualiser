@@ -10,6 +10,8 @@ include('../functions/session.php');
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register • Tick Visualiser</title>
     <link rel="stylesheet" href="../style/login.css">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/script.js"></script>
 </head>
 
 <?php
@@ -64,10 +66,18 @@ if (isset($_POST['createUser'])){
         header('Location: login.php');
     }
 }
+try{
+if ($_SESSION['role_id'] == 2) {
+    echo '<body class="dashboard-body" onload="loadNavbar()">
+    <div id="navbar-container"></div> <!-- Navbar will be loaded here -->';
 
+}else{
+    echo '<body>';
+}
+} catch (Exception $e) {
+    echo '<body>';
+}
 ?>
-
-<body>
     <section class="banner-section">
         <div class="content-container">
             <h1>Welcome!</h1>

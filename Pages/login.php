@@ -1,6 +1,6 @@
 <?php 
 include('../functions/session.php');
-
+$_SESSION['role_id'] = 0; // Set role_id to 0 for guests
 $error="";
 
 if ($_SERVER['REQUEST_METHOD']==='POST'){
