@@ -1,6 +1,8 @@
 <?php
 include('../functions/session.php');
-adminCheck();
+// adminCheck();
+// commeneted out line 3 for testing purposes, to allow access to the page without being logged in as admin.
+// remove comment if needed
 ?>
 <!DOCTYPE html>
 <html lang="en">
