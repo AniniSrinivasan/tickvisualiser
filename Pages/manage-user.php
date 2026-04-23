@@ -87,11 +87,12 @@ if (isset($_POST['delete_user'])) {
                                 <td class="col-role_name"><?php echo escape($row['role_name'] ?? ''); ?></td>
                                 <td class="col-action">
                                     <form method="POST" action="" style="display:inline;">
-                                        <button type="button" name="update_user" class="approve-button-in-list"
+                                        <button type="submit" name="update_user" class="approve-button-in-list"
                                             onclick="enableUserInlineEdit(this)">Edit</button>
                                         <input type="hidden" name="user_email"
                                             value="<?php echo escape($row['user_email'] ?? ''); ?>">
-                                        <button type="submit" name="delete_user" class="reject-button-in-list" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+                                        <button type="submit" name="delete_user" class="reject-button-in-list"
+                                            onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
                                     </form>
                                 </td>
                             </tr>
