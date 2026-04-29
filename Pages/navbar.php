@@ -1,5 +1,9 @@
 <?php
 include('../functions/session.php');
+//If not logged in sets role_id to 0 for guest
+if (!isset($_SESSION['role_id'])){
+    $_SESSION['role_id'] = '0';
+}
 
 //Admin
 if (($_SESSION['role_id']== "2")) {
@@ -42,7 +46,7 @@ else{
                 <a href="contact.php">Contact</a>';
                 if (($_SESSION['role_id']!= "1")) {
                     echo '<a href="login.php">Login</a>';
-                } else if (($_SESSION['role_id'])){
+                } else { //Not logged in
                 echo '<a href="logout.php">Logout</a>';
                 }
             echo '</div>
