@@ -17,22 +17,17 @@ require_once '../functions/error.php';
     <link rel="stylesheet" href="../style/style.css">
     <title>Manage User • Tick Visualiser</title>
     <script src="../script/script.js" defer></script>
+
+     <!-- Boostrap CSS -->
+    <link href="library/bootstrap-5/bootstrap.min.css" rel="stylesheet">
+    <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
+    <script src="library/moment.js"></script>
+    <link rel="stylesheet"
 </head>
 
 <?php
 
 $action = trim((string) ($_POST['ajax_action'] ?? ''));
-
-if (isset($_POST['update_user'])) {
-    $user_email = trim((string) ($_POST['user_email'] ?? ''));
-    $f_name = trim((string) ($_POST['f_name'] ?? ''));
-    $l_name = trim((string) ($_POST['l_name'] ?? ''));
-    $role_id = trim((string) ($_POST['role_id'] ?? ''));
-
-    if ($user_email !== '' && $f_name !== '' && $l_name !== '' && $role_id !== '') {
-        $updated = updateUser($conn, $user_email, $f_name, $l_name, $role_id);
-    }
-}
 
 if (isset($_POST['delete_user'])) {
     $user_email = trim((string) ($_POST['user_email'] ?? ''));
@@ -89,8 +84,8 @@ if (isset($_POST['delete_user'])) {
                                 <td class="col-role_name"><?php echo escape($row['role_name'] ?? ''); ?></td>
                                 <td class="col-action">
                                     <form method="POST" action="" style="display:inline;">
-                                        <button type="submit" name="update_user" class="approve-button-in-list"
-                                            onclick="enableUserInlineEdit(this)">Edit</button>
+                                        <button type="button" class="approve-button-in-list"
+                                            onclick="location.href='edit-user.php?email=<?php echo urlencode($row['user_email'] ?? ''); ?>'">Edit</button>
                                         <input type="hidden" name="user_email"
                                             value="<?php echo escape($row['user_email'] ?? ''); ?>">
                                         <button type="submit" name="delete_user" class="reject-button-in-list"

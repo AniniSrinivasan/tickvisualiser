@@ -137,6 +137,24 @@
     box-shadow:0 0 0 3px rgba(91,192,190,0.25);
   }
   
+  .field select{
+    width:100%;
+    padding:12px 14px;
+    border-radius:14px;
+    border:1px solid #ddd;
+    font-size:1rem;
+    cursor:pointer;
+    background-color:#fff;
+    background-position:right 12px center;
+    padding-right:36px;
+  }
+  
+  .field select:focus{
+    outline:none;
+    border-color:#5bc0be;
+    box-shadow:0 0 0 3px rgba(91,192,190,0.25);
+  }
+  
   /* row */
   
   .form-row{
