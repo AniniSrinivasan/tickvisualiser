@@ -17,12 +17,6 @@ require_once '../functions/error.php';
     <link rel="stylesheet" href="../style/style.css">
     <title>Manage User • Tick Visualiser</title>
     <script src="../script/script.js" defer></script>
-
-     <!-- Boostrap CSS -->
-    <link href="library/bootstrap-5/bootstrap.min.css" rel="stylesheet">
-    <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
-    <script src="library/moment.js"></script>
-    <link rel="stylesheet"
 </head>
 
 <?php

@@ -1,5 +1,6 @@
 <?php
 include('../functions/session.php');
+adminCheck();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,20 +19,12 @@ include('../functions/session.php');
 require_once '../functions/error.php';
 require_once '../functions/manage-functions.php';
 
-adminCheck();
-
-$error = '';
-$user_email = '';
-$f_name = '';
-$l_name = '';
-$role_id = '';
-
 $rolesResult = getRoles($conn);
 if ($rolesResult === false) {
     $error = 'Unable to load roles. Please try again later.';
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
+if (isset($_POST['update_user'])) {
     $user_email = trim((string) ($_POST['user_email'] ?? ''));
     $f_name = trim((string) ($_POST['f_name'] ?? ''));
     $l_name = trim((string) ($_POST['l_name'] ?? ''));
