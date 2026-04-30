@@ -1,6 +1,5 @@
 <?php 
 include('../functions/session.php');
-$_SESSION['role_id'] = 0; // Set role_id to 0 for guests
 $error="";
 
 if ($_SERVER['REQUEST_METHOD']==='POST'){
@@ -24,10 +23,10 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
 
     //change when navbar has been ammended for user and admin
     //role_id=1 when user and 2 when admin
-    if ($user['role_id']==1){
+    if ($user['role_id']=='1'){
       header("Location: dashboard.php");
     }
-    else if($user['role_id']==2){
+    else if($user['role_id']=='2'){
       header("Location: dashboard.php");
     }
     exit();
